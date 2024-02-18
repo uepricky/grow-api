@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Attendance\AttendanceRequest;
+use App\Http\Requests\Attendance\{
+    AttendanceRequest,
+    TardyAbsenceRequest,
+    PayrollPaymentRequest
+};
 use App\Http\Requests\StoreIdRequest;
 use Illuminate\Support\Facades\DB;
 use App\Log\CustomLog;
@@ -125,7 +129,7 @@ class AttendanceController extends Controller
         ], 200);
     }
 
-    public function updateTardyAbsence(Request $request)
+    public function updateTardyAbsence(TardyAbsenceRequest $request)
     {
         // ストアの取得
         $store = $this->storeRepo->findStore($request->store_id);
@@ -171,7 +175,7 @@ class AttendanceController extends Controller
         ], 200);
     }
 
-    public function updatePayrollPayment(Request $request)
+    public function updatePayrollPayment(PayrollPaymentRequest $request)
     {
         // ストアの取得
         $store = $this->storeRepo->findStore($request->store_id);
