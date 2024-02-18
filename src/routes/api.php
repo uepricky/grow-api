@@ -29,7 +29,9 @@ use App\Http\Controllers\{
     PaymentMethodController,
     SysPaymentMethodController,
     OpeningPreparationController,
-    AttendanceController
+    AttendanceController,
+    HallController,
+    BillController
 };
 
 // Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
@@ -119,5 +121,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('/bulkUpdate', [AttendanceController::class, 'bulkUpdate']);
         Route::put('/updateTardyAbsence', [AttendanceController::class, 'updateTardyAbsence'])->name('attendances.update-tardy-absence');
         Route::put('/updatePayrollPayment', [AttendanceController::class, 'updatePayrollPayment'])->name('attendances.update-payroll-payment');
+    });
+
+    // ホール一覧
+    Route::prefix('/halls')->group(function () {
+        Route::get('/', [HallController::class, 'get']);
+    });
+
+    // 伝票
+    Route::prefix('/bills')->group(function () {
+        Route::post('/', [BillController::class, 'store'])->name('bills.store');
     });
 });
