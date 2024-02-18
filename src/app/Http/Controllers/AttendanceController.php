@@ -140,15 +140,15 @@ class AttendanceController extends Controller
             ], 404);
         }
 
-        // TODO: Policy確認
-        // try {
-        //     $this->authorize('update', [Attendance::class, $store, $request->store_id]);
-        // } catch (AuthorizationException $e) {
-        //     return response()->json([
-        //         'status' => 'failure',
-        //         'errors' => ['この操作を実行する権限がありません']
-        //     ], 403);
-        // }
+        // Policy確認
+        try {
+            $this->authorize('update', [Attendance::class, $store, $request->store_id]);
+        } catch (AuthorizationException $e) {
+            return response()->json([
+                'status' => 'failure',
+                'errors' => ['この操作を実行する権限がありません']
+            ], 403);
+        }
 
         // トランザクションを開始する
         DB::beginTransaction();
@@ -186,15 +186,15 @@ class AttendanceController extends Controller
             ], 404);
         }
 
-        // TODO: Policy確認
-        // try {
-        //     $this->authorize('update', [Attendance::class, $store, $request->store_id]);
-        // } catch (AuthorizationException $e) {
-        //     return response()->json([
-        //         'status' => 'failure',
-        //         'errors' => ['この操作を実行する権限がありません']
-        //     ], 403);
-        // }
+        // Policy確認
+        try {
+            $this->authorize('update', [Attendance::class, $store, $request->store_id]);
+        } catch (AuthorizationException $e) {
+            return response()->json([
+                'status' => 'failure',
+                'errors' => ['この操作を実行する権限がありません']
+            ], 403);
+        }
 
         // トランザクションを開始する
         DB::beginTransaction();
