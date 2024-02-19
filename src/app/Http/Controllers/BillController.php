@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\Bill\BillRequest;
+use App\Http\Requests\StoreIdRequest;
 use App\Models\{
     Store,
     Bill,
@@ -40,6 +41,42 @@ class BillController extends Controller
         public readonly OrderServiceInterface $orderServ,
     ) {}
 
+    public function get(StoreIdRequest $request)
+    {
+        // ストアの取得
+        $store = $this->storeRepo->findStore($request->storeId);
+        if (is_null($store)) {
+            return response()->json([
+                'status' => 'failure',
+                'errors' => ['ストア情報の読み込みができませんでした']
+            ], 404);
+        }
+
+        // Policy確認
+        // try {
+        //     $this->authorize('viewAny', [Attendance::class, $store]);
+        // } catch (AuthorizationException $e) {
+        //     return response()->json([
+        //         'status' => 'failure',
+        //         'errors' => ['この操作を実行する権限がありません']
+        //     ], 403);
+        // }
+
+        // 開始日時を取得
+        $businessDate = $this->businessDateRepo->getCurrentBusinessDate($store);
+
+        // 伝票情報を取得
+        $bills = $this->billRepo->getBusinessDateBills($store, $businessDate);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'bills' => $bills,
+                'businessDate' => $businessDate
+            ]
+        ], 200);
+    }
+
     public function store(BillRequest $request)
     {
         // ストアの取得
@@ -61,9 +98,7 @@ class BillController extends Controller
         //     ], 403);
         // }
 
-
         // 開始日時を取得
-        // 営業日取得
         $businessDate = $this->businessDateRepo->getCurrentBusinessDate($store);
         list($hh, $mm) = explode(':', $request->start_at);
         $startAt = TimeUtility::caluculateDateTime($businessDate, $hh, $mm);
@@ -108,8 +143,10 @@ class BillController extends Controller
                 );
 
                 // NumberOfCustomer
-                $numberOfCustomer =  $this->numberOfCustomerRepo->createNumberOfCustomer($bill->id, $requestOrder['quantity']);
+                $this->numberOfCustomerRepo->createNumberOfCustomer($bill->id, $requestOrder['quantity']);
             }
+
+            $createdBill = $this->billRepo->find($bill->id);
 
             DB::commit();
         } catch (\Throwable $e) {
@@ -127,9 +164,16 @@ class BillController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' => []
+            'data' => [
+                'bill' => $createdBill
+            ]
         ], 200);
     }
+
+
+
+
+
 
     public function departure(Store $store, Bill $bill, Request $request)
     {

@@ -42,7 +42,9 @@ class BillRepository implements BillRepositoryInterface
      */
     public function find(int $id): Bill
     {
-        return $this->model->find($id);
+        return $this->model
+            ->with(['tables', 'itemizedOrders.orders.menu.setMenu', 'numberOfCustomer'])
+            ->find($id);
     }
 
     /**
@@ -79,6 +81,7 @@ class BillRepository implements BillRepositoryInterface
     {
         return $this->model->where('business_date_id', $businessDate->id)
             ->where('store_id', $store->id)
+            ->with(['tables', 'itemizedOrders.orders.menu.setMenu', 'numberOfCustomer'])
             ->get();
     }
 

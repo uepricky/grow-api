@@ -123,13 +123,18 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('/updatePayrollPayment', [AttendanceController::class, 'updatePayrollPayment'])->name('attendances.update-payroll-payment');
     });
 
+    // 伝票
+    Route::prefix('/bills')->group(function () {
+        Route::get('/', [BillController::class, 'get']);
+        Route::post('/', [BillController::class, 'store'])->name('bills.store');
+    });
+
+
+
+    // TODO: 以下いらないかも
+
     // ホール一覧
     Route::prefix('/halls')->group(function () {
         Route::get('/', [HallController::class, 'get']);
-    });
-
-    // 伝票
-    Route::prefix('/bills')->group(function () {
-        Route::post('/', [BillController::class, 'store'])->name('bills.store');
     });
 });
