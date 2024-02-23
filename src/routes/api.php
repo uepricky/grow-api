@@ -31,7 +31,10 @@ use App\Http\Controllers\{
     OpeningPreparationController,
     AttendanceController,
     HallController,
-    BillController
+    BillController,
+    RollController,
+    OrderController,
+    BillPaymentController
 };
 
 // Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
@@ -125,11 +128,34 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // 伝票
     Route::prefix('/bills')->group(function () {
-        Route::get('/', [BillController::class, 'get']);
+        Route::get('/{id}', [BillController::class, 'get']);
+        Route::get('/', [BillController::class, 'getAll']);
         Route::post('/', [BillController::class, 'store'])->name('bills.store');
     });
 
+    // Roll
+    Route::prefix('/rolls')->group(function () {
+        Route::get('/storeRoles', [RollController::class, 'getStoreRoles']);
+    });
 
+    // オーダー
+    Route::prefix('/orders')->group(function () {
+        Route::post('/', [OrderController::class, 'store']);
+        Route::put('/', [OrderController::class, 'update']);
+        Route::delete('/', [OrderController::class, 'archive']);
+
+        // Route::get('/', [OrderController::class, 'index'])->name('orders.index');
+        // Route::get('/create', [OrderController::class, 'create'])->name('orders.create');
+    });
+
+    // 会計
+    Route::prefix('/payments')->group(function () {
+        Route::post('/', [BillPaymentController::class, 'store'])->name('bill-payments.store');
+        Route::delete('/{billId}', [BillPaymentController::class, 'cancel'])->name('bill-payments.cancel');
+    });
+
+    // 退店
+    Route::put('/departure/{billId}', [BillController::class, 'departure'])->name('bills.departure');
 
     // TODO: 以下いらないかも
 

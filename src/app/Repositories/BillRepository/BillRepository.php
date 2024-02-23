@@ -43,7 +43,16 @@ class BillRepository implements BillRepositoryInterface
     public function find(int $id): Bill
     {
         return $this->model
-            ->with(['tables', 'itemizedOrders.orders.menu.setMenu', 'numberOfCustomer'])
+            ->with([
+                'tables',
+                'itemizedOrders.orders.menu.setMenu',
+                'itemizedOrders.orders.menu.menuCategory',
+                'itemizedOrders.orders.userIncentive.user',
+                'itemizedOrders.orders.modifiedOrders' => function($query) {
+                    $query->latest()->limit(1);
+                },
+                'numberOfCustomer'
+            ])
             ->find($id);
     }
 
@@ -81,7 +90,8 @@ class BillRepository implements BillRepositoryInterface
     {
         return $this->model->where('business_date_id', $businessDate->id)
             ->where('store_id', $store->id)
-            ->with(['tables', 'itemizedOrders.orders.menu.setMenu', 'numberOfCustomer'])
+            ->where('departure_time', null)
+            ->with(['tables', 'itemizedOrders.orders.menu.setMenu', 'numberOfCustomer', 'billPayments'])
             ->get();
     }
 

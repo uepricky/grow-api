@@ -46,9 +46,6 @@ class MenuCategoryController extends Controller
             ], 403);
         }
 
-        // メニューカテゴリを取得
-        // $menuCategories = $this->menuCategoryRepo->getMenuCategoryListByStore($store);
-
         $menuCategories = $this->menuCategoryRepo->getMenuCategoryListByStoreAndSysMenuCategoryIds(
             $store,
             $request->sysMenuCategoryIds

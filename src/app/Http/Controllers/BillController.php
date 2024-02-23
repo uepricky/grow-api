@@ -41,7 +41,7 @@ class BillController extends Controller
         public readonly OrderServiceInterface $orderServ,
     ) {}
 
-    public function get(StoreIdRequest $request)
+    public function getAll(StoreIdRequest $request)
     {
         // ストアの取得
         $store = $this->storeRepo->findStore($request->storeId);
@@ -74,6 +74,16 @@ class BillController extends Controller
                 'bills' => $bills,
                 'businessDate' => $businessDate
             ]
+        ], 200);
+    }
+
+    public function get(int $id)
+    {
+        $bill = $this->billRepo->find($id);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $bill
         ], 200);
     }
 
@@ -170,13 +180,25 @@ class BillController extends Controller
         ], 200);
     }
 
-
-
-
-
-
-    public function departure(Store $store, Bill $bill, Request $request)
+    public function departure(int $billId)
     {
+        $bill = $this->billRepo->find($billId);
+        if (is_null($bill)) {
+            return response()->json([
+                'status' => 'failure',
+                'errors' => ['伝票情報の読み込みができませんでした']
+            ], 404);
+        }
+
+        // ストアの取得
+        $store = $this->storeRepo->findStore($bill->store_id);
+        if (is_null($store)) {
+            return response()->json([
+                'status' => 'failure',
+                'errors' => ['ストア情報の読み込みができませんでした']
+            ], 404);
+        }
+
         // トランザクションを開始する
         DB::beginTransaction();
         try {
@@ -192,10 +214,17 @@ class BillController extends Controller
 
             // ログの出力
             CustomLog::error($e);
-            abort(500);
+
+            return response()->json([
+                'status' => 'failure',
+                'errors' => [$e->getMessage()]
+            ], 500);
         }
 
-        return redirect()->route('halls.index', compact('store'))->with('message', '退店処理が完了しました。');
+        return response()->json([
+            'status' => 'success',
+            'data' => []
+        ], 200);
     }
 
     public function archive(Store $store, Bill $bill)
@@ -215,6 +244,7 @@ class BillController extends Controller
             CustomLog::error($e);
             abort(500);
         }
+
 
         return redirect()->route('halls.index', compact('store'))->with('message', '伝票を削除しました。');
     }
