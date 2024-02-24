@@ -51,7 +51,8 @@ class BillRepository implements BillRepositoryInterface
                 'itemizedOrders.orders.modifiedOrders' => function($query) {
                     $query->latest()->limit(1);
                 },
-                'numberOfCustomer'
+                'numberOfCustomer',
+                'billPayments'
             ])
             ->find($id);
     }
@@ -91,7 +92,15 @@ class BillRepository implements BillRepositoryInterface
         return $this->model->where('business_date_id', $businessDate->id)
             ->where('store_id', $store->id)
             ->where('departure_time', null)
-            ->with(['tables', 'itemizedOrders.orders.menu.setMenu', 'numberOfCustomer', 'billPayments'])
+            ->with([
+                'tables',
+                'itemizedOrders.orders.menu.setMenu',
+                'itemizedOrders.orders.modifiedOrders' => function($query) {
+                    $query->latest()->limit(1);
+                },
+                'numberOfCustomer',
+                'billPayments'
+            ])
             ->get();
     }
 

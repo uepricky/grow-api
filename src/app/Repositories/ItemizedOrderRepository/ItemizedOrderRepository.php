@@ -42,7 +42,14 @@ class ItemizedOrderRepository implements ItemizedOrderRepositoryInterface
      */
     public function find(int $id): ItemizedOrder
     {
-        return $this->model->find($id);
+        return $this->model
+            ->with([
+                'orders.menu.setMenu',
+                'orders.modifiedOrders' => function($query) {
+                    $query->latest()->limit(1);
+                },
+            ])
+            ->find($id);
     }
 
     /**

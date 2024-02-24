@@ -80,6 +80,12 @@ class BillController extends Controller
     public function get(int $id)
     {
         $bill = $this->billRepo->find($id);
+        if (is_null($bill)) {
+            return response()->json([
+                'status' => 'failure',
+                'errors' => ['伝票情報の読み込みができませんでした']
+            ], 404);
+        }
 
         return response()->json([
             'status' => 'success',

@@ -3,6 +3,8 @@
 namespace App\Http\Requests\ExtensionSet;
 
 use App\Http\Requests\BaseFormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 
 class ExtensionSetRequest extends BaseFormRequest
 {
@@ -27,6 +29,16 @@ class ExtensionSetRequest extends BaseFormRequest
             'orders.quantity' => 'required|integer|min:1',
             'orders.extension_set_id' => 'required|integer',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = $validator->errors()->all();
+
+        throw new HttpResponseException(response()->json([
+            'status' => 'failure',
+            'errors' => $errors
+        ], 400));
     }
 
     public function messages()
