@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\Store\StoreRequest;
 use App\Repositories\{
@@ -36,7 +37,6 @@ class StoreController extends Controller
      */
     public function create()
     {
-        // ここから
         $this->authorize('create', Store::class);
 
         $group_id = auth()->user()->groups->first()->id;
@@ -52,9 +52,19 @@ class StoreController extends Controller
         // トランザクションを開始する
         DB::beginTransaction();
         try {
+
+            // グループIDを付与
+            $group_id = auth()->user()->groups->first()->id;
+
+            // 店舗データを取得
+            $storeData = $request->store;
+
+            // 'group_id' キーで $group_id を追加
+            $storeData['group_id'] = $group_id;
+
             // 店舗作成
             $this->storeServ->createStore(
-                $request->store,
+                $storeData,
                 $request->store_detail,
             );
 
@@ -66,10 +76,16 @@ class StoreController extends Controller
             // ログの出力
             CustomLog::error($e);
 
-            abort(500);
+            return response()->json([
+                'status' => 'failure',
+                'errors' => ['新規店舗の登録に失敗しました。']
+            ], 500);
         }
-
-        return redirect()->route('group-dashboard.home')->with('message', '新規店舗の登録が完了しました。');
+        return response()->json([
+            'status' => 'success',
+            'data' => [],
+            'messages' => ['新規店舗の登録が完了しました。']
+        ], 200);
     }
 
     /**
