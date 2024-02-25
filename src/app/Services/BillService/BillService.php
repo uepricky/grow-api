@@ -58,8 +58,6 @@ class BillService implements BillServiceInterface
                     = $this->orderRepo->getItemizedOrderOrders($itemizedOrder);
             }
 
-            // dd($tables);
-
             // 伝票に紐づく客数を取得
             $tables[$table_i]['bill']['numberOfCustomer'] =
                 $this->numberOfCustomerRepo->getBillNumberOfCustomer($tables[$table_i]['bill']);

@@ -19,6 +19,7 @@ class Bill extends Model
         'service_rate',
         'consumption_tax_rate',
         'discount_amount',
+        'total_amount',
         'discount_note',
         'receipt_issued',
         'invoice_issued',

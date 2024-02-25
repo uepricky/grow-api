@@ -25,6 +25,7 @@ return new class extends Migration
             $table->smallInteger('consumption_tax_rate')->unsigned()->comment('消費税率');
 
             $table->integer('discount_amount')->default(0)->comment('値引き金額');
+            $table->integer('total_amount')->default(0)->comment('合計金額');
             $table->text('discount_note')->nullable()->comment('値引きメモ');
 
             $table->boolean('receipt_issued')->default(false)->comment('レシート発行有無');

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('bill_id')->constrained('bills')->cascadeOnDelete()->comment('伝票');
             $table->foreignId('payment_method_id')->constrained('payment_methods')->cascadeOnDelete()->comment('支払い方法');
             $table->integer('receipt_amount')->comment('受領金額');
-            $table->integer('total_amount')->comment('合計金額');
 
             $table->timestamps();
             $table->softDeletes();

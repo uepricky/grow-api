@@ -2,10 +2,27 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\{
     GroupController,
-    StoreController
+    StoreController,
+    UserController,
+    SysMenuCategoryController,
+    MenuCategoryController,
+    MenuController,
+    SetMenuController,
+    SelectionMenuController,
+    TableController,
+    PaymentMethodController,
+    SysPaymentMethodController,
+    OpeningPreparationController,
+    AttendanceController,
+    HallController,
+    BillController,
+    RollController,
+    OrderController,
+    BillPaymentController,
+    ExtensionSetController,
+    ClosingStoreController
 };
 
 /*
@@ -18,19 +35,6 @@ use App\Http\Controllers\{
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-use App\Http\Controllers\{
-    UserController,
-    SysMenuCategoryController,
-    MenuCategoryController,
-    MenuController,
-    SetMenuController,
-    SelectionMenuController,
-    TableController,
-    PaymentMethodController,
-    SysPaymentMethodController,
-    OpeningPreparationController,
-    AttendanceController
-};
 
 // Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 //     return $request->user();
@@ -120,5 +124,51 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('/bulkUpdate', [AttendanceController::class, 'bulkUpdate']);
         Route::put('/updateTardyAbsence', [AttendanceController::class, 'updateTardyAbsence'])->name('attendances.update-tardy-absence');
         Route::put('/updatePayrollPayment', [AttendanceController::class, 'updatePayrollPayment'])->name('attendances.update-payroll-payment');
+    });
+
+    // 伝票
+    Route::prefix('/bills')->group(function () {
+        Route::get('/{id}', [BillController::class, 'get']);
+        Route::get('/', [BillController::class, 'getAll']);
+        Route::post('/', [BillController::class, 'store'])->name('bills.store');
+    });
+
+    // Roll
+    Route::prefix('/rolls')->group(function () {
+        Route::get('/storeRoles', [RollController::class, 'getStoreRoles']);
+    });
+
+    // オーダー
+    Route::prefix('/orders')->group(function () {
+        Route::post('/', [OrderController::class, 'store']);
+        Route::put('/', [OrderController::class, 'update']);
+        Route::delete('/', [OrderController::class, 'archive']);
+    });
+
+    // 延長セット
+    Route::prefix('/extension-sets')->group(function () {
+        Route::post('/', [ExtensionSetController::class, 'store'])->name('extension-sets.store');
+    });
+
+    // 会計
+    Route::prefix('/payments')->group(function () {
+        Route::post('/', [BillPaymentController::class, 'store'])->name('bill-payments.store');
+        Route::delete('/{billId}', [BillPaymentController::class, 'cancel'])->name('bill-payments.cancel');
+    });
+
+    // 退店
+    Route::put('/departure/{billId}', [BillController::class, 'departure'])->name('bills.departure');
+
+    // 閉店準備
+    Route::prefix('/closing')->group(function () {
+        Route::get('/preparation', [ClosingStoreController::class, 'preparation'])->name('closing.preparation');
+        Route::post('/register', [ClosingStoreController::class, 'register'])->name('closing.register');
+    });
+
+    // TODO: 以下いらないかも
+
+    // ホール一覧
+    Route::prefix('/halls')->group(function () {
+        Route::get('/', [HallController::class, 'get']);
     });
 });

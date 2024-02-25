@@ -62,6 +62,7 @@ class MenuRepository implements MenuRepositoryInterface
                 }
             })
             ->orderBy($orderBy, $sortBy)
+            ->with('menuCategory')
             ->get($columns);
     }
 

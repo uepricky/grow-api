@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Bill;
 
 use App\Http\Requests\BaseFormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 
 class BillRequest extends BaseFormRequest
 {
@@ -55,4 +57,13 @@ class BillRequest extends BaseFormRequest
         ];
     }
 
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = $validator->errors()->all();
+
+        throw new HttpResponseException(response()->json([
+            'status' => 'failure',
+            'errors' => $errors
+        ], 400));
+    }
 }
