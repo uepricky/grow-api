@@ -98,13 +98,13 @@ class StoreSalesService implements StoreSalesServiceInterface
         }
 
         foreach ($bills as $bill) {
+            // 売上
+            $totalSalesAmount += $bill->total_amount;
+
             $billPayments = $this->billPaymentRepo->getBillPayments($bill);
             foreach ($billPayments as $billPayment) {
-                // 売上
-                $totalSalesAmount += $billPayment->total_amount;
-
                 // 支払い種別ごとの売上金
-                $paymentMethodsSalesTotalAmountList[$billPayment->payment_method_id]['totalAmount'] += $billPayment->total_amount;
+                $paymentMethodsSalesTotalAmountList[$billPayment->payment_method_id]['totalAmount'] += $bill->total_amount;
             }
         }
 

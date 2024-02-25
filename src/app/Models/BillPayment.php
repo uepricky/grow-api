@@ -14,6 +14,5 @@ class BillPayment extends Model
         'bill_id',
         'payment_method_id',
         'receipt_amount',
-        'total_amount'
     ];
 }

@@ -62,6 +62,7 @@ class BillPaymentController extends Controller
             $bill->receipt_issued = $request->bill['receipt_issued'];
             $bill->invoice_issued = $request->bill['invoice_issued'];
             $bill->memo = $request->bill['memo'];
+            $bill->total_amount = $request->bill['total_amount'];
             $this->billRepo->updateBill($bill);
 
             DB::commit();

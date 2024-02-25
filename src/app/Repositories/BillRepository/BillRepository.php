@@ -91,7 +91,7 @@ class BillRepository implements BillRepositoryInterface
     {
         return $this->model->where('business_date_id', $businessDate->id)
             ->where('store_id', $store->id)
-            ->where('departure_time', null)
+            // ->where('departure_time', null)
             ->with([
                 'tables',
                 'itemizedOrders.orders.menu.setMenu',

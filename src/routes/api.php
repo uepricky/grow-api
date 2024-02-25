@@ -21,7 +21,8 @@ use App\Http\Controllers\{
     RollController,
     OrderController,
     BillPaymentController,
-    ExtensionSetController
+    ExtensionSetController,
+    ClosingStoreController
 };
 
 /*
@@ -156,6 +157,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // 退店
     Route::put('/departure/{billId}', [BillController::class, 'departure'])->name('bills.departure');
+
+    // 閉店準備
+    Route::prefix('/closing')->group(function () {
+        Route::get('/preparation', [ClosingStoreController::class, 'preparation'])->name('closing.preparation');
+        Route::post('/register', [ClosingStoreController::class, 'register'])->name('closing.register');
+    });
 
     // TODO: 以下いらないかも
 
