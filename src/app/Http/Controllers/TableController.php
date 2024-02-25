@@ -27,6 +27,9 @@ class TableController extends Controller
 
     public function getAll(StoreIdRequest $request)
     {
+        throw new \Exception('あかんですよ');
+
+
         // ストアの取得
         $store = $this->storeRepo->findStore($request->storeId);
 

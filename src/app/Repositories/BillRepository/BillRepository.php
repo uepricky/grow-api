@@ -82,6 +82,7 @@ class BillRepository implements BillRepositoryInterface
     }
 
     /**
+     * 営業日に属する全ての伝票情報を取得
      * @param Store $store
      * @param BusinessDate $businessDate
      *
@@ -91,7 +92,30 @@ class BillRepository implements BillRepositoryInterface
     {
         return $this->model->where('business_date_id', $businessDate->id)
             ->where('store_id', $store->id)
-            // ->where('departure_time', null)
+            ->with([
+                'tables',
+                'itemizedOrders.orders.menu.setMenu',
+                'itemizedOrders.orders.modifiedOrders' => function($query) {
+                    $query->latest()->limit(1);
+                },
+                'numberOfCustomer',
+                'billPayments'
+            ])
+            ->get();
+    }
+
+    /**
+     * 営業日に属するまだ利用中の伝票情報を取得
+     * @param Store $store
+     * @param BusinessDate $businessDate
+     *
+     * @return Collection
+     */
+    public function getBusinessDateBillsNotDeparture(Store $store, BusinessDate $businessDate): Collection
+    {
+        return $this->model->where('business_date_id', $businessDate->id)
+            ->where('store_id', $store->id)
+            ->whereNull('departure_time')
             ->with([
                 'tables',
                 'itemizedOrders.orders.menu.setMenu',

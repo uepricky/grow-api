@@ -66,7 +66,7 @@ class BillController extends Controller
         $businessDate = $this->businessDateRepo->getCurrentBusinessDate($store);
 
         // 伝票情報を取得
-        $bills = $this->billRepo->getBusinessDateBills($store, $businessDate);
+        $bills = $this->billRepo->getBusinessDateBillsNotDeparture($store, $businessDate);
 
         return response()->json([
             'status' => 'success',

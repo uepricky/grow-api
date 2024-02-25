@@ -54,6 +54,15 @@ interface BillRepositoryInterface
      */
     public function getBusinessDateBills(Store $store, BusinessDate $businessDate): Collection;
 
+    /**
+     * 営業日に属するまだ利用中の伝票情報を取得
+     * @param Store $store
+     * @param BusinessDate $businessDate
+     *
+     * @return Collection
+     */
+    public function getBusinessDateBillsNotDeparture(Store $store, BusinessDate $businessDate): Collection;
+
     /***********************************************************
      * Update系
      ***********************************************************/
