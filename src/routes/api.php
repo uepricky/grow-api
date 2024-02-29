@@ -43,6 +43,11 @@ use App\Http\Controllers\{
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [UserController::class, 'get'])->name('user.get');
 
+    // ユーザー
+    Route::prefix('/users')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('users.index');
+    });
+
 
     Route::get('/group/stores', [GroupController::class, 'getStores']);
 
