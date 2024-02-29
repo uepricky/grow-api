@@ -56,6 +56,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('/stores')->group(function () {
         Route::get('/', [StoreController::class, 'create'])->name('stores.create');
         Route::post('/', [StoreController::class, 'store'])->name('stores.store');
+        Route::get('/{id}', [StoreController::class, 'get'])->name('stores.get');
+        Route::put('/{id}', [StoreController::class, 'update'])->name('stores.update');
+
+        Route::delete('/{id}', [StoreController::class, 'archive'])->name('stores.archive');
     });
 
     // メニューカテゴリー
