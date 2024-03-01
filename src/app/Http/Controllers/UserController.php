@@ -42,4 +42,15 @@ class UserController extends Controller
             ]
         ], 200);
     }
+
+    public function archive(int $userId)
+    {
+        $user = $this->userRepo->find($userId);
+        $this->userRepo->softDeleteUser($user);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => $user->display_name . 'の削除が完了しました。'
+        ], 200);
+    }
 }

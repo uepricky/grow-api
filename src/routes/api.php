@@ -46,6 +46,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // ユーザー
     Route::prefix('/users')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('users.index');
+        Route::delete('/{id}', [UserController::class, 'archive'])->name('users.archive');
     });
 
 
