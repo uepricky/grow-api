@@ -95,6 +95,8 @@ class BillRepository implements BillRepositoryInterface
             ->with([
                 'tables',
                 'itemizedOrders.orders.menu.setMenu',
+                'itemizedOrders.orders.menu.menuCategory',
+                'itemizedOrders.orders.userIncentive.user',
                 'itemizedOrders.orders.modifiedOrders' => function($query) {
                     $query->latest()->limit(1);
                 },
@@ -119,6 +121,8 @@ class BillRepository implements BillRepositoryInterface
             ->with([
                 'tables',
                 'itemizedOrders.orders.menu.setMenu',
+                'itemizedOrders.orders.menu.menuCategory',
+                'itemizedOrders.orders.userIncentive.user',
                 'itemizedOrders.orders.modifiedOrders' => function($query) {
                     $query->latest()->limit(1);
                 },

@@ -30,6 +30,13 @@ interface BillPaymentRepositoryInterface
      */
     public function getBillPayments(Bill $bill): Collection;
 
+    /**
+     * @param Bill $bill
+     *
+     * @return BillPayment
+     */
+    public function getLatestBillPayment(Bill $bill): BillPayment;
+
     /***********************************************************
      * Update系
      ***********************************************************/

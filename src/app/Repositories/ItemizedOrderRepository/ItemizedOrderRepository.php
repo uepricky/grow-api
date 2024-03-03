@@ -45,6 +45,7 @@ class ItemizedOrderRepository implements ItemizedOrderRepositoryInterface
         return $this->model
             ->with([
                 'orders.menu.setMenu',
+                'orders.menu.menuCategory',
                 'orders.modifiedOrders' => function($query) {
                     $query->latest()->limit(1);
                 },
