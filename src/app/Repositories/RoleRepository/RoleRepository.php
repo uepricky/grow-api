@@ -74,7 +74,7 @@ class RoleRepository implements RoleRepositoryInterface
         $role = $this->model->whereHas('defaultGroupRole', function ($query) use ($roleName) {
             $query->where('name', $roleName);
         })
-        ->first();
+            ->first();
 
         return $role->groupRoles->where('role_id', $role->id)->where('group_id', $groupId)->first();
     }
@@ -86,7 +86,7 @@ class RoleRepository implements RoleRepositoryInterface
      * @param string $sortBy
      * @return Collection
      */
-    public function getStoreRolesByStore(Store $store, string $orderBy = 'id', string $sortBy = 'asc') :Collection
+    public function getStoreRolesByStore(Store $store, string $orderBy = 'id', string $sortBy = 'asc'): Collection
     {
         return StoreRole::where('store_id', $store->id)
             ->with('role')
@@ -114,9 +114,9 @@ class RoleRepository implements RoleRepositoryInterface
     public function getUserStoreRoles(User $user, int $storeId): Collection
     {
         return $user->storeRoles()
-        ->where('store_id', $storeId)
-        ->with('role')
-        ->get();
+            ->where('store_id', $storeId)
+            ->with('role')
+            ->get();
     }
 
     /**
@@ -135,7 +135,7 @@ class RoleRepository implements RoleRepositoryInterface
      * @param string $sortBy
      * @return Collection
      */
-    public function getAllDefaultGroupRolesByGroupId(int $groupId, string $orderBy = 'id', string $sortBy = 'desc'): Collection
+    public function getAllDefaultGroupRolesByGroupId(int $groupId, string $orderBy = 'id', string $sortBy = 'asc'): Collection
     {
         return GroupRole::where('group_id', $groupId)
             ->whereIn('role_id', DefaultGroupRole::with('role')->pluck('role_id'))

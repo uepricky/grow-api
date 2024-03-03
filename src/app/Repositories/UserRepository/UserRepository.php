@@ -58,11 +58,9 @@ class UserRepository implements UserRepositoryInterface
     {
         $user = $this->createUser($data);
 
-        $loginPermission = GeneralUser::getById($generalUserdata['can_login']);
-
         $user->generalUser()->create([
             'user_id' => $user->id,
-            'can_login' => $loginPermission['can_login']
+            'can_login' => $generalUserdata['can_login']
         ]);
 
         return $user;
@@ -165,7 +163,8 @@ class UserRepository implements UserRepositoryInterface
         $this->updateUser($user, $userData);
 
         return $user->generalUser->update([
-            'can_login' => GeneralUser::getById($generalUserData['can_login'])['can_login']
+            // 'can_login' => GeneralUser::getById($generalUserData['can_login'])['can_login']
+            'can_login' => $generalUserData['can_login']
         ]);
     }
 

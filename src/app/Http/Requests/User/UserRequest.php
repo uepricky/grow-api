@@ -31,7 +31,7 @@ class UserRequest extends BaseFormRequest
     {
         return [
             'user.display_name' => 'required|string|max:255',
-            'general_user.can_login' => 'required|numeric',
+            'general_user.can_login' => 'required|boolean',
             'user.email' => ['nullable', 'string', 'lowercase', 'max:255', 'email', Rule::unique('users', 'email')->ignore($this->user()->id)],
             'user.password' => ['required_with:user.email', 'nullable', Password::defaults(), 'confirmed'],
 
@@ -92,5 +92,4 @@ class UserRequest extends BaseFormRequest
             'store_role.*.*.integer' => parent::UPDATE_SCREEN_MESSAGE,
         ];
     }
-
 }

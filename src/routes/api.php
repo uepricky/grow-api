@@ -6,6 +6,7 @@ use App\Http\Controllers\{
     GroupController,
     StoreController,
     UserController,
+    GroupRoleController,
     SysMenuCategoryController,
     MenuCategoryController,
     MenuController,
@@ -46,9 +47,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // ユーザー
     Route::prefix('/users')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('users.index');
+        Route::post('/', [UserController::class, 'store'])->name('users.store');
         Route::delete('/{id}', [UserController::class, 'archive'])->name('users.archive');
     });
 
+    // グループ
+    Route::prefix('/groups')->group(function () {
+        Route::get('/{group_id}/roles', [GroupRoleController::class, 'index']);
+        Route::get('/{group_id}/stores-with-roles', [GroupController::class, 'getStoresWithRoles']);
+    });
+
+    // グループロール
+    Route::prefix('/groupRoles')->group(function () {
+        Route::get('/', [GroupRoleController::class, 'index'])->name('groupRoles.index');
+    });
 
     Route::get('/group/stores', [GroupController::class, 'getStores']);
 
@@ -145,6 +157,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Roll
     Route::prefix('/rolls')->group(function () {
+        Route::get('/groupRoles', [RollController::class, 'getGroupRoles']);
         Route::get('/storeRoles', [RollController::class, 'getStoreRoles']);
     });
 
