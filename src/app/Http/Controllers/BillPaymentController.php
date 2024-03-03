@@ -78,9 +78,11 @@ class BillPaymentController extends Controller
             ], 500);
         }
 
+        $createdBillPayment = $this->billPaymentRepo->getLatestBillPayment($bill);
+
         return response()->json([
             'status' => 'success',
-            'data' => []
+            'data' => $createdBillPayment
         ], 200);
     }
 

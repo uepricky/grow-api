@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Order\UpdateOrderRequest;
 use Illuminate\Http\Request;
 use App\Models\{
     Store,
@@ -122,13 +123,18 @@ class OrderController extends Controller
             ], 500);
         }
 
+        $createdItemizedOrder = $this->itemizedOrderRepo->find($itemizedOrder->id);
+
         return response()->json([
             'status' => 'success',
-            'data' => []
+            'data' => [
+                'bill' => $bill,
+                'itemizedOrder' => $createdItemizedOrder
+            ]
         ], 200);
     }
 
-    public function update(Request $request)
+    public function update(UpdateOrderRequest $request)
     {
         // ストアの取得
         $store = $this->storeRepo->findStore($request->store_id);
@@ -166,9 +172,11 @@ class OrderController extends Controller
             ], 500);
         }
 
+        $updatedItemizedOrder = $this->itemizedOrderRepo->find($request->itemized_order_id);
+
         return response()->json([
             'status' => 'success',
-            'data' => []
+            'data' => $updatedItemizedOrder
         ], 200);
     }
 

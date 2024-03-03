@@ -49,7 +49,7 @@ class BillRequest extends BaseFormRequest
             'start_at.required' => 'ご来店時間は必須です',
             'orders.required' => parent::UPDATE_SCREEN_MESSAGE,
             'orders.array' => parent::UPDATE_SCREEN_MESSAGE,
-            'orders.*.first_set_id.required' => parent::UPDATE_SCREEN_MESSAGE,
+            'orders.*.first_set_id.required' => '初回セットは選択必須です',
             'orders.*.first_set_id.integer' => parent::UPDATE_SCREEN_MESSAGE,
             'orders.*.quantity' => '数量は必須です',
             'orders.*.quantity.integer' => '数量は整数で指定してください',
