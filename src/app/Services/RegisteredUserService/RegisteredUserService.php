@@ -323,7 +323,7 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         });
 
         // 店長
-        $managerUser = $this->userRepo->createGeneralUser(self::DUMMY_MANAGER_USER, ['can_login' => \App\Models\GeneralUser::LOGIN_DENY['id']]);
+        $managerUser = $this->userRepo->createGeneralUser(self::DUMMY_MANAGER_USER, ['can_login' => false]);
         // ユーザーをグループに所属させる
         $this->userRepo->attachToGroup($managerUser, $group);
         // ユーザーとグループロールの紐付け
@@ -334,7 +334,7 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         $this->roleRepo->attachStoreRolesToUser($managerUser, [$managerStoreRole->id]);
 
         // スタッフ1
-        $staff1User = $this->userRepo->createGeneralUser(self::DUMMY_STAFF1_USER, ['can_login' => \App\Models\GeneralUser::LOGIN_DENY['id']]);
+        $staff1User = $this->userRepo->createGeneralUser(self::DUMMY_STAFF1_USER, ['can_login' => false]);
         // ユーザーをグループに所属させる
         $this->userRepo->attachToGroup($staff1User, $group);
         // ユーザーとグループロールの紐付け
@@ -345,7 +345,7 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         $this->roleRepo->attachStoreRolesToUser($staff1User, [$staffStoreRole->id]);
 
         // スタッフ2
-        $staff2User = $this->userRepo->createGeneralUser(self::DUMMY_STAFF2_USER, ['can_login' => \App\Models\GeneralUser::LOGIN_DENY['id']]);
+        $staff2User = $this->userRepo->createGeneralUser(self::DUMMY_STAFF2_USER, ['can_login' => false]);
         // ユーザーをグループに所属させる
         $this->userRepo->attachToGroup($staff2User, $group);
         // ユーザーとグループロールの紐付け
@@ -356,7 +356,7 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         $this->roleRepo->attachStoreRolesToUser($staff2User, [$staffStoreRole->id]);
 
         // スタッフ3
-        $staff3User = $this->userRepo->createGeneralUser(self::DUMMY_STAFF3_USER, ['can_login' => \App\Models\GeneralUser::LOGIN_DENY['id']]);
+        $staff3User = $this->userRepo->createGeneralUser(self::DUMMY_STAFF3_USER, ['can_login' => false]);
         // ユーザーをグループに所属させる
         $this->userRepo->attachToGroup($staff3User, $group);
         // ユーザーとグループロールの紐付け
@@ -367,7 +367,7 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         $this->roleRepo->attachStoreRolesToUser($staff3User, [$staffStoreRole->id]);
 
         // キャスト1
-        $cast1User = $this->userRepo->createGeneralUser(self::DUMMY_CAST1_USER, ['can_login' => \App\Models\GeneralUser::LOGIN_DENY['id']]);
+        $cast1User = $this->userRepo->createGeneralUser(self::DUMMY_CAST1_USER, ['can_login' => false]);
         // ユーザーをグループに所属させる
         $this->userRepo->attachToGroup($cast1User, $group);
         // ユーザーとグループロールの紐付け
@@ -378,7 +378,7 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         $this->roleRepo->attachStoreRolesToUser($cast1User, [$castStoreRole->id]);
 
         // キャスト2
-        $cast2User = $this->userRepo->createGeneralUser(self::DUMMY_CAST2_USER, ['can_login' => \App\Models\GeneralUser::LOGIN_DENY['id']]);
+        $cast2User = $this->userRepo->createGeneralUser(self::DUMMY_CAST2_USER, ['can_login' => false]);
         // ユーザーをグループに所属させる
         $this->userRepo->attachToGroup($cast2User, $group);
         // ユーザーとグループロールの紐付け
@@ -389,7 +389,7 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         $this->roleRepo->attachStoreRolesToUser($cast2User, [$castStoreRole->id]);
 
         // キャスト3
-        $cast3User = $this->userRepo->createGeneralUser(self::DUMMY_CAST3_USER, ['can_login' => \App\Models\GeneralUser::LOGIN_DENY['id']]);
+        $cast3User = $this->userRepo->createGeneralUser(self::DUMMY_CAST3_USER, ['can_login' => false]);
         // ユーザーをグループに所属させる
         $this->userRepo->attachToGroup($cast3User, $group);
         // ユーザーとグループロールの紐付け
@@ -400,7 +400,7 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         $this->roleRepo->attachStoreRolesToUser($cast3User, [$castStoreRole->id]);
 
         // キャスト4
-        $cast4User = $this->userRepo->createGeneralUser(self::DUMMY_CAST4_USER, ['can_login' => \App\Models\GeneralUser::LOGIN_DENY['id']]);
+        $cast4User = $this->userRepo->createGeneralUser(self::DUMMY_CAST4_USER, ['can_login' => false]);
         // ユーザーをグループに所属させる
         $this->userRepo->attachToGroup($cast4User, $group);
         // ユーザーとグループロールの紐付け
@@ -411,7 +411,7 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         $this->roleRepo->attachStoreRolesToUser($cast4User, [$castStoreRole->id]);
 
         // キャスト5
-        $cast5User = $this->userRepo->createGeneralUser(self::DUMMY_CAST5_USER, ['can_login' => \App\Models\GeneralUser::LOGIN_DENY['id']]);
+        $cast5User = $this->userRepo->createGeneralUser(self::DUMMY_CAST5_USER, ['can_login' => false]);
         // ユーザーをグループに所属させる
         $this->userRepo->attachToGroup($cast5User, $group);
         // ユーザーとグループロールの紐付け

@@ -42,12 +42,14 @@ use App\Http\Controllers\{
 // });
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/user', [UserController::class, 'get'])->name('user.get');
+    Route::get('/user', [UserController::class, 'getLoggedInUser'])->name('user.getLoggedInUser');
 
     // ユーザー
     Route::prefix('/users')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('users.index');
         Route::post('/', [UserController::class, 'store'])->name('users.store');
+        Route::get('/{id}', [UserController::class, 'get'])->name('users.get');
+        Route::put('/{id}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/{id}', [UserController::class, 'archive'])->name('users.archive');
     });
 

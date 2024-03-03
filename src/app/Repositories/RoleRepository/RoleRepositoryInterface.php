@@ -70,6 +70,13 @@ interface RoleRepositoryInterface
     public function getUserStoreRoles(User $user, int $storeId): Collection;
 
     /**
+     * ユーザーの属する全ての店舗のストアロースを取得
+     * @param User $user
+     * @return Collection
+     */
+    public function getUserStoresRoles(User $user): Collection;
+
+    /**
      * デフォルトグループロール一覧を取得
      * @return Collection
      */

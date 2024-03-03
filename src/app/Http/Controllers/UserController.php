@@ -13,6 +13,9 @@ use App\Repositories\{
     RoleRepository\RoleRepositoryInterface,
     GroupRepository\GroupRepositoryInterface,
 };
+use App\Services\{
+    RoleService\RoleServiceInterface
+};
 
 class UserController extends Controller
 {
@@ -20,14 +23,43 @@ class UserController extends Controller
         public readonly UserRepositoryInterface $userRepo,
         public readonly RoleRepositoryInterface $roleRepo,
         public readonly GroupRepositoryInterface $groupRepo,
+        public readonly RoleServiceInterface $roleServ,
     ) {
     }
 
-    public function get(Request $request)
+    public function getLoggedInUser(Request $request)
     {
         $user = $request->user();
         $user['group_id'] =  auth()->user()->groups->first()->id;
         return $user;
+    }
+
+    public function get(int $userId)
+    {
+        $user = $this->userRepo->find($userId);
+        $group = auth()->user()->groups->first();
+        $user['group_id'] =  $group->id;
+
+        // 一般ユーザーデータを取得
+        $generalUser = $this->userRepo->getGeneralUserData($user);
+
+        // ユーザーのデフォルトグループロール一覧取得
+        $groupRole = $this->roleRepo->getUserGroupRole($user);
+        $filteredGroupRole = $groupRole->pivot->group_role_id;
+
+        // ユーザーのデフォルトストアロール一覧取得
+        $userStoreRoles = $this->roleRepo->getUserStoresRoles($user);
+        $filteredStoreRoleIds = $userStoreRoles->pluck('pivot.store_role_id');
+
+        return response()->json([
+            'status' => 'success.',
+            'data' => [
+                'user' => $user,
+                'generalUser' => $generalUser,
+                'groupRole' => $filteredGroupRole,
+                'storesRoles' => $filteredStoreRoleIds
+            ]
+        ], 200);
     }
 
     public function index()
@@ -106,6 +138,47 @@ class UserController extends Controller
                 'user' => $user
             ]
         ], 200);
+    }
+
+    public function update(UserRequest $request, int $userId)
+    {
+        // トランザクションを開始する
+        DB::beginTransaction();
+
+        try {
+            $user = $this->userRepo->find($userId);
+
+            // ユーザーの編集
+            $data = $request->user;
+            if (isset($data['password'])) {
+                $data['password'] = Hash::make($data['password']);
+            }
+            $this->userRepo->updateGeneralUser($user, $data, $request->general_user);
+
+            // ユーザーとストアロールの紐付け
+            $storeRoleIds = [];
+            if ($request->has('store_role')) {
+                $storeRoleIds = collect($request->input('store_role'))
+                    ->flatten()
+                    ->all();
+            }
+
+            // グループロールをユーザーに同期する
+            $this->roleRepo->syncGroupRoleUser($user, [$request->group_role]);
+
+            // ストアロールをユーザーに同期する
+            $this->roleRepo->syncStoreRoleUser($user, $storeRoleIds);
+
+            DB::commit();
+        } catch (\Throwable $e) {
+            // 例外が発生した場合はロールバックする
+            DB::rollback();
+
+            // ログの出力
+            CustomLog::error($e);
+
+            abort(500);
+        }
     }
 
     public function archive(int $userId)

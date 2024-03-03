@@ -120,6 +120,16 @@ class RoleRepository implements RoleRepositoryInterface
     }
 
     /**
+     * ユーザーの属する全ての店舗のストアロースを取得
+     * @param User $user
+     * @return Collection
+     */
+    public function getUserStoresRoles(User $user): Collection
+    {
+        return $user->storeRoles;
+    }
+
+    /**
      * デフォルトグループロール一覧を取得
      * @return Collection
      */
