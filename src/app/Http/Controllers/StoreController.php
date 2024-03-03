@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\Store\StoreRequest;
 use App\Repositories\{
@@ -24,19 +25,10 @@ class StoreController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
-     */
-    // public function index()
-    // {
-    //     //
-    // }
-
-    /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        // ここから
         $this->authorize('create', Store::class);
 
         $group_id = auth()->user()->groups->first()->id;
@@ -52,9 +44,19 @@ class StoreController extends Controller
         // トランザクションを開始する
         DB::beginTransaction();
         try {
+
+            // グループIDを付与
+            $group_id = auth()->user()->groups->first()->id;
+
+            // 店舗データを取得
+            $storeData = $request->store;
+
+            // 'group_id' キーで $group_id を追加
+            $storeData['group_id'] = $group_id;
+
             // 店舗作成
             $this->storeServ->createStore(
-                $request->store,
+                $storeData,
                 $request->store_detail,
             );
 
@@ -66,45 +68,61 @@ class StoreController extends Controller
             // ログの出力
             CustomLog::error($e);
 
-            abort(500);
+            return response()->json([
+                'status' => 'failure',
+                'errors' => ['新規店舗の登録に失敗しました。']
+            ], 500);
         }
-
-        return redirect()->route('group-dashboard.home')->with('message', '新規店舗の登録が完了しました。');
+        return response()->json([
+            'status' => 'success',
+            'data' => [],
+            'messages' => ['新規店舗の登録が完了しました。']
+        ], 200);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    // public function show(string $id)
-    // {
-    //     //
-    // }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    // public function edit(string $id)
-    public function edit(Store $store)
+    public function get(int $id)
     {
+        $store = $this->storeRepo->findStore($id);
         $storeDetail = $this->storeDetailRepo->getLatestStoreDetail($store);
 
-        $nonEffectiveStoreDetails = $this->storeDetailRepo->getNonEffectiveStoreDetails($store);
+        // 以下用途不明
+        // $nonEffectiveStoreDetails = $this->storeDetailRepo->getNonEffectiveStoreDetails($store);
 
-        return view('store.edit', compact('store', 'storeDetail', 'nonEffectiveStoreDetails'));
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'store' => $store,
+                'storeDetail' => $storeDetail
+            ],
+            'messages' => ['店舗情報を取得しました。']
+        ], 200);
     }
+
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreRequest $request, Store $store)
+    public function update(StoreRequest $request, int $id)
     {
+        $store = $this->storeRepo->findStore($id);
+
         $this->authorize('update', $store);
+
+        // グループIDを付与
+        $group_id = auth()->user()->groups->first()->id;
+
+        // 店舗データを取得
+        $storeData = $request->store;
+
+        // 'group_id' キーで $group_id を追加
+        $storeData['group_id'] = $group_id;
 
         // トランザクションを開始する
         DB::beginTransaction();
         try {
             // 店舗の更新
-            $this->storeRepo->updateStore($store, $request->store);
+            $this->storeRepo->updateStore($store, $storeData);
 
             // 店舗詳細の作成
             $this->storeDetailRepo->createStoreDetail($store, $request->store_detail);
@@ -120,14 +138,19 @@ class StoreController extends Controller
             abort(500);
         }
 
-        return redirect()->route('group-dashboard.home')->with('message', $store->name . 'の編集が完了しました。');
+        return response()->json([
+            'status' => 'success',
+            'data' => [],
+            'messages' => ['店舗の編集が完了しました。']
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function archive(string $id)
     {
-        //
+        // もろもろ未実装
+        // 店舗の追加、削除は、契約変更を伴うため、stripe実装後に実装する
     }
 }

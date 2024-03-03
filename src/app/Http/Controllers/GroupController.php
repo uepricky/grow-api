@@ -22,7 +22,6 @@ class GroupController extends Controller
         // グループに属する店舗一覧を取得
         $stores = $this->storeRepo->getStoreListByGroup($group);
 
-        // return view("group_dashboard.home", compact('stores'));
         return response([
             'status' => 'success',
             'data' => $stores

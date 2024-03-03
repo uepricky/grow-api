@@ -15,7 +15,7 @@ class StoreRequest extends BaseFormRequest
     public function rules(): array
     {
         $storeRequestRules = [
-            'store.group_id' => 'required|integer',
+            // 'store.group_id' => 'required|integer',
 
             'store.name' => 'required|string|max:255',
             'store.image_path' => 'nullable|string|max:255',
@@ -36,8 +36,8 @@ class StoreRequest extends BaseFormRequest
     public function messages()
     {
         $storeRequestMessages = [
-            'store.group_id.required' => parent::UPDATE_SCREEN_MESSAGE,
-            'store.group_id.integer' => parent::UPDATE_SCREEN_MESSAGE,
+            // 'store.group_id.required' => parent::UPDATE_SCREEN_MESSAGE,
+            // 'store.group_id.integer' => parent::UPDATE_SCREEN_MESSAGE,
 
             'store.name.required' => '店舗名は必須項目です。',
             'store.name.max' => '店舗名は255文字以内で入力してください。',

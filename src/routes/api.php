@@ -43,6 +43,12 @@ use App\Http\Controllers\{
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [UserController::class, 'get'])->name('user.get');
 
+    // ユーザー
+    Route::prefix('/users')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('users.index');
+        Route::delete('/{id}', [UserController::class, 'archive'])->name('users.archive');
+    });
+
 
     Route::get('/group/stores', [GroupController::class, 'getStores']);
 
@@ -53,8 +59,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/sysPaymentMethods', [SysPaymentMethodController::class, 'getAll']);
 
     // ストアに属するメニューカテゴリ
-    Route::prefix('/store')->group(function () {
-        Route::get('/create', [StoreController::class, 'create'])->name('store.create');
+    Route::prefix('/stores')->group(function () {
+        Route::get('/', [StoreController::class, 'create'])->name('stores.create');
+        Route::post('/', [StoreController::class, 'store'])->name('stores.store');
+        Route::get('/{id}', [StoreController::class, 'get'])->name('stores.get');
+        Route::put('/{id}', [StoreController::class, 'update'])->name('stores.update');
+
+        Route::delete('/{id}', [StoreController::class, 'archive'])->name('stores.archive');
     });
 
     // メニューカテゴリー
