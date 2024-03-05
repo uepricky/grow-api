@@ -23,7 +23,8 @@ use App\Http\Controllers\{
     OrderController,
     BillPaymentController,
     ExtensionSetController,
-    ClosingStoreController
+    ClosingStoreController,
+    DeductionController,
 };
 
 /*
@@ -149,6 +150,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('/updateTardyAbsence', [AttendanceController::class, 'updateTardyAbsence'])->name('attendances.update-tardy-absence');
         Route::put('/updatePayrollPayment', [AttendanceController::class, 'updatePayrollPayment'])->name('attendances.update-payroll-payment');
     });
+
+    // 控除
+    Route::prefix('/deductions')->group(function () {
+        Route::post('/', [DeductionController::class, 'updateOrInsert']);
+    });
+
 
     // 伝票
     Route::prefix('/bills')->group(function () {
