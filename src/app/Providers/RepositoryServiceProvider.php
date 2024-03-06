@@ -96,11 +96,20 @@ use App\Repositories\BillPaymentRepository\{
     BillPaymentRepositoryInterface,
     BillPaymentRepository
 };
+use App\Repositories\DeductionRepository\{
+    DeductionRepositoryInterface,
+    DeductionRepository
+};
 
 class RepositoryServiceProvider extends ServiceProvider
 {
     public function register()
     {
+        $this->app->bind(
+            DeductionRepositoryInterface::class,
+            DeductionRepository::class
+        );
+
         $this->app->bind(
             BillPaymentRepositoryInterface::class,
             BillPaymentRepository::class

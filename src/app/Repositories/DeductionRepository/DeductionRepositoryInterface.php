@@ -13,6 +13,11 @@ interface DeductionRepositoryInterface
     /***********************************************************
      * Create系
      ***********************************************************/
+    /**
+     * 控除を登録
+     * @param array $data
+     */
+    public function insertDeductions(array $data);
 
     /***********************************************************
      * Read系
@@ -25,6 +30,11 @@ interface DeductionRepositoryInterface
     /***********************************************************
      * Delete系
      ***********************************************************/
+    /**
+     * 勤怠IDに紐づく控除を削除する
+     * @param int $attendanceId
+     */
+    public function deleteDeductions(int $attendanceId);
 
     /***********************************************************
      * その他

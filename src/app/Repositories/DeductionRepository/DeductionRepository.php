@@ -19,6 +19,14 @@ class DeductionRepository implements DeductionRepositoryInterface
     /***********************************************************
      * Create系
      ***********************************************************/
+    /**
+     * 控除を登録
+     * @param array $data
+     */
+    public function insertDeductions(array $data)
+    {
+        return $this->model->insert($data);
+    }
 
 
     /***********************************************************
@@ -34,7 +42,14 @@ class DeductionRepository implements DeductionRepositoryInterface
     /***********************************************************
      * Delete系
      ***********************************************************/
-
+    /**
+     * 勤怠IDに紐づく控除を削除する
+     * @param int $attendanceId
+     */
+    public function deleteDeductions(int $attendanceId)
+    {
+        return $this->model->where('attendance_id', $attendanceId)->delete();
+    }
 
     /***********************************************************
      * その他

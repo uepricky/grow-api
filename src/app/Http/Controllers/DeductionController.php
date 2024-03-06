@@ -12,6 +12,7 @@ use App\Repositories\{
     StoreRepository\StoreRepositoryInterface,
     BusinessDateRepository\BusinessDateRepositoryInterface,
     AttendanceRepository\AttendanceRepositoryInterface,
+    DeductionRepository\DeductionRepositoryInterface
 };
 
 class DeductionController extends Controller
@@ -21,6 +22,7 @@ class DeductionController extends Controller
         public readonly StoreRepositoryInterface $storeRepo,
         public readonly BusinessDateRepositoryInterface $businessDateRepo,
         public readonly AttendanceRepositoryInterface $attendanceRepo,
+        public readonly DeductionRepositoryInterface $deductionRepo,
     ) {
     }
 
@@ -32,12 +34,41 @@ class DeductionController extends Controller
         $targetUser = $this->userRepo->find($request->attendanceIdentifier['user_id']);
         $attendance = $this->attendanceRepo->getStoreUserAttendance($targetUser, $businessDate);
 
-        $deductionData = [
-            'attendance_id' => $attendance->id,
-            ...$request->deduction
-        ];
+        // TODO: attendanceがnullの場合は新規作成から
 
-        // 上記$deductionDataをupdateOrCreateここから
+        $deductionData = [];
+        foreach ($request->deductions as $deduction) {
+            $deductionData[] = [
+                'attendance_id' => $attendance->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+                ...$deduction
+            ];
+        }
+
+        // トランザクションを開始する
+        DB::beginTransaction();
+
+        try {
+            // 削除
+            $this->deductionRepo->deleteDeductions($attendance->id);
+
+            // 登録
+            $this->deductionRepo->insertDeductions($deductionData);
+
+            DB::commit();
+        } catch (\Throwable $e) {
+            // 例外が発生した場合はロールバックする
+            DB::rollback();
+
+            // ログの出力
+            CustomLog::error($e);
+
+            return response()->json([
+                'status' => 'failure',
+                'errors' => [$e->getMessage()]
+            ], 500);
+        }
 
         return response([
             'status' => 'success',
