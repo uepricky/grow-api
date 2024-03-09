@@ -26,8 +26,10 @@ class DeductionRequest extends BaseFormRequest
         return [
             'attendanceIdentifier.store_id' => 'required|numeric',
             'attendanceIdentifier.user_id' => 'required|numeric',
-            'deductions.*.name' => 'required|string',
-            'deductions.*.amount' => 'required|numeric',
+            // 'deductions.*.name' => 'required|string',
+            // 'deductions.*.amount' => 'required|numeric',
+            'deductions.*.name' => 'string',
+            'deductions.*.amount' => 'numeric',
         ];
     }
 
@@ -39,9 +41,9 @@ class DeductionRequest extends BaseFormRequest
             'attendanceIdentifier.user_id.required' => parent::UPDATE_SCREEN_MESSAGE,
             'attendanceIdentifier.user_id.numeric' => parent::UPDATE_SCREEN_MESSAGE,
 
-            'deductions.*.name.required' => parent::UPDATE_SCREEN_MESSAGE,
+            // 'deductions.*.name.required' => parent::UPDATE_SCREEN_MESSAGE,
             'deductions.*.name.string' => parent::UPDATE_SCREEN_MESSAGE,
-            'deductions.*.amount.required' => parent::UPDATE_SCREEN_MESSAGE,
+            // 'deductions.*.amount.required' => parent::UPDATE_SCREEN_MESSAGE,
             'deductions.*.amount.numeric' => parent::UPDATE_SCREEN_MESSAGE,
         ];
     }

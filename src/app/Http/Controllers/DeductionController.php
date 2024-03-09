@@ -34,22 +34,33 @@ class DeductionController extends Controller
         $targetUser = $this->userRepo->find($request->attendanceIdentifier['user_id']);
         $attendance = $this->attendanceRepo->getStoreUserAttendance($targetUser, $businessDate);
 
-        // TODO: attendanceがnullの場合は新規作成から
-
-        $deductionData = [];
-        foreach ($request->deductions as $deduction) {
-            $deductionData[] = [
-                'attendance_id' => $attendance->id,
-                'created_at' => now(),
-                'updated_at' => now(),
-                ...$deduction
-            ];
-        }
-
         // トランザクションを開始する
         DB::beginTransaction();
-
         try {
+            if (is_null($attendance)) {
+                $attendance = $this->attendanceRepo->createAttendance(
+                    [
+                        'user_id' => $targetUser->id,
+                        'business_date_id' => $businessDate->id
+                    ]
+                );
+            }
+
+            $deductionData = [];
+            foreach ($request->deductions as $deduction) {
+                if (
+                    isset($deduction['name']) &&
+                    isset($deduction['amount'])
+                ) {
+                    $deductionData[] = [
+                        'attendance_id' => $attendance->id,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                        ...$deduction
+                    ];
+                }
+            }
+
             // 削除
             $this->deductionRepo->deleteDeductions($attendance->id);
 

@@ -21,6 +21,15 @@ class AttendanceRepository implements AttendanceRepositoryInterface
     /***********************************************************
      * Create系
      ***********************************************************/
+    /**
+     * attendanceレコードを作成する
+     * @param array $data
+     * @return Attendance
+     */
+    public function createAttendance(array $data): Attendance
+    {
+        return $this->model->create($data);
+    }
 
     /***********************************************************
      * Read系

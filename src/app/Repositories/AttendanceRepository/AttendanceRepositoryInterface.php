@@ -14,6 +14,12 @@ interface AttendanceRepositoryInterface
     /***********************************************************
      * Create系
      ***********************************************************/
+    /**
+     * attendanceレコードを作成する
+     * @param array $data
+     * @return Attendance
+     */
+    public function createAttendance(array $data): Attendance;
 
     /***********************************************************
      * Read系
