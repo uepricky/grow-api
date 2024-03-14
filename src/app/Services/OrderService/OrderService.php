@@ -640,7 +640,7 @@ class OrderService implements OrderServiceInterface
         $oldUserIncentives = $this->userIncentiveRepo->getOrdersUserIncentives($ordersIds);
 
         // ユーザーインセンティブ金額変更なし
-        if($oldUserIncentives->first()->amount === $newUserIncentiveAmount){
+        if($oldUserIncentives->isEmpty() || $oldUserIncentives->first()->amount === $newUserIncentiveAmount){
             return;
         }
 
@@ -657,7 +657,4 @@ class OrderService implements OrderServiceInterface
             $this->userIncentiveRepo->softDeletes($oldUserIncentive);
         }
     }
-
-
-
 }

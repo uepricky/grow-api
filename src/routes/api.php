@@ -25,6 +25,7 @@ use App\Http\Controllers\{
     ExtensionSetController,
     ClosingStoreController,
     DeductionController,
+    BusinessDateController
 };
 
 /*
@@ -141,8 +142,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // 開店準備
     Route::prefix('/openingPreparation')->group(function () {
-        Route::get('/', [OpeningPreparationController::class, 'get']);
+        // Route::get('/', [OpeningPreparationController::class, 'get']);
         Route::post('/', [OpeningPreparationController::class, 'store']);
+    });
+
+    Route::prefix('/store/{storeId}')->group(function () {
+        // 営業日
+        Route::prefix('/businessDate')->group(function () {
+            Route::get('/', [BusinessDateController::class, 'getCurrentBusinessDate']);
+        });
     });
 
     // 勤怠
