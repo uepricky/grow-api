@@ -31,6 +31,14 @@ interface BusinessDateRepositoryInterface
     public function findBusinessDate(int $id): BusinessDate;
 
     /**
+     * 店舗と日付から営業日付を取得する
+     * @param int $storeId
+     * @param string $date YYYY-mm-dd
+     * @return ?BusinessDate
+     */
+    public function getBusinessDateByStoreIdAndDate(int $storeId, string $date): ?BusinessDate;
+
+    /**
      * 現在の営業日付を取得
      * @param Store $store
      * @return ?BusinessDate

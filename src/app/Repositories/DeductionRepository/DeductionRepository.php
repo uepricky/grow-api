@@ -6,7 +6,8 @@ use Illuminate\Support\Collection;
 use App\Repositories\DeductionRepository\DeductionRepositoryInterface;
 use App\Models\{
     Deduction,
-    Store
+    Store,
+    Attendance,
 };
 
 class DeductionRepository implements DeductionRepositoryInterface
@@ -32,6 +33,15 @@ class DeductionRepository implements DeductionRepositoryInterface
     /***********************************************************
      * Read系
      ***********************************************************/
+    /**
+     * Attendanceに紐づく控除一覧を取得する
+     * @param Attendance $attendance
+     * @return Collection
+     */
+    public function getAttendanceDeductions(Attendance $attendance): Collection
+    {
+        return $attendance->deductions;
+    }
 
 
     /***********************************************************

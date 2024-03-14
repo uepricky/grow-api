@@ -5,7 +5,8 @@ namespace App\Repositories\DeductionRepository;
 use Illuminate\Support\Collection;
 use App\Models\{
     Deduction,
-    Store
+    Store,
+    Attendance,
 };
 
 interface DeductionRepositoryInterface
@@ -22,6 +23,12 @@ interface DeductionRepositoryInterface
     /***********************************************************
      * Read系
      ***********************************************************/
+    /**
+     * Attendanceに紐づく控除一覧を取得する
+     * @param Attendance $attendance
+     * @return Collection
+     */
+    public function getAttendanceDeductions(Attendance $attendance): Collection;
 
     /***********************************************************
      * Update系

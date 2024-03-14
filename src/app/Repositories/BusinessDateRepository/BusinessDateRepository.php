@@ -46,6 +46,20 @@ class BusinessDateRepository implements BusinessDateRepositoryInterface
     }
 
     /**
+     * 店舗と日付から営業日付を取得する
+     * @param int $storeId
+     * @param string $date YYYY-mm-dd
+     * @return ?BusinessDate
+     */
+    public function getBusinessDateByStoreIdAndDate(int $storeId, string $date): ?BusinessDate
+    {
+        return $this->model
+            ->where('store_id', $storeId)
+            ->where('business_date', $date)
+            ->first();
+    }
+
+    /**
      * 現在の営業日付を取得
      * @param Store $store
      * @return ?BusinessDate

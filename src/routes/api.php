@@ -52,6 +52,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/{id}', [UserController::class, 'get'])->name('users.get');
         Route::put('/{id}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/{id}', [UserController::class, 'archive'])->name('users.archive');
+
+        Route::get('/report/from/{businessDateFrom}/to/{businessDateTo}', [UserController::class, 'reportIndex'])->name('usersReport.index');
     });
 
     // グループ
@@ -154,7 +156,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // 控除
     Route::prefix('/deductions')->group(function () {
         Route::post('/', [DeductionController::class, 'updateOrInsert']);
+        Route::get('businessDate/{bisiness_date}/store/{store_id}/user/{user_id}', [DeductionController::class, 'get']);
     });
+
 
 
     // 伝票
