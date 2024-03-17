@@ -124,9 +124,7 @@ class DeductionController extends Controller
         return response([
             'status' => 'success',
             'message' => '取得しました。',
-            'data' => [
-                $deductions
-            ]
+            'data' => $deductions
         ], 200);
     }
 }
