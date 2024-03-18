@@ -20,4 +20,9 @@ class BusinessDate extends Model
     {
         return $this->hasOne(CashRegister::class);
     }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
 }

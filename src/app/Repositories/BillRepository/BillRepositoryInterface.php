@@ -63,6 +63,11 @@ interface BillRepositoryInterface
      */
     public function getBusinessDateBillsNotDeparture(Store $store, BusinessDate $businessDate): Collection;
 
+    /**
+     *
+     */
+    public function getYearMonthStoreBills(int $storeId, string $yearMonth): Collection;
+
     /***********************************************************
      * Update系
      ***********************************************************/
