@@ -36,6 +36,7 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         'opening_time' => '19:00',
         'closing_time' => '24:00',
         'working_time_unit_id' => 4,
+        'subscription_id' => null
     ];
 
     const DUMMY_STORE_DETAIL = [
