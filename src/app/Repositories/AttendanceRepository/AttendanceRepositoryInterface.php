@@ -6,6 +6,7 @@ use App\Models\{
     Attendance,
     BusinessDate,
     User,
+    Store
 };
 use Illuminate\Support\Collection;
 
@@ -39,6 +40,15 @@ interface AttendanceRepositoryInterface
      * @return Collection
      */
     public function getBusinessDateAttendances(BusinessDate $businessDate): Collection;
+
+    /**
+     * @param Store $store
+     * @param string $yearMonth
+     * @param int $storeRoleId
+     *
+     * @return Collection
+     */
+    public function getSpecifiedPeriodAttendances(Store $store, string $yearMonth, int $storeRoleId): Collection;
 
     /***********************************************************
      * Update系

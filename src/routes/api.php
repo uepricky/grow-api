@@ -26,7 +26,9 @@ use App\Http\Controllers\{
     ClosingStoreController,
     DeductionController,
     BusinessDateController,
-    StoreReportController
+    StoreReportController,
+    StoreRoleController,
+    UserIncentiveController
 };
 
 /*
@@ -153,9 +155,29 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/', [BusinessDateController::class, 'getCurrentBusinessDate']);
         });
 
+        // ストアロール
+        Route::prefix('/storeRoles')->group(function () {
+            Route::get('/', [StoreRoleController::class, 'getAll']);
+        });
+
+        // 店舗に属するユーザー一覧
+        Route::prefix('/storeUsers')->group(function () {
+            Route::get('/{storeRoleId}', [UserController::class, 'getStoreRoleUsers']);
+        });
+
         // 店舗レポート
         Route::prefix('/storeReports')->group(function () {
             Route::get('/{yearMonth}', [StoreReportController::class, 'get']);
+        });
+
+        // ユーザーインセンティブ
+        Route::prefix('/userIncentives')->group(function () {
+            Route::get('/{yearMonth}', [UserIncentiveController::class, 'get']);
+        });
+
+        // 勤怠情報
+        Route::prefix('/attendances')->group(function () {
+            Route::get('/{yearMonth}/{storeRoleId}', [AttendanceController::class, 'getSpecifiedPeriodAttendances']);
         });
     });
 

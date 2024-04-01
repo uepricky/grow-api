@@ -7,7 +7,8 @@ use Illuminate\Support\{
 };
 use App\Models\{
     UserIncentive,
-    Order
+    Order,
+    Store
 };
 
 interface UserIncentiveRepositoryInterface
@@ -38,6 +39,14 @@ interface UserIncentiveRepositoryInterface
      * @return Collection
      */
     public function getOrdersUserIncentives(array $orderIds): Collection;
+
+    /**
+     * 指定期間に紐づくユーザーインセンティブ取得
+     * @param Store $store
+     * @param string $yearMonth
+     * @return Collection
+     */
+    public function getSelectedDateUserInsentives(Store $store, string $yearMonth): Collection;
 
 
     /***********************************************************

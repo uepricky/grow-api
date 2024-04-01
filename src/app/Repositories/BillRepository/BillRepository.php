@@ -152,7 +152,13 @@ class BillRepository implements BillRepositoryInterface
                     })
                     ->with([
                         'numberOfCustomer',
-                        'businessDate.attendances'
+                        'businessDate.attendances',
+                        'itemizedOrders.orders.menu.setMenu',
+                        'itemizedOrders.orders.menu.menuCategory',
+                        'itemizedOrders.orders.userIncentive.user',
+                        'itemizedOrders.orders.modifiedOrders' => function($query) {
+                            $query->latest()->limit(1);
+                        },
                     ])
                     ->get()
                     ->groupBy('businessDate.business_date');

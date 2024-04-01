@@ -6,7 +6,9 @@ use App\Models\{
     Attendance,
     BusinessDate,
     User,
+    Store
 };
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 class AttendanceRepository implements AttendanceRepositoryInterface
@@ -56,6 +58,34 @@ class AttendanceRepository implements AttendanceRepositoryInterface
     public function getBusinessDateAttendances(BusinessDate $businessDate): Collection
     {
         return $this->model->where('business_date_id', $businessDate->id)->get();
+    }
+
+    /**
+     * @param Store $store
+     * @param string $yearMonth
+     * @param int $storeRoleId
+     *
+     * @return Collection
+     */
+    public function getSpecifiedPeriodAttendances(Store $store, string $yearMonth, int $storeRoleId): Collection
+    {
+        $startOfMonth = date("Y-m-01", strtotime($yearMonth));
+        $endOfMonth = date("Y-m-t", strtotime($yearMonth));
+
+        return $this->model->whereHas('businessDate', function ($query) use ($store, $startOfMonth, $endOfMonth) {
+            $query->where('store_id', $store->id);
+            $query->whereBetween('business_date', [
+                $startOfMonth,
+                $endOfMonth
+            ]);
+        })
+        ->whereHas('user', function ($query) use ($storeRoleId) {
+            $query->whereHas('storeRoles', function ($storeRoleQuery) use ($storeRoleId) {
+                $storeRoleQuery->where('store_role_id', $storeRoleId);
+            });
+        })
+        ->whereNotNull('working_end_at')
+        ->get();
     }
 
     /***********************************************************
