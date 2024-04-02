@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Stripe\Subscription;
 use App\Repositories\{
     StoreRepository\StoreRepositoryInterface
 };
@@ -48,12 +49,17 @@ class SubscriptionController extends Controller
     {
         $store = $this->storeRepo->findStore($storeId);
 
-        $subscriptionStatus = $store->subscription();
-
         return response()->json([
             'status' => 'success',
-            'data' => $subscriptionStatus
+            'data' => $store->subscription
         ], 200);
+
+        // $subscriptionStatus = $store->subscription;
+
+        // return response()->json([
+        //     'status' => 'success',
+        //     'data' => $subscriptionStatus
+        // ], 200);
 
 
         // try {
