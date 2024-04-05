@@ -31,12 +31,4 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    // 以下はcachier.phpに記載すべきかも
-    'stripe' => [
-        'pb_key' => env('STRIPE_KEY'),
-        'st_key' => env('STRIPE_SECRET'),
-        // 商品
-        'basic_plan_id' => env('STRIPE_BASIC_ID'),
-    ],
-
 ];
