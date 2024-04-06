@@ -1,4 +1,3 @@
 .idea
 .vscode
 .env
-.infra/docker/nginx/ssl/certs/*

@@ -25,8 +25,7 @@ use App\Http\Controllers\{
     ExtensionSetController,
     ClosingStoreController,
     DeductionController,
-    BusinessDateController,
-    SubscriptionController
+    BusinessDateController
 };
 
 /*
@@ -57,14 +56,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::get('/report/from/{businessDateFrom}/to/{businessDateTo}', [UserController::class, 'reportIndex'])->name('usersReport.index');
     });
-
-    // サブスクリプション
-    Route::prefix('/subscriptions')->group(function () {
-        Route::get('/setupIntent', [SubscriptionController::class, 'getSetupIntent']);
-        Route::get('/paymentMethod', [SubscriptionController::class, 'getPaymentMethod']);
-        Route::post('/', [SubscriptionController::class, 'create']);
-    });
-
 
     // グループ
     Route::prefix('/groups')->group(function () {
