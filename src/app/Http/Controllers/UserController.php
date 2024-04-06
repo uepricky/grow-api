@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreIdRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
@@ -190,5 +191,22 @@ class UserController extends Controller
             'status' => 'success',
             'message' => $user->display_name . 'の削除が完了しました。'
         ], 200);
+    }
+
+    public function getUserPermissions(int $userId, StoreIdRequest $storeIdRequest)
+    {
+        // 契約者
+        $user = $this->userRepo->find($userId);
+        if (!is_null($user->contractUser)) {
+            // getAllPermissionsのようなメソッドで全権限をreturnする
+        }
+
+        // グループでの権限
+
+
+        // ストアでの権限
+        if (!is_null($storeIdRequest->storeId)) {
+
+        }
     }
 }

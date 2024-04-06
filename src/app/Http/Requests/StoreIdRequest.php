@@ -25,7 +25,7 @@ class StoreIdRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'storeId' => 'required|integer'
+            'storeId' => 'nullable|integer'
         ];
     }
 
