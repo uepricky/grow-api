@@ -25,7 +25,8 @@ use App\Http\Controllers\{
     ExtensionSetController,
     ClosingStoreController,
     DeductionController,
-    BusinessDateController
+    BusinessDateController,
+    SubscriptionController,
 };
 
 /*
@@ -76,14 +77,23 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // システム支払いカテゴリ
     Route::get('/sysPaymentMethods', [SysPaymentMethodController::class, 'getAll']);
 
-    // ストアに属するメニューカテゴリ
+    // 店舗
     Route::prefix('/stores')->group(function () {
+        // 以下のgetメソッドおかしいから、利用箇所確認して修正
         Route::get('/', [StoreController::class, 'create'])->name('stores.create');
         Route::post('/', [StoreController::class, 'store'])->name('stores.store');
         Route::get('/{id}', [StoreController::class, 'get'])->name('stores.get');
         Route::put('/{id}', [StoreController::class, 'update'])->name('stores.update');
 
         Route::delete('/{id}', [StoreController::class, 'archive'])->name('stores.archive');
+
+        // 特定の店舗に属する各種情報についてAPI
+        Route::prefix('/{storeId}')->group(function () {
+            // サブスクリプション
+            Route::prefix('/subscriptions')->group(function () {
+                Route::get('/', [SubscriptionController::class, 'getSubscriptionStatus']);
+            });
+        });
     });
 
     // メニューカテゴリー
