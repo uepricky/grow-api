@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Cashier\Subscription;
 
 class Store extends Model
 {
@@ -20,7 +19,6 @@ class Store extends Model
         'opening_time',
         'closing_time',
         'working_time_unit_id',
-        'subscription_id',
     ];
 
     public function storeDetails()
@@ -36,11 +34,6 @@ class Store extends Model
     public function groups()
     {
         return $this->belongsTo(Group::class);
-    }
-
-    public function subscription()
-    {
-        return $this->belongsTo(Subscription::class);
     }
 
     public function users()
