@@ -56,12 +56,6 @@ class SubscriptionController extends Controller
 
         // $subscriptionStatus = $store->subscription;
 
-        // return response()->json([
-        //     'status' => 'success',
-        //     'data' => $subscriptionStatus
-        // ], 200);
-
-
         // try {
         //     // ストアインスタンスからサブスクリプションを取得する
         //     $subscription = $store->subscription();
@@ -95,5 +89,13 @@ class SubscriptionController extends Controller
         //         'error' => $exception->getMessage()
         //     ], 500);
         // }
+    }
+
+    function getPaymentMethod()
+    {
+        return response()->json([
+            'status' => 'success',
+            'data' => auth()->user()
+        ], 200);
     }
 }
