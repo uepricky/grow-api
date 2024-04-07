@@ -12,6 +12,7 @@ use App\Repositories\{
     UserRepository\UserRepositoryInterface,
     RoleRepository\RoleRepositoryInterface,
     GroupRepository\GroupRepositoryInterface,
+    GroupRoleRepository\GroupRoleRepositoryInterface,
 };
 use App\Services\{
     RoleService\RoleServiceInterface
@@ -25,6 +26,7 @@ class UserController extends Controller
         public readonly RoleRepositoryInterface $roleRepo,
         public readonly GroupRepositoryInterface $groupRepo,
         public readonly RoleServiceInterface $roleServ,
+        public readonly GroupRoleRepositoryInterface $groupRoleRepo,
     ) {
     }
 
@@ -68,11 +70,13 @@ class UserController extends Controller
         // ユーザー一覧取得
         $group = auth()->user()->groups->first();
         $usersWithoutGroupRole = $this->userRepo->listGroupUsers($group);
+        // $users = $this->userRepo->listGroupUsers($group);
 
         // グループロール取得しuserに付与
+        // TODO: リファクタ
         $users = [];
         foreach ($usersWithoutGroupRole as $userWithoutGroupRole) {
-            $userWithoutGroupRole['group_role'] = $this->roleRepo->getUserGroupRole($userWithoutGroupRole);
+            $userWithoutGroupRole['group_role'] = $this->groupRoleRepo->getUserGroupRoles($userWithoutGroupRole);
             $users[] = $userWithoutGroupRole;
         }
 

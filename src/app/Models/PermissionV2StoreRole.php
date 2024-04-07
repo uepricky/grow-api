@@ -13,4 +13,9 @@ class PermissionV2StoreRole extends Model
         'store_id',
         'name',
     ];
+
+    public function permissions()
+    {
+        return $this->belongsToMany(PermissionV2Permission::class, 'permission_v2_store_role_permission')->withTimestamps();
+    }
 }

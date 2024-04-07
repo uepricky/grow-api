@@ -4,14 +4,15 @@ namespace App\Repositories\GroupRoleRepository;
 
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\{
-    PermissionV2GroupRole
+    PermissionV2GroupRole,
+    User
 };
 
 interface GroupRoleRepositoryInterface
 {
     /***********************************************************
-    * Create系
-    ***********************************************************/
+     * Create系
+     ***********************************************************/
     /**
      * @param array $data
      *
@@ -22,6 +23,12 @@ interface GroupRoleRepositoryInterface
     /***********************************************************
      * Read系
      ***********************************************************/
+    /**
+     * ユーザーの属するロール一覧を取得する
+     * @param User $user
+     * @return Collection
+     */
+    public function getUserGroupRoles(User $user): Collection;
 
     /***********************************************************
      * Update系

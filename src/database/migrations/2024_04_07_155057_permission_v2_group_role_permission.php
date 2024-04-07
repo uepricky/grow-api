@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('permission_v2_group_role_permission', function (Blueprint $table) {
             $table->id();
             $table->foreignId('permission_v2_permission_id')->constrained('permission_v2_permissions')->cascadeOnDelete()->comment('パーミッションID');
-            $table->foreignId('permission_v2_group_roles_id')->constrained('permission_v2_group_roles')->cascadeOnDelete()->comment('グループロールID');
+            $table->foreignId('permission_v2_group_role_id')->constrained('permission_v2_group_roles')->cascadeOnDelete()->comment('グループロールID');
             $table->timestamps();
         });
     }

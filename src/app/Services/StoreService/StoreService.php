@@ -31,22 +31,22 @@ class StoreService implements StoreServiceInterface
         ]
     ];
 
-    const DEFAULT_STORE_ROLES = [
-        'MANAGER' => [
-            'name' => 'マネージャー',
-            'permissionIds' => [
-                PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
-            ]
-        ],
-        'STAFF' => [
-            'name' => 'スタッフ',
-            'permissionIds' => []
-        ],
-        'CAST' => [
-            'name' => 'キャスト',
-            'permissionIds' => []
-        ],
-    ];
+    // const DEFAULT_STORE_ROLES = [
+    //     'MANAGER' => [
+    //         'name' => 'マネージャー',
+    //         'permissionIds' => [
+    //             PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+    //         ]
+    //     ],
+    //     'STAFF' => [
+    //         'name' => 'スタッフ',
+    //         'permissionIds' => []
+    //     ],
+    //     'CAST' => [
+    //         'name' => 'キャスト',
+    //         'permissionIds' => []
+    //     ],
+    // ];
 
     public function __construct(
         public readonly StoreRepositoryInterface $storeRepo,

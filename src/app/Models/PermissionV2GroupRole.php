@@ -20,6 +20,6 @@ class PermissionV2GroupRole extends Model
 
     public function permissions()
     {
-        return $this->belongsToMany(PermissionV2Permission::class);
+        return $this->belongsToMany(PermissionV2Permission::class, 'permission_v2_group_role_permission')->withTimestamps();
     }
 }

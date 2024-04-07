@@ -21,11 +21,11 @@ class PermissionV2Permission extends Model
 
     public function groupRoles()
     {
-        return $this->belongsToMany(PermissionV2GroupRole::class);
+        return $this->belongsToMany(PermissionV2GroupRole::class, 'permission_v2_group_role_permission');
     }
 
     public function storeRoles()
     {
-        return $this->belongsToMany(PermissionV2StoreRole::class);
+        return $this->belongsToMany(PermissionV2StoreRole::class, 'permission_v2_store_role_permission');
     }
 }
