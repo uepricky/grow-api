@@ -13,4 +13,13 @@ class PermissionV2GroupRole extends Model
         'group_id',
         'name',
     ];
+
+    const DEFAULT_GROUP_ROLES = [
+        "ADMIN" => ['name' => '管理者']
+    ];
+
+    public function permissions()
+    {
+        return $this->belongsToMany(PermissionV2Permission::class);
+    }
 }

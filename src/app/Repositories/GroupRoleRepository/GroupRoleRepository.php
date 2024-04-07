@@ -1,0 +1,55 @@
+<?php
+
+namespace App\Repositories\GroupRoleRepository;
+
+use Illuminate\Database\Eloquent\Collection;
+use App\Models\{
+    PermissionV2GroupRole
+};
+
+
+class GroupRoleRepository implements GroupRoleRepositoryInterface
+{
+    public function __construct(PermissionV2GroupRole $model)
+    {
+        $this->model = $model;
+    }
+
+    /***********************************************************
+     * Create系
+     ***********************************************************/
+    /**
+     * @param array $data
+     *
+     * @return PermissionV2GroupRole
+     */
+    public function createGroupRole(array $data): PermissionV2GroupRole
+    {
+        return $this->model->create($data);
+    }
+
+    /***********************************************************
+     * Read系
+     ***********************************************************/
+
+    /***********************************************************
+     * Update系
+     ***********************************************************/
+
+    /***********************************************************
+     * Delete系
+     ***********************************************************/
+
+    /***********************************************************
+     * その他
+     ***********************************************************/
+    /**
+     *　権限をグループロールにアタッチする
+     *  @param PermissionV2GroupRole $groupRole
+     *  @param array $permissionIds
+     */
+    public function attachPermissionsToGroupRole(PermissionV2GroupRole $groupRole, array $permissionIds): void
+    {
+        $groupRole->permissions()->attach($permissionIds);
+    }
+}

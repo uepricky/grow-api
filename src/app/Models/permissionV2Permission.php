@@ -18,4 +18,14 @@ class PermissionV2Permission extends Model
         "OPERATION_UNDER_GROUP_DASHBOARD" => ['id' => 1, 'description' => 'グループダッシュボード配下の操作ができる'],
         "OPERATION_UNDER_STORE_DASHBOARD" => ['id' => 2, 'description' => 'ストアダッシュボード配下の操作ができる'],
     ];
+
+    public function groupRoles()
+    {
+        return $this->belongsToMany(PermissionV2GroupRole::class);
+    }
+
+    public function storeRoles()
+    {
+        return $this->belongsToMany(PermissionV2StoreRole::class);
+    }
 }

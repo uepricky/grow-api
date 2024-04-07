@@ -205,4 +205,16 @@ class UserRepository implements UserRepositoryInterface
     {
         $user->stores()->attach($storeIds);
     }
+
+    /**
+     * ユーザーにストアロールを所属させる
+     * @param User $user
+     * @param array $storeRoleIds
+     *
+     * @return void
+     */
+    public function attachStoreRolesToUser(User $user, array $storeRoleIds)
+    {
+        $user->permissionV2StoreRoles()->attach($storeRoleIds);
+    }
 }

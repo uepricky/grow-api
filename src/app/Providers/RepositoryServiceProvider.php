@@ -101,10 +101,30 @@ use App\Repositories\DeductionRepository\{
     DeductionRepository
 };
 
+use App\Repositories\GroupRoleRepository\{
+    GroupRoleRepository,
+    GroupRoleRepositoryInterface
+};
+
+use App\Repositories\StoreRoleRepository\{
+    StoreRoleRepository,
+    StoreRoleRepositoryInterface
+};
+
 class RepositoryServiceProvider extends ServiceProvider
 {
     public function register()
     {
+        $this->app->bind(
+            StoreRoleRepositoryInterface::class,
+            StoreRoleRepository::class
+        );
+
+        $this->app->bind(
+            GroupRoleRepositoryInterface::class,
+            GroupRoleRepository::class
+        );
+
         $this->app->bind(
             DeductionRepositoryInterface::class,
             DeductionRepository::class

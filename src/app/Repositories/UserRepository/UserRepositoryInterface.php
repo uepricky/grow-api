@@ -134,4 +134,13 @@ interface UserRepositoryInterface
      * @return void
      */
     public function attachToStores(User $user, array $storeIds): void;
+
+    /**
+     * ユーザーにストアロールを所属させる
+     * @param User $user
+     * @param array $storeRoleIds
+     *
+     * @return void
+     */
+    public function attachStoreRolesToUser(User $user, array $storeRoleIds);
 }
