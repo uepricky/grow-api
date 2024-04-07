@@ -54,7 +54,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/{id}', [UserController::class, 'get'])->name('users.get');
         Route::put('/{id}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/{id}', [UserController::class, 'archive'])->name('users.archive');
-
+        Route::get('/{id}/permissions', [UserController::class, 'getUserPermissions'])->name('users.getUserPermissions');
         Route::get('/report/from/{businessDateFrom}/to/{businessDateTo}', [UserController::class, 'reportIndex'])->name('usersReport.index');
     });
 
