@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class permissionV2GroupRole extends Model
+class PermissionV2GroupRole extends Model
 {
     use HasFactory;
 

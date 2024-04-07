@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             RolesTableSeeder::class,
             SysMenuCategorySeeder::class,
             SysPaymentMethodCategorySeeder::class,
+            PermissionV2PermissionSeeder::class,
         ]);
 
     }
