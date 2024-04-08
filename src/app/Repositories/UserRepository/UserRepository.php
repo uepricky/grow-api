@@ -241,4 +241,16 @@ class UserRepository implements UserRepositoryInterface
     {
         $user->permissionV2GroupRoles()->sync($groupRoleIds);
     }
+
+    /**
+     * グループロールを所属させる
+     * @param User $user
+     * @param array $groupRoleIds
+     *
+     * @return void
+     */
+    public function attachGroupRolesToUser(User $user, array $groupRoleIds)
+    {
+        $user->permissionV2GroupRoles()->attach($groupRoleIds);
+    }
 }

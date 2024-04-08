@@ -51,7 +51,7 @@ class UserController extends Controller
 
         // ユーザーのデフォルトグループロール一覧取得
         $groupRoles = $this->groupRoleRepo->getUserGroupRoles($user);
-        // $filteredGroupRole = $groupRole->pivot->group_role_id;
+        $filteredGroupRole = $groupRoles->pluck('id');
 
         // ユーザーのデフォルトストアロール一覧取得
         $userStoreRoles = $this->storeRoleRepo->getUserStoreRoles($user);
@@ -62,7 +62,7 @@ class UserController extends Controller
             'data' => [
                 'user' => $user,
                 'generalUser' => $generalUser,
-                'groupRoles' => $groupRoles,
+                'groupRoles' => $filteredGroupRole,
                 'storesRoles' => $filteredStoreRoleIds
             ]
         ], 200);
@@ -110,22 +110,18 @@ class UserController extends Controller
             $this->userRepo->attachToGroup($user, $group);
 
             // ユーザーとグループロールの紐付け
-            $this->roleRepo->attachGroupRolesToUser($user, [$request->group_role]);
+            $this->userRepo->attachGroupRolesToUser($user, $request->group_roles);
 
-            if (isset($request->store_role)) {
-                // ユーザーを店舗に所属させる
-                $storeIds = array_keys($request->input('store_role'));
-                $this->userRepo->attachToStores($user, $storeIds);
-
+            if (isset($request->stores_roles)) {
                 // ユーザーとストアロールの紐付け
                 $storeRoleIds = [];
-                if ($request->has('store_role')) {
-                    $storeRoleIds = collect($request->input('store_role'))
+                if ($request->has('stores_roles')) {
+                    $storeRoleIds = collect($request->input('stores_roles'))
                         ->flatten()
                         ->all();
                 }
 
-                $this->roleRepo->attachStoreRolesToUser($user, $storeRoleIds);
+                $this->userRepo->attachStoreRolesToUser($user, $storeRoleIds);
             }
 
 

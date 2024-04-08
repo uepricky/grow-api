@@ -161,4 +161,13 @@ interface UserRepositoryInterface
      * @return void
      */
     public function syncGroupRolesToUser(User $user, array $groupRoleIds);
+
+    /**
+     * グループロールを所属させる
+     * @param User $user
+     * @param array $groupRoleIds
+     *
+     * @return void
+     */
+    public function attachGroupRolesToUser(User $user, array $groupRoleIds);
 }
