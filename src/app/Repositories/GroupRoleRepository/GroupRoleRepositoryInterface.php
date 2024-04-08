@@ -30,6 +30,13 @@ interface GroupRoleRepositoryInterface
      */
     public function getUserGroupRoles(User $user): Collection;
 
+    /**
+     * グループロール一覧を取得する
+     * @param int $groupId
+     * @return Collection
+     */
+    public function getGroupRoles(int $groupId): Collection;
+
     /***********************************************************
      * Update系
      ***********************************************************/

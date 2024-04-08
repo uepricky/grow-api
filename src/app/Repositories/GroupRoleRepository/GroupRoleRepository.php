@@ -42,6 +42,16 @@ class GroupRoleRepository implements GroupRoleRepositoryInterface
         return $user->permissionV2GroupRoles;
     }
 
+    /**
+     * グループロール一覧を取得する
+     * @param int $groupId
+     * @return Collection
+     */
+    public function getGroupRoles(int $groupId): Collection
+    {
+        return $this->model->where('group_id', $groupId)->get();
+    }
+
     /***********************************************************
      * Update系
      ***********************************************************/

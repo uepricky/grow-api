@@ -217,4 +217,28 @@ class UserRepository implements UserRepositoryInterface
     {
         $user->permissionV2StoreRoles()->attach($storeRoleIds);
     }
+
+    /**
+     * ユーザーとストアロールを同期する
+     * @param User $user
+     * @param array $storeRoleIds
+     *
+     * @return void
+     */
+    public function syncStoreRolesToUser(User $user, array $storeRoleIds)
+    {
+        $user->permissionV2StoreRoles()->sync($storeRoleIds);
+    }
+
+    /**
+     * ユーザーとグループロールを同期する
+     * @param User $user
+     * @param array $groupRoleIds
+     *
+     * @return void
+     */
+    public function syncGroupRolesToUser(User $user, array $groupRoleIds)
+    {
+        $user->permissionV2GroupRoles()->sync($groupRoleIds);
+    }
 }

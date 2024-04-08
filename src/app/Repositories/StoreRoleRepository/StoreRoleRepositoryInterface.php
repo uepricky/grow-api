@@ -4,7 +4,8 @@ namespace App\Repositories\StoreRoleRepository;
 
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\{
-    PermissionV2StoreRole
+    PermissionV2StoreRole,
+    User
 };
 
 interface StoreRoleRepositoryInterface
@@ -28,6 +29,20 @@ interface StoreRoleRepositoryInterface
      * @return PermissionV2StoreRole
      */
     public function getStoreRoleByName(int $storeId, string $storeRoleName): PermissionV2StoreRole;
+
+    /**
+     * ストアロール一覧を取得する
+     * @param int $storeId
+     * @return Collection
+     */
+    public function getStoreRoles(int $storeId): Collection;
+
+    /**
+     * ユーザーに紐づくストアロール一覧を取得する
+     * @param User $user
+     * @return Collection
+     */
+    public function getUserStoreRoles(User $user): Collection;
 
     /***********************************************************
      * Update系

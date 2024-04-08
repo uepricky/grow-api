@@ -4,7 +4,8 @@ namespace App\Repositories\StoreRoleRepository;
 
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\{
-    PermissionV2StoreRole
+    PermissionV2StoreRole,
+    User
 };
 
 
@@ -39,6 +40,26 @@ class StoreRoleRepository implements StoreRoleRepositoryInterface
     public function getStoreRoleByName(int $storeId, string $storeRoleName): PermissionV2StoreRole
     {
         return $this->model->where('store_id', $storeId)->where('name', $storeRoleName)->first();
+    }
+
+    /**
+     * ストアロール一覧を取得する
+     * @param int $storeId
+     * @return Collection
+     */
+    public function getStoreRoles(int $storeId): Collection
+    {
+        return $this->model->where('store_id', $storeId)->get();
+    }
+
+    /**
+     * ユーザーに紐づくストアロール一覧を取得する
+     * @param User $user
+     * @return Collection
+     */
+    public function getUserStoreRoles(User $user): Collection
+    {
+        return $user->permissionV2StoreRoles;
     }
 
     /***********************************************************

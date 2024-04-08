@@ -143,4 +143,22 @@ interface UserRepositoryInterface
      * @return void
      */
     public function attachStoreRolesToUser(User $user, array $storeRoleIds);
+
+    /**
+     * ユーザーとストアロールを同期する
+     * @param User $user
+     * @param array $storeRoleIds
+     *
+     * @return void
+     */
+    public function syncStoreRolesToUser(User $user, array $storeRoleIds);
+
+    /**
+     * ユーザーとグループロールを同期する
+     * @param User $user
+     * @param array $groupRoleIds
+     *
+     * @return void
+     */
+    public function syncGroupRolesToUser(User $user, array $groupRoleIds);
 }
