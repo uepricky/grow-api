@@ -3,16 +3,18 @@
 namespace App\Repositories\StoreRoleRepository;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\{
     PermissionV2StoreRole,
-    User
+    User,
+    Store
 };
 
 interface StoreRoleRepositoryInterface
 {
     /***********************************************************
-    * Create系
-    ***********************************************************/
+     * Create系
+     ***********************************************************/
     /**
      * @param array $data
      *
@@ -43,6 +45,21 @@ interface StoreRoleRepositoryInterface
      * @return Collection
      */
     public function getUserStoreRoles(User $user): Collection;
+
+    /**
+     * ユーザーの指定された店舗のロール一覧を取得する
+     * @param Authenticatable $user
+     * @param Store $store
+     * @return Collection
+     */
+    public function getUserStoreStoreRoles(Authenticatable $user, Store $store): Collection;
+
+    /**
+     * ストアロールIDの保有するパーミッション一覧を取得する
+     * @param int $id
+     * @return Collection
+     */
+    public function getStoreRolePermissions(int $id): Collection;
 
     /***********************************************************
      * Update系

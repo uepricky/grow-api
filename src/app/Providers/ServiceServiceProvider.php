@@ -19,6 +19,8 @@ use App\Services\{
     OrderService\OrderService,
     StoreSalesService\StoreSalesServiceInterface,
     StoreSalesService\StoreSalesService,
+    UserService\UserServiceInterface,
+    UserService\UserService,
 };
 
 class ServiceServiceProvider extends ServiceProvider
@@ -28,6 +30,11 @@ class ServiceServiceProvider extends ServiceProvider
         $this->app->bind(
             StoreSalesServiceInterface::class,
             StoreSalesService::class
+        );
+
+        $this->app->bind(
+            UserServiceInterface::class,
+            UserService::class
         );
 
         $this->app->bind(
