@@ -10,7 +10,10 @@ use App\Http\Requests\Attendance\{
 use App\Http\Requests\StoreIdRequest;
 use Illuminate\Support\Facades\DB;
 use App\Log\CustomLog;
-use App\Models\Attendance;
+use App\Models\{
+    Attendance,
+    PermissionV2Permission
+};
 use Illuminate\Http\Request;
 use App\Repositories\{
     UserRepository\UserRepositoryInterface,
@@ -22,6 +25,7 @@ use App\Repositories\{
 use App\Services\{
     AttendanceService\AttendanceServiceInterface,
 };
+use App\Services\UserService\UserServiceInterface;
 use Illuminate\Auth\Access\AuthorizationException;
 
 
@@ -35,6 +39,7 @@ class AttendanceController extends Controller
         public readonly StoreRepositoryInterface $storeRepo,
 
         public readonly AttendanceServiceInterface $attendanceServ,
+        public readonly UserServiceInterface $userServ,
     ) {
     }
 
@@ -49,10 +54,13 @@ class AttendanceController extends Controller
             ], 404);
         }
 
-        // Policy確認
-        try {
-            $this->authorize('viewAny', [Attendance::class, $store]);
-        } catch (AuthorizationException $e) {
+        // 権限チェック
+        $hasPermission = $this->userServ->hasStorePermission(
+            $request->user(),
+            $store,
+            PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+        );
+        if (!$hasPermission) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['この操作を実行する権限がありません']
@@ -94,10 +102,13 @@ class AttendanceController extends Controller
             ], 404);
         }
 
-        // Policy確認
-        try {
-            $this->authorize('update', [Attendance::class, $store, $request->store_id]);
-        } catch (AuthorizationException $e) {
+        // 権限チェック
+        $hasPermission = $this->userServ->hasStorePermission(
+            $request->user(),
+            $store,
+            PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+        );
+        if (!$hasPermission) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['この操作を実行する権限がありません']
@@ -140,10 +151,13 @@ class AttendanceController extends Controller
             ], 404);
         }
 
-        // Policy確認
-        try {
-            $this->authorize('update', [Attendance::class, $store, $request->store_id]);
-        } catch (AuthorizationException $e) {
+        // 権限チェック
+        $hasPermission = $this->userServ->hasStorePermission(
+            $request->user(),
+            $store,
+            PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+        );
+        if (!$hasPermission) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['この操作を実行する権限がありません']
@@ -186,10 +200,13 @@ class AttendanceController extends Controller
             ], 404);
         }
 
-        // Policy確認
-        try {
-            $this->authorize('update', [Attendance::class, $store, $request->store_id]);
-        } catch (AuthorizationException $e) {
+        // 権限チェック
+        $hasPermission = $this->userServ->hasStorePermission(
+            $request->user(),
+            $store,
+            PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+        );
+        if (!$hasPermission) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['この操作を実行する権限がありません']

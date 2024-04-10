@@ -258,12 +258,20 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         // グループロールに権限を付与
         $this->groupRoleRepo->attachPermissionsToGroupRole($groupRole, self::DEFAULT_GROUP_ROLE['ADMIN']['permissionIds']);
 
+        // 契約者に管理者権限を付与
+        $this->userRepo->attachGroupRolesToUser($user, [$groupRole->id]);
+
         /** ダミーデータ登録 */
 
         // ダミー店舗作成
         $dummyStore = self::DUMMY_STORE;
         $dummyStore['group_id'] = $group->id;
         $store = $this->storeServ->createStore($dummyStore, self::DUMMY_STORE_DETAIL);
+
+        // ストアロール取得
+        $storeRoleManager = $this->storeRoleRepo->getStoreRoleByName($store->id, $this->storeServ::DEFAULT_STORE_ROLES['MANAGER']['name']);
+        // ユーザーとストアロールの紐付け
+        $this->userRepo->attachStoreRolesToUser($user, [$storeRoleManager->id]);
 
         /** メニュー系 */
         // ダミーメニューカテゴリ（初回セット）
