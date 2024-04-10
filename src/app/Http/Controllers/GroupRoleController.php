@@ -10,6 +10,7 @@ use App\Repositories\{
     UserRepository\UserRepositoryInterface,
     RoleRepository\RoleRepositoryInterface,
 };
+use App\Repositories\GroupRoleRepository\GroupRoleRepositoryInterface;
 
 class GroupRoleController extends Controller
 {
@@ -18,6 +19,8 @@ class GroupRoleController extends Controller
         public readonly BusinessDateRepositoryInterface $businessDateRepo,
         public readonly UserRepositoryInterface $userRepo,
         public readonly RoleRepositoryInterface $roleRepo,
+
+        public readonly GroupRoleRepositoryInterface $groupRoleRepo,
     ) {
     }
 
@@ -27,7 +30,7 @@ class GroupRoleController extends Controller
         $groupId = auth()->user()->groups->first()->id;
 
         // デフォルトグループロール一覧を取得
-        $groupRoles = $this->roleRepo->getAllDefaultGroupRolesByGroupId($groupId);
+        $groupRoles = $this->groupRoleRepo->getGroupRoles($groupId);
 
         return response()->json([
             'status' => 'success',

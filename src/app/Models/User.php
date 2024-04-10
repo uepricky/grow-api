@@ -96,6 +96,16 @@ class User extends Authenticatable
         return $this->belongsToMany(StoreRole::class, 'store_role_user');
     }
 
+    public function permissionV2StoreRoles()
+    {
+        return $this->belongsToMany(PermissionV2StoreRole::class, 'permission_v2_user_store_role');
+    }
+
+    public function permissionV2GroupRoles()
+    {
+        return $this->belongsToMany(PermissionV2GroupRole::class, 'permission_v2_user_group_role');
+    }
+
     public function attendances()
     {
         return $this->hasMany(Attendance::class);

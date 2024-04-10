@@ -14,7 +14,9 @@ use App\Repositories\{
 };
 use App\Models\{
     MenuCategory,
+    PermissionV2Permission
 };
+use App\Services\UserService\UserServiceInterface;
 use Illuminate\Auth\Access\AuthorizationException;
 
 class MenuCategoryController extends Controller
@@ -22,6 +24,7 @@ class MenuCategoryController extends Controller
     public function __construct(
         public readonly MenuCategoryRepositoryInterface $menuCategoryRepo,
         public readonly StoreRepositoryInterface $storeRepo,
+        public readonly UserServiceInterface $userServ,
     ) {}
 
     public function getAll(SysMenuCategoryIdRequest $request)
@@ -36,10 +39,13 @@ class MenuCategoryController extends Controller
             ], 404);
         }
 
-        // Policy確認
-        try {
-            $this->authorize('viewAny', [MenuCategory::class, $store]);
-        } catch (AuthorizationException $e) {
+        // 権限チェック
+        $hasPermission = $this->userServ->hasStorePermission(
+            $request->user(),
+            $store,
+            PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+        );
+        if (!$hasPermission) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['この操作を実行する権限がありません']

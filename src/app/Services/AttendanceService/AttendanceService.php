@@ -82,7 +82,7 @@ class AttendanceService implements AttendanceServiceInterface
      */
     public function updateOrInsertTardyAbsenceInfo($request, Store $store)
     {
-        $requestAttendance = $request->attendance;
+        $requestAttendance = $request->attendances;
 
         if ($requestAttendance['tardy_absence_type'] === self::TARDY_ABSENCE_TYPE['TARDY']) {
             $attendanceStoreData['late_total_minute'] = $requestAttendance['late_total_minute'];
@@ -112,7 +112,7 @@ class AttendanceService implements AttendanceServiceInterface
      */
     public function updateOrInsertPayrollPaymentInfo($request, Store $store)
     {
-        $requestAttendance = $request->attendance;
+        $requestAttendance = $request->attendances;
 
         $attendanceData = [];
 

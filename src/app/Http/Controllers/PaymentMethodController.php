@@ -10,7 +10,8 @@ use App\Http\Requests\{
 };
 use App\Models\{
     Store,
-    PaymentMethod
+    PaymentMethod,
+    PermissionV2Permission
 };
 use App\Repositories\{
     PaymentMethodRepository\PaymentMethodRepositoryInterface,
@@ -18,6 +19,7 @@ use App\Repositories\{
     StoreRepository\StoreRepositoryInterface
 };
 use Illuminate\Auth\Access\AuthorizationException;
+use App\Services\UserService\UserServiceInterface;
 
 class PaymentMethodController extends Controller
 {
@@ -25,6 +27,7 @@ class PaymentMethodController extends Controller
         public readonly PaymentMethodRepositoryInterface $paymentMethodRepo,
         public readonly SysPaymentMethodCategoryRepositoryInterface $sysPaymentMethodCategoryRepo,
         public readonly StoreRepositoryInterface $storeRepo,
+        public readonly UserServiceInterface $userServ,
     ) {}
 
     public function getAll(StoreIdRequest $request)
@@ -39,10 +42,13 @@ class PaymentMethodController extends Controller
             ], 404);
         }
 
-        // Policy確認
-        try {
-            $this->authorize('viewAny', [PaymentMethod::class, $store]);
-        } catch (AuthorizationException $e) {
+        // 権限チェック
+        $hasPermission = $this->userServ->hasStorePermission(
+            $request->user(),
+            $store,
+            PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+        );
+        if (!$hasPermission) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['この操作を実行する権限がありません']

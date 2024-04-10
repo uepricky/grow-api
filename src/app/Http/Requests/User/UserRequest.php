@@ -44,8 +44,8 @@ class UserRequest extends BaseFormRequest
             'user.address' => 'nullable|string|max:255',
             'user.note' => 'nullable|string|max:512',
 
-            'group_role' => 'required|integer',
-            'store_role.*.*' => 'nullable|integer',
+            'group_roles.*.*' => 'nullable|integer',
+            'stores_roles.*.*' => 'nullable|integer',
         ];
     }
 
@@ -86,10 +86,9 @@ class UserRequest extends BaseFormRequest
             'user.note.string' => '備考は文字列で入力してください。',
             'user.note.max' => '備考は:max文字以内で入力してください。',
 
-            'group_role.required' => 'グループ役職は必須項目です。',
-            'group_role.integer' => parent::UPDATE_SCREEN_MESSAGE,
+            'group_roles.*.*.integer' => parent::UPDATE_SCREEN_MESSAGE,
 
-            'store_role.*.*.integer' => parent::UPDATE_SCREEN_MESSAGE,
+            'stores_roles.*.*.integer' => parent::UPDATE_SCREEN_MESSAGE,
         ];
     }
 }

@@ -4,6 +4,7 @@ namespace App\Services\StoreService;
 
 use App\Services\StoreService\StoreServiceInterface;
 use App\Models\{
+    PermissionV2Permission,
     Store,
     RouteActionTarget,
     Table,
@@ -14,6 +15,7 @@ use App\Repositories\{
     RoleRepository\RoleRepositoryInterface,
     TableRepository\TableRepositoryInterface,
 };
+use App\Repositories\StoreRoleRepository\StoreRoleRepositoryInterface;
 
 class StoreService implements StoreServiceInterface
 {
@@ -29,12 +31,30 @@ class StoreService implements StoreServiceInterface
         ]
     ];
 
+    // const DEFAULT_STORE_ROLES = [
+    //     'MANAGER' => [
+    //         'name' => 'マネージャー',
+    //         'permissionIds' => [
+    //             PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+    //         ]
+    //     ],
+    //     'STAFF' => [
+    //         'name' => 'スタッフ',
+    //         'permissionIds' => []
+    //     ],
+    //     'CAST' => [
+    //         'name' => 'キャスト',
+    //         'permissionIds' => []
+    //     ],
+    // ];
 
     public function __construct(
         public readonly StoreRepositoryInterface $storeRepo,
         public readonly StoreDetailRepositoryInterface $storeDetailRepo,
         public readonly RoleRepositoryInterface $roleRepo,
         public readonly TableRepositoryInterface $tableRepo,
+
+        public readonly StoreRoleRepositoryInterface $storeRoleRepo,
     ) {
     }
 
@@ -52,10 +72,20 @@ class StoreService implements StoreServiceInterface
         // 店舗詳細作成
         $storeDetail = $this->storeDetailRepo->createStoreDetail($createdStore, $storeDetail);
 
+        // ストアロールの作成
+        $storeRolesData = self::DEFAULT_STORE_ROLES;
+        foreach ($storeRolesData as $storeRoleData) {
+            $storeRoleData['store_id'] = $createdStore->id;
+            $storeRole = $this->storeRoleRepo->createStoreRole($storeRoleData);
+
+            // ストアロールに権限を付与
+            $this->storeRoleRepo->attachPermissionsToStoreRole($storeRole, $storeRoleData['permissionIds']);
+        }
+
         // デフォルトストラロール一覧をストアに付与
-        $defaultRoles = $this->roleRepo->getAllDefaultStoreRoles();
-        $defaultRoleIds = $defaultRoles->pluck("id")->toArray();
-        $this->roleRepo->attachRolesToStore($defaultRoleIds, $createdStore);
+        // $defaultRoles = $this->roleRepo->getAllDefaultStoreRoles();
+        // $defaultRoleIds = $defaultRoles->pluck("id")->toArray();
+        // $this->roleRepo->attachRolesToStore($defaultRoleIds, $createdStore);
 
         // ダミー卓を設定
         foreach ($this::DUMMY['TABLES'] as $table) {

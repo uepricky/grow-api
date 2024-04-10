@@ -9,13 +9,15 @@ use App\Http\Requests\{
     StoreIdRequest
 };
 use App\Models\{
-    Store,
+    PermissionV2Permission,
     Table
 };
 use App\Repositories\{
     TableRepository\TableRepositoryInterface,
     StoreRepository\StoreRepositoryInterface
 };
+use App\Services\UserService\UserServiceInterface;
+
 use Illuminate\Auth\Access\AuthorizationException;
 
 class TableController extends Controller
@@ -23,13 +25,12 @@ class TableController extends Controller
     public function __construct(
         public readonly TableRepositoryInterface $tableRepo,
         public readonly StoreRepositoryInterface $storeRepo,
+
+        public readonly UserServiceInterface $userServ,
     ) {}
 
     public function getAll(StoreIdRequest $request)
     {
-        // throw new \Exception('あかんですよ');
-
-
         // ストアの取得
         $store = $this->storeRepo->findStore($request->storeId);
 
@@ -40,10 +41,13 @@ class TableController extends Controller
             ], 404);
         }
 
-        // Policy確認
-        try {
-            $this->authorize('viewAny', [Table::class, $store]);
-        } catch (AuthorizationException $e) {
+        // 権限チェック
+        $hasPermission = $this->userServ->hasStorePermission(
+            $request->user(),
+            $store,
+            PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+        );
+        if (!$hasPermission) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['この操作を実行する権限がありません']

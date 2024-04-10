@@ -15,8 +15,11 @@ use App\Repositories\{
 };
 use App\Models\{
     Menu,
-    SysMenuCategory
+    SysMenuCategory,
+    PermissionV2Permission
 };
+use App\Services\UserService\UserServiceInterface;
+
 
 class SetMenuController extends Controller
 {
@@ -25,6 +28,7 @@ class SetMenuController extends Controller
         public readonly MenuRepositoryInterface $menuRepo,
         public readonly SetMenuRepositoryInterface $setMenuRepo,
         public readonly StoreRepositoryInterface $storeRepo,
+        public readonly UserServiceInterface $userServ,
     ) {}
 
     public function getAll(StoreIdRequest $request)
@@ -39,10 +43,13 @@ class SetMenuController extends Controller
             ], 404);
         }
 
-        // Policy確認
-        try {
-            $this->authorize('viewAny', [Menu::class, $store]);
-        } catch (AuthorizationException $e) {
+        // 権限チェック
+        $hasPermission = $this->userServ->hasStorePermission(
+            $request->user(),
+            $store,
+            PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+        );
+        if (!$hasPermission) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['この操作を実行する権限がありません']

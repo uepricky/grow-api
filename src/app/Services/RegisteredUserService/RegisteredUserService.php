@@ -13,6 +13,9 @@ use App\Models\{
     RouteActionTarget,
     SysMenuCategory,
     DefaultStoreRole,
+    PermissionV2GroupRole,
+    PermissionV2Permission,
+    PermissionV2StoreRole,
 };
 use App\Repositories\{
     UserRepository\UserRepositoryInterface,
@@ -22,6 +25,8 @@ use App\Repositories\{
     MenuRepository\MenuRepositoryInterface,
     SetMenuRepository\SetMenuRepositoryInterface,
 };
+use App\Repositories\GroupRoleRepository\GroupRoleRepositoryInterface;
+use App\Repositories\StoreRoleRepository\StoreRoleRepositoryInterface;
 
 class RegisteredUserService implements RegisteredUserServiceInterface
 {
@@ -170,6 +175,7 @@ class RegisteredUserService implements RegisteredUserServiceInterface
 
     const DUMMY_MANAGER_USER = [
         'display_name' => '店長',
+
     ];
 
     const DUMMY_STAFF1_USER = [
@@ -204,6 +210,15 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         'display_name' => 'キャスト5',
     ];
 
+    const DEFAULT_GROUP_ROLE = [
+        "ADMIN" => [
+            'name' => '管理者',
+            'permissionIds' => [
+                PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_GROUP_DASHBOARD']['id']
+            ]
+        ]
+    ];
+
     public function __construct(
         public readonly UserRepositoryInterface $userRepo,
         public readonly GroupRepositoryInterface $groupRepo,
@@ -213,6 +228,9 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         public readonly SetMenuRepositoryInterface $setMenuRepo,
 
         public readonly StoreServiceInterface $storeServ,
+
+        public readonly GroupRoleRepositoryInterface $groupRoleRepo,
+        public readonly StoreRoleRepositoryInterface $storeRoleRepo,
     ) {
     }
 
@@ -229,15 +247,19 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         // グループの作成
         $group = $this->createGroup($groupName);
 
-        // デフォルトグループロールをグループに付与
-        $defaultGroupRoles = $this->roleRepo->getAllDefaultGroupRoles();
-        $defaultGroupRoleIds = $defaultGroupRoles->pluck("id")->toArray();
-        $this->roleRepo->attachRolesToGroup($group, $defaultGroupRoleIds);
-
         // グループ、ユーザーの紐づけ
         $this->userRepo->attachToGroup($user, $group);
 
-        $this->attachDefaultAdminRoleToUser($user, $group->id);
+        // 管理者のグループロールを作成
+        $adminGroupRole = self::DEFAULT_GROUP_ROLE['ADMIN'];
+        $adminGroupRole['group_id'] = $group->id;
+        $groupRole = $this->groupRoleRepo->createGroupRole($adminGroupRole);
+
+        // グループロールに権限を付与
+        $this->groupRoleRepo->attachPermissionsToGroupRole($groupRole, self::DEFAULT_GROUP_ROLE['ADMIN']['permissionIds']);
+
+        // 契約者に管理者権限を付与
+        $this->userRepo->attachGroupRolesToUser($user, [$groupRole->id]);
 
         /** ダミーデータ登録 */
 
@@ -245,6 +267,11 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         $dummyStore = self::DUMMY_STORE;
         $dummyStore['group_id'] = $group->id;
         $store = $this->storeServ->createStore($dummyStore, self::DUMMY_STORE_DETAIL);
+
+        // ストアロール取得
+        $storeRoleManager = $this->storeRoleRepo->getStoreRoleByName($store->id, $this->storeServ::DEFAULT_STORE_ROLES['MANAGER']['name']);
+        // ユーザーとストアロールの紐付け
+        $this->userRepo->attachStoreRolesToUser($user, [$storeRoleManager->id]);
 
         /** メニュー系 */
         // ダミーメニューカテゴリ（初回セット）
@@ -301,126 +328,108 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         $this->menuRepo->createMenu($dummySnackMenuData);
 
         /** ダミーユーザー作成 */
-        // グループロール取得
-        $groupRoles = $this->roleRepo->getAllDefaultGroupRolesByGroupId($group->id);
-        // 一般のグループロールを取得
-        $generalGroupRole = $groupRoles->first(function ($groupRole) {
-            return $groupRole->role->name === DefaultGroupRole::DEFAULT_GROUP_GENERAL['name'];
-        });
-
-        // ストアロール取得
-        $storeRoles = $this->roleRepo->getAllDefaultStoreRolesByStoreId($store->id);
-        // マネージャーのストアロールを取得
-        $managerStoreRole = $storeRoles->first(function ($storeRole) {
-            return $storeRole->role->name === DefaultStoreRole::DEFAULT_STORE_MANAGER['name'];
-        });
-        // スタッフのストアロールを取得
-        $staffStoreRole = $storeRoles->first(function ($storeRole) {
-            return $storeRole->role->name === DefaultStoreRole::DEFAULT_STORE_STAFF['name'];
-        });
-        // キャストのストアロールを取得
-        $castStoreRole = $storeRoles->first(function ($storeRole) {
-            return $storeRole->role->name === DefaultStoreRole::DEFAULT_STORE_CAST['name'];
-        });
-
-        // 店長
+        // TODO: リファクタ
+        // マネージャ
+        // ユーザー作成
         $managerUser = $this->userRepo->createGeneralUser(self::DUMMY_MANAGER_USER, ['can_login' => false]);
         // ユーザーをグループに所属させる
         $this->userRepo->attachToGroup($managerUser, $group);
-        // ユーザーとグループロールの紐付け
-        $this->roleRepo->attachGroupRolesToUser($managerUser, [$generalGroupRole->id]);
         // ユーザーを店舗に所属させる
         $this->userRepo->attachToStores($managerUser, [$store->id]);
+        // ストアロール取得
+        $storeRoleManager = $this->storeRoleRepo->getStoreRoleByName($store->id, $this->storeServ::DEFAULT_STORE_ROLES['MANAGER']['name']);
         // ユーザーとストアロールの紐付け
-        $this->roleRepo->attachStoreRolesToUser($managerUser, [$managerStoreRole->id]);
+        $this->userRepo->attachStoreRolesToUser($managerUser, [$storeRoleManager->id]);
 
         // スタッフ1
         $staff1User = $this->userRepo->createGeneralUser(self::DUMMY_STAFF1_USER, ['can_login' => false]);
         // ユーザーをグループに所属させる
         $this->userRepo->attachToGroup($staff1User, $group);
         // ユーザーとグループロールの紐付け
-        $this->roleRepo->attachGroupRolesToUser($staff1User, [$generalGroupRole->id]);
+        // $this->roleRepo->attachGroupRolesToUser($staff1User, [$generalGroupRole->id]);
         // ユーザーを店舗に所属させる
         $this->userRepo->attachToStores($staff1User, [$store->id]);
+        // ストアロール取得
+        $storeRoleStaff = $this->storeRoleRepo->getStoreRoleByName($store->id, $this->storeServ::DEFAULT_STORE_ROLES['STAFF']['name']);
         // ユーザーとストアロールの紐付け
-        $this->roleRepo->attachStoreRolesToUser($staff1User, [$staffStoreRole->id]);
+        $this->userRepo->attachStoreRolesToUser($staff1User, [$storeRoleStaff->id]);
 
-        // スタッフ2
-        $staff2User = $this->userRepo->createGeneralUser(self::DUMMY_STAFF2_USER, ['can_login' => false]);
-        // ユーザーをグループに所属させる
-        $this->userRepo->attachToGroup($staff2User, $group);
-        // ユーザーとグループロールの紐付け
-        $this->roleRepo->attachGroupRolesToUser($staff2User, [$generalGroupRole->id]);
-        // ユーザーを店舗に所属させる
-        $this->userRepo->attachToStores($staff2User, [$store->id]);
-        // ユーザーとストアロールの紐付け
-        $this->roleRepo->attachStoreRolesToUser($staff2User, [$staffStoreRole->id]);
+        // // スタッフ2
+        // $staff2User = $this->userRepo->createGeneralUser(self::DUMMY_STAFF2_USER, ['can_login' => false]);
+        // // ユーザーをグループに所属させる
+        // $this->userRepo->attachToGroup($staff2User, $group);
+        // // ユーザーとグループロールの紐付け
+        // $this->roleRepo->attachGroupRolesToUser($staff2User, [$generalGroupRole->id]);
+        // // ユーザーを店舗に所属させる
+        // $this->userRepo->attachToStores($staff2User, [$store->id]);
+        // // ユーザーとストアロールの紐付け
+        // $this->roleRepo->attachStoreRolesToUser($staff2User, [$staffStoreRole->id]);
 
-        // スタッフ3
-        $staff3User = $this->userRepo->createGeneralUser(self::DUMMY_STAFF3_USER, ['can_login' => false]);
-        // ユーザーをグループに所属させる
-        $this->userRepo->attachToGroup($staff3User, $group);
-        // ユーザーとグループロールの紐付け
-        $this->roleRepo->attachGroupRolesToUser($staff3User, [$generalGroupRole->id]);
-        // ユーザーを店舗に所属させる
-        $this->userRepo->attachToStores($staff3User, [$store->id]);
-        // ユーザーとストアロールの紐付け
-        $this->roleRepo->attachStoreRolesToUser($staff3User, [$staffStoreRole->id]);
+        // // スタッフ3
+        // $staff3User = $this->userRepo->createGeneralUser(self::DUMMY_STAFF3_USER, ['can_login' => false]);
+        // // ユーザーをグループに所属させる
+        // $this->userRepo->attachToGroup($staff3User, $group);
+        // // ユーザーとグループロールの紐付け
+        // $this->roleRepo->attachGroupRolesToUser($staff3User, [$generalGroupRole->id]);
+        // // ユーザーを店舗に所属させる
+        // $this->userRepo->attachToStores($staff3User, [$store->id]);
+        // // ユーザーとストアロールの紐付け
+        // $this->roleRepo->attachStoreRolesToUser($staff3User, [$staffStoreRole->id]);
 
-        // キャスト1
-        $cast1User = $this->userRepo->createGeneralUser(self::DUMMY_CAST1_USER, ['can_login' => false]);
-        // ユーザーをグループに所属させる
-        $this->userRepo->attachToGroup($cast1User, $group);
-        // ユーザーとグループロールの紐付け
-        $this->roleRepo->attachGroupRolesToUser($cast1User, [$generalGroupRole->id]);
-        // ユーザーを店舗に所属させる
-        $this->userRepo->attachToStores($cast1User, [$store->id]);
-        // ユーザーとストアロールの紐付け
-        $this->roleRepo->attachStoreRolesToUser($cast1User, [$castStoreRole->id]);
+        // // キャスト1
+        // $cast1User = $this->userRepo->createGeneralUser(self::DUMMY_CAST1_USER, ['can_login' => false]);
+        // // ユーザーをグループに所属させる
+        // $this->userRepo->attachToGroup($cast1User, $group);
+        // // ユーザーとグループロールの紐付け
+        // $this->roleRepo->attachGroupRolesToUser($cast1User, [$generalGroupRole->id]);
+        // // ユーザーを店舗に所属させる
+        // $this->userRepo->attachToStores($cast1User, [$store->id]);
+        // // ユーザーとストアロールの紐付け
+        // $this->roleRepo->attachStoreRolesToUser($cast1User, [$castStoreRole->id]);
 
-        // キャスト2
-        $cast2User = $this->userRepo->createGeneralUser(self::DUMMY_CAST2_USER, ['can_login' => false]);
-        // ユーザーをグループに所属させる
-        $this->userRepo->attachToGroup($cast2User, $group);
-        // ユーザーとグループロールの紐付け
-        $this->roleRepo->attachGroupRolesToUser($cast2User, [$generalGroupRole->id]);
-        // ユーザーを店舗に所属させる
-        $this->userRepo->attachToStores($cast2User, [$store->id]);
-        // ユーザーとストアロールの紐付け
-        $this->roleRepo->attachStoreRolesToUser($cast2User, [$castStoreRole->id]);
+        // // キャスト2
+        // $cast2User = $this->userRepo->createGeneralUser(self::DUMMY_CAST2_USER, ['can_login' => false]);
+        // // ユーザーをグループに所属させる
+        // $this->userRepo->attachToGroup($cast2User, $group);
+        // // ユーザーとグループロールの紐付け
+        // $this->roleRepo->attachGroupRolesToUser($cast2User, [$generalGroupRole->id]);
+        // // ユーザーを店舗に所属させる
+        // $this->userRepo->attachToStores($cast2User, [$store->id]);
+        // // ユーザーとストアロールの紐付け
+        // $this->roleRepo->attachStoreRolesToUser($cast2User, [$castStoreRole->id]);
 
-        // キャスト3
-        $cast3User = $this->userRepo->createGeneralUser(self::DUMMY_CAST3_USER, ['can_login' => false]);
-        // ユーザーをグループに所属させる
-        $this->userRepo->attachToGroup($cast3User, $group);
-        // ユーザーとグループロールの紐付け
-        $this->roleRepo->attachGroupRolesToUser($cast3User, [$generalGroupRole->id]);
-        // ユーザーを店舗に所属させる
-        $this->userRepo->attachToStores($cast3User, [$store->id]);
-        // ユーザーとストアロールの紐付け
-        $this->roleRepo->attachStoreRolesToUser($cast3User, [$castStoreRole->id]);
+        // // キャスト3
+        // $cast3User = $this->userRepo->createGeneralUser(self::DUMMY_CAST3_USER, ['can_login' => false]);
+        // // ユーザーをグループに所属させる
+        // $this->userRepo->attachToGroup($cast3User, $group);
+        // // ユーザーとグループロールの紐付け
+        // $this->roleRepo->attachGroupRolesToUser($cast3User, [$generalGroupRole->id]);
+        // // ユーザーを店舗に所属させる
+        // $this->userRepo->attachToStores($cast3User, [$store->id]);
+        // // ユーザーとストアロールの紐付け
+        // $this->roleRepo->attachStoreRolesToUser($cast3User, [$castStoreRole->id]);
 
-        // キャスト4
-        $cast4User = $this->userRepo->createGeneralUser(self::DUMMY_CAST4_USER, ['can_login' => false]);
-        // ユーザーをグループに所属させる
-        $this->userRepo->attachToGroup($cast4User, $group);
-        // ユーザーとグループロールの紐付け
-        $this->roleRepo->attachGroupRolesToUser($cast4User, [$generalGroupRole->id]);
-        // ユーザーを店舗に所属させる
-        $this->userRepo->attachToStores($cast4User, [$store->id]);
-        // ユーザーとストアロールの紐付け
-        $this->roleRepo->attachStoreRolesToUser($cast4User, [$castStoreRole->id]);
+        // // キャスト4
+        // $cast4User = $this->userRepo->createGeneralUser(self::DUMMY_CAST4_USER, ['can_login' => false]);
+        // // ユーザーをグループに所属させる
+        // $this->userRepo->attachToGroup($cast4User, $group);
+        // // ユーザーとグループロールの紐付け
+        // $this->roleRepo->attachGroupRolesToUser($cast4User, [$generalGroupRole->id]);
+        // // ユーザーを店舗に所属させる
+        // $this->userRepo->attachToStores($cast4User, [$store->id]);
+        // // ユーザーとストアロールの紐付け
+        // $this->roleRepo->attachStoreRolesToUser($cast4User, [$castStoreRole->id]);
 
-        // キャスト5
-        $cast5User = $this->userRepo->createGeneralUser(self::DUMMY_CAST5_USER, ['can_login' => false]);
-        // ユーザーをグループに所属させる
-        $this->userRepo->attachToGroup($cast5User, $group);
-        // ユーザーとグループロールの紐付け
-        $this->roleRepo->attachGroupRolesToUser($cast5User, [$generalGroupRole->id]);
-        // ユーザーを店舗に所属させる
-        $this->userRepo->attachToStores($cast5User, [$store->id]);
-        // ユーザーとストアロールの紐付け
-        $this->roleRepo->attachStoreRolesToUser($cast5User, [$castStoreRole->id]);
+        // // キャスト5
+        // $cast5User = $this->userRepo->createGeneralUser(self::DUMMY_CAST5_USER, ['can_login' => false]);
+        // // ユーザーをグループに所属させる
+        // $this->userRepo->attachToGroup($cast5User, $group);
+        // // ユーザーとグループロールの紐付け
+        // $this->roleRepo->attachGroupRolesToUser($cast5User, [$generalGroupRole->id]);
+        // // ユーザーを店舗に所属させる
+        // $this->userRepo->attachToStores($cast5User, [$store->id]);
+        // // ユーザーとストアロールの紐付け
+        // $this->roleRepo->attachStoreRolesToUser($cast5User, [$castStoreRole->id]);
     }
 
     /**
