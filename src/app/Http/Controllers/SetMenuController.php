@@ -29,7 +29,8 @@ class SetMenuController extends Controller
         public readonly SetMenuRepositoryInterface $setMenuRepo,
         public readonly StoreRepositoryInterface $storeRepo,
         public readonly UserServiceInterface $userServ,
-    ) {}
+    ) {
+    }
 
     public function getAll(StoreIdRequest $request)
     {
@@ -91,16 +92,6 @@ class SetMenuController extends Controller
             ], 404);
         }
 
-        // Policy確認
-        try {
-            $this->authorize('store', [Menu::class, $store, $request->menu['menu_category_id']]);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
-        }
-
         // トランザクションを開始する
         DB::beginTransaction();
 
@@ -159,16 +150,6 @@ class SetMenuController extends Controller
             ], 404);
         }
 
-        // Policy確認
-        try {
-            $this->authorize('viewAny', [Menu::class, $store]);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
-        }
-
         $menu->store_id = $store->id;
 
         return response()->json([
@@ -204,16 +185,6 @@ class SetMenuController extends Controller
                 'status' => 'failure',
                 'errors' => ['ストア情報の読み込みができませんでした']
             ], 404);
-        }
-
-        // Policy確認
-        try {
-            $this->authorize('update', [Menu::class, $store, $menu, $request->menu['menu_category_id']]);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
         }
 
         // トランザクションを開始する
@@ -276,16 +247,6 @@ class SetMenuController extends Controller
                 'status' => 'failure',
                 'errors' => ['ストア情報の読み込みができませんでした']
             ], 404);
-        }
-
-        // Policy確認
-        try {
-            $this->authorize('delete', [Menu::class, $store, $menu->menu_category_id]);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
         }
 
         // レコードを論理削除する

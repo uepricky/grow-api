@@ -9,7 +9,7 @@ use App\Models\{
     ContractUser,
     GeneralUser,
     Store,
-    StoreRole,
+    PermissionV2StoreRole,
     BusinessDate,
 };
 use Illuminate\Support\Facades\DB;
@@ -119,14 +119,14 @@ class UserRepository implements UserRepositoryInterface
 
     /**
      * ストアロールに属する出勤ユーザー一覧を取得
-     * @param StoreRole $storeRole
+     * @param PermissionV2StoreRole $storeRole
      * @param BusinessDate $businessDate
      * @param array $columns
      * @param string $orderBy
      * @param string $sortBy
      * @return Collection
      */
-    public function getAttendanceUsersByStoreRole(StoreRole $storeRole, BusinessDate $businessDate, $columns = array('*'), string $orderBy = 'display_name', string $sortBy = 'asc'): Collection
+    public function getAttendanceUsersByStoreRole(PermissionV2StoreRole $storeRole, BusinessDate $businessDate, $columns = array('*'), string $orderBy = 'display_name', string $sortBy = 'asc'): Collection
     {
         return $storeRole->users()
             ->whereHas('attendances', function ($query) use ($businessDate) {

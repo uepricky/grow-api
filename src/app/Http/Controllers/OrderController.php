@@ -29,7 +29,8 @@ use App\Repositories\{
     OrderRepository\OrderRepositoryInterface,
     StoreDetailRepository\StoreDetailRepositoryInterface,
     PaymentMethodRepository\PaymentMethodRepositoryInterface,
-    NumberOfCustomerRepository\NumberOfCustomerRepositoryInterface
+    NumberOfCustomerRepository\NumberOfCustomerRepositoryInterface,
+    StoreRoleRepository\StoreRoleRepositoryInterface,
 };
 use App\Services\{
     BillService\BillServiceInterface,
@@ -55,6 +56,7 @@ class OrderController extends Controller
         public readonly StoreDetailRepositoryInterface $storeDetailRepo,
         public readonly PaymentMethodRepositoryInterface $paymentMethodRepo,
         public readonly NumberOfCustomerRepositoryInterface $numberOfCustomerRepo,
+        public readonly StoreRoleRepositoryInterface $storeRoleRepo,
 
         public readonly BillServiceInterface $billServ,
         public readonly OrderServiceInterface $orderServ,
@@ -80,16 +82,6 @@ class OrderController extends Controller
                 'errors' => ['ストア情報の読み込みができませんでした']
             ], 404);
         }
-
-        // Policy確認
-        // try {
-        //     $this->authorize('viewAny', [Attendance::class, $store]);
-        // } catch (AuthorizationException $e) {
-        //     return response()->json([
-        //         'status' => 'failure',
-        //         'errors' => ['この操作を実行する権限がありません']
-        //     ], 403);
-        // }
 
         // トランザクションを開始する
         DB::beginTransaction();
@@ -302,7 +294,8 @@ class OrderController extends Controller
          * 出勤ユーザー一覧を取得する
          */
         // 店舗に属するストアロール一覧を取得
-        $storeRoles = $this->roleRepo->getStoreRolesByStore($store);
+        $storeRoles = $this->storeRoleRepo->getStoreRoles($store->id);
+
         // 営業日付を取得
         $businessDate = $this->businessDateRepo->getCurrentBusinessDate($store);
 
@@ -319,8 +312,4 @@ class OrderController extends Controller
 
         return view('order.create', compact('store', 'bill', 'tables', 'menus', 'storeRoles', 'incentiveTargets', 'sysMenuCategories'));
     }
-
-
-
-
 }

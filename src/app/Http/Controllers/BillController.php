@@ -39,7 +39,8 @@ class BillController extends Controller
         public readonly StoreRepositoryInterface $storeRepo,
 
         public readonly OrderServiceInterface $orderServ,
-    ) {}
+    ) {
+    }
 
     public function getAll(StoreIdRequest $request)
     {
@@ -51,16 +52,6 @@ class BillController extends Controller
                 'errors' => ['ストア情報の読み込みができませんでした']
             ], 404);
         }
-
-        // Policy確認
-        // try {
-        //     $this->authorize('viewAny', [Attendance::class, $store]);
-        // } catch (AuthorizationException $e) {
-        //     return response()->json([
-        //         'status' => 'failure',
-        //         'errors' => ['この操作を実行する権限がありません']
-        //     ], 403);
-        // }
 
         // 開始日時を取得
         $businessDate = $this->businessDateRepo->getCurrentBusinessDate($store);
@@ -103,16 +94,6 @@ class BillController extends Controller
                 'errors' => ['ストア情報の読み込みができませんでした']
             ], 404);
         }
-
-        // Policy確認
-        // try {
-        //     $this->authorize('viewAny', [Attendance::class, $store]);
-        // } catch (AuthorizationException $e) {
-        //     return response()->json([
-        //         'status' => 'failure',
-        //         'errors' => ['この操作を実行する権限がありません']
-        //     ], 403);
-        // }
 
         // 開始日時を取得
         $businessDate = $this->businessDateRepo->getCurrentBusinessDate($store);

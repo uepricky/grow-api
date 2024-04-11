@@ -9,16 +9,16 @@ use App\Models\{
     ContractUser,
     GeneralUser,
     Store,
-    StoreRole,
+    PermissionV2StoreRole,
     BusinessDate,
 };
 
 interface UserRepositoryInterface
 {
-     /***********************************************************
+    /***********************************************************
      * Create系
      ***********************************************************/
-     /**
+    /**
      * ユーザーを作成する
      *
      * @param array $data ユーザー作成に必要なデータ
@@ -77,14 +77,14 @@ interface UserRepositoryInterface
 
     /**
      * ストアロールに属する出勤ユーザー一覧を取得
-     * @param StoreRole $storeRole
+     * @param PermissionV2StoreRole $storeRole
      * @param BusinessDate $businessDate
      * @param array $columns
      * @param string $orderBy
      * @param string $sortBy
      * @return Collection
      */
-    public function getAttendanceUsersByStoreRole(StoreRole $storeRole, BusinessDate $businessDate, $columns = array('*'), string $orderBy = 'display_name', string $sortBy = 'asc'): Collection;
+    public function getAttendanceUsersByStoreRole(PermissionV2StoreRole $storeRole, BusinessDate $businessDate, $columns = array('*'), string $orderBy = 'display_name', string $sortBy = 'asc'): Collection;
 
     /***********************************************************
      * Update系
@@ -106,7 +106,7 @@ interface UserRepositoryInterface
      */
     public function updateGeneralUser(User $user, array $userData, array $generalUserData): bool;
 
-     /***********************************************************
+    /***********************************************************
      * Delete系
      ***********************************************************/
     /**
@@ -116,7 +116,7 @@ interface UserRepositoryInterface
      */
     public function softDeleteUser(User $user): void;
 
-     /***********************************************************
+    /***********************************************************
      * その他
      ***********************************************************/
     /**

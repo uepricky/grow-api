@@ -446,19 +446,4 @@ class RegisteredUserService implements RegisteredUserServiceInterface
 
         return $group;
     }
-
-    /**
-     * ユーザーに管理者権限を付与する
-     * @param Group $group
-     * @param User $user
-     * @param int $groupId
-     * @return void
-     */
-    private function attachDefaultAdminRoleToUser(User $user, int $groupId)
-    {
-        $adminRole = $this->roleRepo->getDefaultAdminGroupRole($groupId);
-
-        // ユーザーに管理者権限を付与
-        $this->roleRepo->attachGroupRolesToUser($user, [$adminRole->id]);
-    }
 }

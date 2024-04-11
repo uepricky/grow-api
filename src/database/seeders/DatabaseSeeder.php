@@ -20,11 +20,9 @@ class DatabaseSeeder extends Seeder
             RouteActionSeeder::class,
             TargetsTableSeeder::class,
             RouteActionTargetSeeder::class,
-            RolesTableSeeder::class,
             SysMenuCategorySeeder::class,
             SysPaymentMethodCategorySeeder::class,
             PermissionV2PermissionSeeder::class,
         ]);
-
     }
 }
