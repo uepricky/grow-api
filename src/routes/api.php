@@ -73,6 +73,51 @@ Route::middleware(['auth:sanctum'])->group(function () {
                     Route::put('/{menuCategoriyId}', [MenuCategoryController::class, 'update']);
                     Route::delete('/{menuCategoriyId}', [MenuCategoryController::class, 'archive']);
                 });
+
+                // メニュー
+                Route::prefix('/menus')->group(function () {
+                    Route::get('/', [MenuController::class, 'getAll']);
+                    Route::post('/', [MenuController::class, 'store']);
+                    Route::get('/{menuId}', [MenuController::class, 'get']);
+                    Route::put('/{menuId}', [MenuController::class, 'update']);
+                    Route::delete('/{menuId}', [MenuController::class, 'archive']);
+                });
+
+                // セットメニュー
+                Route::prefix('/setMenus')->group(function () {
+                    Route::get('/', [SetMenuController::class, 'getAll']);
+                    Route::post('/', [SetMenuController::class, 'store']);
+                    Route::get('/{setMenuId}', [SetMenuController::class, 'get']);
+                    Route::put('/{setMenuId}', [SetMenuController::class, 'update']);
+                    Route::delete('/{setMenuId}', [MenuController::class, 'archive']);
+                });
+
+                // 指名メニュー
+                Route::prefix('/selectionMenus')->group(function () {
+                    Route::get('/', [SelectionMenuController::class, 'getAll']);
+                    Route::post('/', [SelectionMenuController::class, 'store']);
+                    Route::get('/{selectionMenuId}', [SelectionMenuController::class, 'get']);
+                    Route::put('/{selectionMenuId}', [SelectionMenuController::class, 'update']);
+                    Route::delete('/{selectionMenuId}', [SelectionMenuController::class, 'archive']);
+                });
+
+                // 卓マスタ
+                Route::prefix('/tables')->group(function () {
+                    Route::get('/', [TableController::class, 'getAll']);
+                    Route::post('/', [TableController::class, 'store']);
+                    Route::get('/{tableId}', [TableController::class, 'get']);
+                    Route::put('/{tableId}', [TableController::class, 'update']);
+                    Route::delete('/{tableId}', [TableController::class, 'archive']);
+                });
+
+                // 支払い方法マスタ
+                Route::prefix('/paymentMethods')->group(function () {
+                    Route::get('/', [PaymentMethodController::class, 'getAll']);
+                    Route::post('/', [PaymentMethodController::class, 'store']);
+                    Route::get('/{paymentMethodId}', [PaymentMethodController::class, 'get']);
+                    Route::put('/{paymentMethodId}', [PaymentMethodController::class, 'update']);
+                    Route::delete('/{paymentMethodId}', [PaymentMethodController::class, 'archive']);
+                });
             });
         });
     });
@@ -151,50 +196,50 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //     Route::delete('/{id}', [MenuCategoryController::class, 'archive']);
     // });
 
-    // メニュー
-    Route::prefix('/menus')->group(function () {
-        Route::get('/', [MenuController::class, 'getAll']);
-        Route::post('/', [MenuController::class, 'store']);
-        Route::get('/{id}', [MenuController::class, 'get']);
-        Route::put('/{id}', [MenuController::class, 'update']);
-        Route::delete('/{id}', [MenuController::class, 'archive']);
-    });
+    // // メニュー
+    // Route::prefix('/menus')->group(function () {
+    //     Route::get('/', [MenuController::class, 'getAll']);
+    //     Route::post('/', [MenuController::class, 'store']);
+    //     Route::get('/{id}', [MenuController::class, 'get']);
+    //     Route::put('/{id}', [MenuController::class, 'update']);
+    //     Route::delete('/{id}', [MenuController::class, 'archive']);
+    // });
 
-    // セットメニュー
-    Route::prefix('/setMenus')->group(function () {
-        Route::get('/', [SetMenuController::class, 'getAll']);
-        Route::post('/', [SetMenuController::class, 'store']);
-        Route::get('/{id}', [SetMenuController::class, 'get']);
-        Route::put('/{id}', [SetMenuController::class, 'update']);
-        Route::delete('/{id}', [MenuController::class, 'archive']);
-    });
+    // // セットメニュー
+    // Route::prefix('/setMenus')->group(function () {
+    //     Route::get('/', [SetMenuController::class, 'getAll']);
+    //     Route::post('/', [SetMenuController::class, 'store']);
+    //     Route::get('/{id}', [SetMenuController::class, 'get']);
+    //     Route::put('/{id}', [SetMenuController::class, 'update']);
+    //     Route::delete('/{id}', [MenuController::class, 'archive']);
+    // });
 
-    // 指名メニュー
-    Route::prefix('/selectionMenus')->group(function () {
-        Route::get('/', [SelectionMenuController::class, 'getAll']);
-        Route::post('/', [SelectionMenuController::class, 'store']);
-        Route::get('/{id}', [SelectionMenuController::class, 'get']);
-        Route::put('/{id}', [SelectionMenuController::class, 'update']);
-        Route::delete('/{id}', [SelectionMenuController::class, 'archive']);
-    });
+    // // 指名メニュー
+    // Route::prefix('/selectionMenus')->group(function () {
+    //     Route::get('/', [SelectionMenuController::class, 'getAll']);
+    //     Route::post('/', [SelectionMenuController::class, 'store']);
+    //     Route::get('/{id}', [SelectionMenuController::class, 'get']);
+    //     Route::put('/{id}', [SelectionMenuController::class, 'update']);
+    //     Route::delete('/{id}', [SelectionMenuController::class, 'archive']);
+    // });
 
-    // 卓マスタ
-    Route::prefix('/tables')->group(function () {
-        Route::get('/', [TableController::class, 'getAll']);
-        Route::post('/', [TableController::class, 'store']);
-        Route::get('/{id}', [TableController::class, 'get']);
-        Route::put('/{id}', [TableController::class, 'update']);
-        Route::delete('/{id}', [TableController::class, 'archive']);
-    });
+    // // 卓マスタ
+    // Route::prefix('/tables')->group(function () {
+    //     Route::get('/', [TableController::class, 'getAll']);
+    //     Route::post('/', [TableController::class, 'store']);
+    //     Route::get('/{id}', [TableController::class, 'get']);
+    //     Route::put('/{id}', [TableController::class, 'update']);
+    //     Route::delete('/{id}', [TableController::class, 'archive']);
+    // });
 
-    // 支払い方法マスタ
-    Route::prefix('/paymentMethods')->group(function () {
-        Route::get('/', [PaymentMethodController::class, 'getAll']);
-        Route::post('/', [PaymentMethodController::class, 'store']);
-        Route::get('/{id}', [PaymentMethodController::class, 'get']);
-        Route::put('/{id}', [PaymentMethodController::class, 'update']);
-        Route::delete('/{id}', [PaymentMethodController::class, 'archive']);
-    });
+    // // 支払い方法マスタ
+    // Route::prefix('/paymentMethods')->group(function () {
+    //     Route::get('/', [PaymentMethodController::class, 'getAll']);
+    //     Route::post('/', [PaymentMethodController::class, 'store']);
+    //     Route::get('/{id}', [PaymentMethodController::class, 'get']);
+    //     Route::put('/{id}', [PaymentMethodController::class, 'update']);
+    //     Route::delete('/{id}', [PaymentMethodController::class, 'archive']);
+    // });
 
     // 開店準備
     Route::prefix('/openingPreparation')->group(function () {

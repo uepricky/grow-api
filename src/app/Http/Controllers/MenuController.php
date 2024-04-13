@@ -29,29 +29,16 @@ class MenuController extends Controller
     ) {
     }
 
-    public function getAll(StoreIdRequest $request)
+    public function getAll(int $storeId)
     {
         // ストアの取得
-        $store = $this->storeRepo->findStore($request->storeId);
+        $store = $this->storeRepo->findStore($storeId);
 
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['ストア情報の読み込みができませんでした']
             ], 404);
-        }
-
-        // 権限チェック
-        $hasPermission = $this->userServ->hasStorePermission(
-            $request->user(),
-            $store,
-            Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
-        );
-        if (!$hasPermission) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
         }
 
         // メニューカテゴリを取得
@@ -63,7 +50,7 @@ class MenuController extends Controller
         ], 200);
     }
 
-    public function store(MenuRequest $request)
+    public function store(MenuRequest $request, int $storeId)
     {
         // メニューカテゴリの取得
         $menuCategory = $this->menuCategoryRepo->find($request->menu['menu_category_id']);
@@ -75,7 +62,7 @@ class MenuController extends Controller
         }
 
         // ストアの取得
-        $store = $this->storeRepo->findStore($menuCategory->store_id);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
@@ -91,10 +78,10 @@ class MenuController extends Controller
         ], 200);
     }
 
-    public function get(int $id)
+    public function get(int $storeId, int $menuId)
     {
         // メニューの取得
-        $menu = $this->menuRepo->find($id);
+        $menu = $this->menuRepo->find($menuId);
         if (is_null($menu)) {
             return response()->json([
                 'status' => 'failure',
@@ -112,7 +99,7 @@ class MenuController extends Controller
         }
 
         // ストアの取得
-        $store = $this->storeRepo->findStore($menuCategory->store_id);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
@@ -128,10 +115,10 @@ class MenuController extends Controller
         ], 200);
     }
 
-    public function update(MenuRequest $request, int $id)
+    public function update(MenuRequest $request, int $storeId, int $menuId)
     {
         // メニューの取得
-        $menu = $this->menuRepo->find($id);
+        $menu = $this->menuRepo->find($menuId);
         if (is_null($menu)) {
             return response()->json([
                 'status' => 'failure',
@@ -149,7 +136,7 @@ class MenuController extends Controller
         }
 
         // ストアの取得
-        $store = $this->storeRepo->findStore($menuCategory->store_id);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
@@ -187,10 +174,10 @@ class MenuController extends Controller
         ], 200);
     }
 
-    public function archive(int $id)
+    public function archive(int $storeId, int $menuId)
     {
         // メニューの取得
-        $menu = $this->menuRepo->find($id);
+        $menu = $this->menuRepo->find($menuId);
         if (is_null($menu)) {
             return response()->json([
                 'status' => 'failure',
@@ -208,7 +195,7 @@ class MenuController extends Controller
         }
 
         // ストアの取得
-        $store = $this->storeRepo->findStore($menuCategory->store_id);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',

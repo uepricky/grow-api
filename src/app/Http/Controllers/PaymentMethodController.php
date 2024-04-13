@@ -31,29 +31,16 @@ class PaymentMethodController extends Controller
     ) {
     }
 
-    public function getAll(StoreIdRequest $request)
+    public function getAll(int $storeId)
     {
         // ストアの取得
-        $store = $this->storeRepo->findStore($request->storeId);
+        $store = $this->storeRepo->findStore($storeId);
 
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['ストア情報の読み込みができませんでした']
             ], 404);
-        }
-
-        // 権限チェック
-        $hasPermission = $this->userServ->hasStorePermission(
-            $request->user(),
-            $store,
-            Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
-        );
-        if (!$hasPermission) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
         }
 
         // 支払い方法を取得
@@ -65,10 +52,10 @@ class PaymentMethodController extends Controller
         ], 200);
     }
 
-    public function store(PaymentMethodRequest $request)
+    public function store(int $storeId, PaymentMethodRequest $request)
     {
         // ストアの取得
-        $store = $this->storeRepo->findStore($request->payment_method['store_id']);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
@@ -84,10 +71,10 @@ class PaymentMethodController extends Controller
         ], 200);
     }
 
-    public function get(int $id)
+    public function get(int $storeId, int $paymentMethodId)
     {
         // 支払い方法の取得
-        $paymentMethod = $this->paymentMethodRepo->find($id);
+        $paymentMethod = $this->paymentMethodRepo->find($paymentMethodId);
         if (is_null($paymentMethod)) {
             return response()->json([
                 'status' => 'failure',
@@ -96,7 +83,7 @@ class PaymentMethodController extends Controller
         }
 
         // ストアの取得
-        $store = $this->storeRepo->findStore($paymentMethod->store_id);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
@@ -110,10 +97,10 @@ class PaymentMethodController extends Controller
         ], 200);
     }
 
-    public function update(PaymentMethodRequest $request, int $id)
+    public function update(PaymentMethodRequest $request, int $storeId, int $paymentMethodId)
     {
         // 支払い方法の取得
-        $paymentMethod = $this->paymentMethodRepo->find($id);
+        $paymentMethod = $this->paymentMethodRepo->find($paymentMethodId);
         if (is_null($paymentMethod)) {
             return response()->json([
                 'status' => 'failure',
@@ -122,7 +109,7 @@ class PaymentMethodController extends Controller
         }
 
         // ストアの取得
-        $store = $this->storeRepo->findStore($paymentMethod->store_id);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
@@ -160,10 +147,10 @@ class PaymentMethodController extends Controller
         ], 200);
     }
 
-    public function archive(int $id)
+    public function archive(int $storeId, int $paymentMethodId)
     {
         // 支払い方法の取得
-        $paymentMethod = $this->paymentMethodRepo->find($id);
+        $paymentMethod = $this->paymentMethodRepo->find($paymentMethodId);
         if (is_null($paymentMethod)) {
             return response()->json([
                 'status' => 'failure',
@@ -172,7 +159,7 @@ class PaymentMethodController extends Controller
         }
 
         // ストアの取得
-        $store = $this->storeRepo->findStore($paymentMethod->store_id);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
