@@ -5,7 +5,7 @@ namespace App\Repositories\StoreRoleRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\{
-    PermissionV2StoreRole,
+    StoreRole,
     User,
     Store
 };
@@ -13,7 +13,7 @@ use App\Models\{
 
 class StoreRoleRepository implements StoreRoleRepositoryInterface
 {
-    public function __construct(PermissionV2StoreRole $model)
+    public function __construct(StoreRole $model)
     {
         $this->model = $model;
     }
@@ -24,9 +24,9 @@ class StoreRoleRepository implements StoreRoleRepositoryInterface
     /**
      * @param array $data
      *
-     * @return PermissionV2StoreRole
+     * @return StoreRole
      */
-    public function createStoreRole(array $data): PermissionV2StoreRole
+    public function createStoreRole(array $data): StoreRole
     {
         return $this->model->create($data);
     }
@@ -37,9 +37,9 @@ class StoreRoleRepository implements StoreRoleRepositoryInterface
     /**
      * @param int $storeId
      * @param string $storeRoleName
-     * @return PermissionV2StoreRole
+     * @return StoreRole
      */
-    public function getStoreRoleByName(int $storeId, string $storeRoleName): PermissionV2StoreRole
+    public function getStoreRoleByName(int $storeId, string $storeRoleName): StoreRole
     {
         return $this->model->where('store_id', $storeId)->where('name', $storeRoleName)->first();
     }
@@ -61,7 +61,7 @@ class StoreRoleRepository implements StoreRoleRepositoryInterface
      */
     public function getUserStoreRoles(User $user): Collection
     {
-        return $user->permissionV2StoreRoles;
+        return $user->storeRoles;
     }
 
     /**
@@ -98,10 +98,10 @@ class StoreRoleRepository implements StoreRoleRepositoryInterface
      ***********************************************************/
     /**
      *　権限をグループロールにアタッチする
-     *  @param PermissionV2StoreRole $StoreRole
+     *  @param StoreRole $StoreRole
      *  @param array $permissionIds
      */
-    public function attachPermissionsToStoreRole(PermissionV2StoreRole $StoreRole, array $permissionIds): void
+    public function attachPermissionsToStoreRole(StoreRole $StoreRole, array $permissionIds): void
     {
         $StoreRole->permissions()->attach($permissionIds);
     }

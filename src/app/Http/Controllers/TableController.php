@@ -9,7 +9,7 @@ use App\Http\Requests\{
     StoreIdRequest
 };
 use App\Models\{
-    PermissionV2Permission,
+    Permission,
     Table
 };
 use App\Repositories\{
@@ -46,7 +46,7 @@ class TableController extends Controller
         $hasPermission = $this->userServ->hasStorePermission(
             $request->user(),
             $store,
-            PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+            Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
         );
         if (!$hasPermission) {
             return response()->json([

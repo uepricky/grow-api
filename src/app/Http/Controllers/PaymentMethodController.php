@@ -11,7 +11,7 @@ use App\Http\Requests\{
 use App\Models\{
     Store,
     PaymentMethod,
-    PermissionV2Permission
+    Permission
 };
 use App\Repositories\{
     PaymentMethodRepository\PaymentMethodRepositoryInterface,
@@ -47,7 +47,7 @@ class PaymentMethodController extends Controller
         $hasPermission = $this->userServ->hasStorePermission(
             $request->user(),
             $store,
-            PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+            Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
         );
         if (!$hasPermission) {
             return response()->json([

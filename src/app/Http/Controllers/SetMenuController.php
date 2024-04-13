@@ -16,7 +16,7 @@ use App\Repositories\{
 use App\Models\{
     Menu,
     SysMenuCategory,
-    PermissionV2Permission
+    Permission
 };
 use App\Services\UserService\UserServiceInterface;
 
@@ -48,7 +48,7 @@ class SetMenuController extends Controller
         $hasPermission = $this->userServ->hasStorePermission(
             $request->user(),
             $store,
-            PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+            Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
         );
         if (!$hasPermission) {
             return response()->json([

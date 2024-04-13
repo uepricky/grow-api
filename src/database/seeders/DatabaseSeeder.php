@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             ConsumptionTaxTypeSeeder::class,
             SysMenuCategorySeeder::class,
             SysPaymentMethodCategorySeeder::class,
-            PermissionV2PermissionSeeder::class,
+            PermissionSeeder::class,
         ]);
     }
 }

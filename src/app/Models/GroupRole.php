@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PermissionV2GroupRole extends Model
+class GroupRole extends Model
 {
     use HasFactory;
 
@@ -20,6 +20,6 @@ class PermissionV2GroupRole extends Model
 
     public function permissions()
     {
-        return $this->belongsToMany(PermissionV2Permission::class, 'permission_v2_group_role_permission')->withTimestamps();
+        return $this->belongsToMany(Permission::class, 'group_role_permission')->withTimestamps();
     }
 }

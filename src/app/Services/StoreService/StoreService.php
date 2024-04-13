@@ -4,7 +4,7 @@ namespace App\Services\StoreService;
 
 use App\Services\StoreService\StoreServiceInterface;
 use App\Models\{
-    PermissionV2Permission,
+    Permission,
     Store,
     RouteActionTarget,
     Table,
@@ -34,7 +34,7 @@ class StoreService implements StoreServiceInterface
     //     'MANAGER' => [
     //         'name' => 'マネージャー',
     //         'permissionIds' => [
-    //             PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+    //             Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
     //         ]
     //     ],
     //     'STAFF' => [

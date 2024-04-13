@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Services\StoreService;
+
 use App\Models\{
     Store,
-    PermissionV2Permission
+    Permission
 };
 
 interface StoreServiceInterface
@@ -12,7 +13,7 @@ interface StoreServiceInterface
         'MANAGER' => [
             'name' => 'マネージャー',
             'permissionIds' => [
-                PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+                Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
             ]
         ],
         'STAFF' => [

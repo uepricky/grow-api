@@ -9,7 +9,7 @@ use App\Models\{
     ContractUser,
     GeneralUser,
     Store,
-    PermissionV2StoreRole,
+    StoreRole,
     BusinessDate,
 };
 use Illuminate\Support\Facades\DB;
@@ -119,14 +119,14 @@ class UserRepository implements UserRepositoryInterface
 
     /**
      * ストアロールに属する出勤ユーザー一覧を取得
-     * @param PermissionV2StoreRole $storeRole
+     * @param StoreRole $storeRole
      * @param BusinessDate $businessDate
      * @param array $columns
      * @param string $orderBy
      * @param string $sortBy
      * @return Collection
      */
-    public function getAttendanceUsersByStoreRole(PermissionV2StoreRole $storeRole, BusinessDate $businessDate, $columns = array('*'), string $orderBy = 'display_name', string $sortBy = 'asc'): Collection
+    public function getAttendanceUsersByStoreRole(StoreRole $storeRole, BusinessDate $businessDate, $columns = array('*'), string $orderBy = 'display_name', string $sortBy = 'asc'): Collection
     {
         return $storeRole->users()
             ->whereHas('attendances', function ($query) use ($businessDate) {
@@ -215,7 +215,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function attachStoreRolesToUser(User $user, array $storeRoleIds)
     {
-        $user->permissionV2StoreRoles()->attach($storeRoleIds);
+        $user->storeRoles()->attach($storeRoleIds);
     }
 
     /**
@@ -227,7 +227,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function syncStoreRolesToUser(User $user, array $storeRoleIds)
     {
-        $user->permissionV2StoreRoles()->sync($storeRoleIds);
+        $user->storeRoles()->sync($storeRoleIds);
     }
 
     /**
@@ -239,7 +239,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function syncGroupRolesToUser(User $user, array $groupRoleIds)
     {
-        $user->permissionV2GroupRoles()->sync($groupRoleIds);
+        $user->groupRoles()->sync($groupRoleIds);
     }
 
     /**
@@ -251,6 +251,6 @@ class UserRepository implements UserRepositoryInterface
      */
     public function attachGroupRolesToUser(User $user, array $groupRoleIds)
     {
-        $user->permissionV2GroupRoles()->attach($groupRoleIds);
+        $user->groupRoles()->attach($groupRoleIds);
     }
 }

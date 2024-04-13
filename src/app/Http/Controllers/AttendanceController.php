@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Log\CustomLog;
 use App\Models\{
     Attendance,
-    PermissionV2Permission
+    Permission
 };
 use Illuminate\Http\Request;
 use App\Repositories\{
@@ -56,7 +56,7 @@ class AttendanceController extends Controller
         $hasPermission = $this->userServ->hasStorePermission(
             $request->user(),
             $store,
-            PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+            Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
         );
         if (!$hasPermission) {
             return response()->json([
@@ -104,7 +104,7 @@ class AttendanceController extends Controller
         $hasPermission = $this->userServ->hasStorePermission(
             $request->user(),
             $store,
-            PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+            Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
         );
         if (!$hasPermission) {
             return response()->json([
@@ -153,7 +153,7 @@ class AttendanceController extends Controller
         $hasPermission = $this->userServ->hasStorePermission(
             $request->user(),
             $store,
-            PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+            Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
         );
         if (!$hasPermission) {
             return response()->json([
@@ -202,7 +202,7 @@ class AttendanceController extends Controller
         $hasPermission = $this->userServ->hasStorePermission(
             $request->user(),
             $store,
-            PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+            Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
         );
         if (!$hasPermission) {
             return response()->json([

@@ -9,7 +9,7 @@ use App\Models\{
     ContractUser,
     GeneralUser,
     Store,
-    PermissionV2StoreRole,
+    StoreRole,
     BusinessDate,
 };
 
@@ -77,14 +77,14 @@ interface UserRepositoryInterface
 
     /**
      * ストアロールに属する出勤ユーザー一覧を取得
-     * @param PermissionV2StoreRole $storeRole
+     * @param StoreRole $storeRole
      * @param BusinessDate $businessDate
      * @param array $columns
      * @param string $orderBy
      * @param string $sortBy
      * @return Collection
      */
-    public function getAttendanceUsersByStoreRole(PermissionV2StoreRole $storeRole, BusinessDate $businessDate, $columns = array('*'), string $orderBy = 'display_name', string $sortBy = 'asc'): Collection;
+    public function getAttendanceUsersByStoreRole(StoreRole $storeRole, BusinessDate $businessDate, $columns = array('*'), string $orderBy = 'display_name', string $sortBy = 'asc'): Collection;
 
     /***********************************************************
      * Update系

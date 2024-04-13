@@ -10,9 +10,9 @@ use App\Models\{
     Group,
     User,
     SysMenuCategory,
-    PermissionV2GroupRole,
-    PermissionV2Permission,
-    PermissionV2StoreRole,
+    GroupRole,
+    Permission,
+    StoreRole,
 };
 use App\Repositories\{
     UserRepository\UserRepositoryInterface,
@@ -210,7 +210,7 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         "ADMIN" => [
             'name' => '管理者',
             'permissionIds' => [
-                PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_GROUP_DASHBOARD']['id']
+                Permission::PERMISSIONS['OPERATION_UNDER_GROUP_DASHBOARD']['id']
             ]
         ]
     ];

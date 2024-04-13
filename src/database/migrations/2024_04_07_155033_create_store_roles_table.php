@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('permission_v2_store_roles', function (Blueprint $table) {
+        Schema::create('store_roles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('store_id')->constrained('stores')->cascadeOnDelete()->comment('ストアID');
             $table->string('name')->comment('ロール名');
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('permission_v2_store_roles');
+        Schema::dropIfExists('store_roles');
     }
 };

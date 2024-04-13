@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('permission_v2_permissions', function (Blueprint $table) {
-            $table->bigInteger('id')->primary();
-            $table->string('description')->comment('説明');
+        Schema::create('user_group_role', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->comment('ユーザーID');
+            $table->foreignId('group_role_id')->constrained('group_roles')->cascadeOnDelete()->comment('グループロールID');
             $table->timestamps();
         });
     }
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('permission_v2_permissions');
+        Schema::dropIfExists('user_group_role');
     }
 };
