@@ -47,6 +47,58 @@ use App\Http\Controllers\{
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [UserController::class, 'getLoggedInUser'])->name('user.getLoggedInUser');
 
+    /**************************
+     * グループ
+     *************************/
+    // Route::prefix('/groups')->group(function () {
+    // });
+
+    /**************************
+     * ストア
+     *************************/
+    Route::prefix('/stores')->group(function () {
+        Route::post('/', [StoreController::class, 'store'])->name('stores.store');
+
+        Route::prefix('/{storeId}')->group(function () {
+            Route::get('/', [StoreController::class, 'get'])->name('stores.get');
+            // パス通っていないため、個別確認
+            Route::put('/', [StoreController::class, 'update'])->name('stores.update');
+
+            // メニューカテゴリー
+            Route::prefix('/menuCategories')->group(function () {
+                Route::get('/', [MenuCategoryController::class, 'getAll']);
+                Route::post('/', [MenuCategoryController::class, 'store']);
+                Route::get('/{menuCategoriyId}', [MenuCategoryController::class, 'get']);
+                Route::put('/{menuCategoriyId}', [MenuCategoryController::class, 'update']);
+                Route::delete('/{menuCategoriyId}', [MenuCategoryController::class, 'archive']);
+            });
+        });
+    });
+
+
+
+    /**
+     * 以下既存ソースすべてここより上に引っ越し
+     */
+
+    // 店舗
+    Route::prefix('/stores')->group(function () {
+
+        //     Route::post('/', [StoreController::class, 'store'])->name('stores.store');
+        //     Route::get('/{id}', [StoreController::class, 'get'])->name('stores.get');
+        //     // Route::put('/{id}', [StoreController::class, 'update'])->name('stores.update');
+
+        //     Route::delete('/{id}', [StoreController::class, 'archive'])->name('stores.archive');
+
+        // 特定の店舗に属する各種情報についてAPI
+        Route::prefix('/{storeId}')->group(function () {
+            // サブスクリプション
+            Route::prefix('/subscriptions')->group(function () {
+                Route::get('/', [SubscriptionController::class, 'getSubscriptionStatus']);
+            });
+        });
+    });
+
     // ユーザー
     Route::prefix('/users')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('users.index');
@@ -84,33 +136,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // システム支払いカテゴリ
     Route::get('/sysPaymentMethods', [SysPaymentMethodController::class, 'getAll']);
 
-    // 店舗
-    Route::prefix('/stores')->group(function () {
-        // 以下のgetメソッドおかしいから、利用箇所確認して修正
-        Route::get('/', [StoreController::class, 'create'])->name('stores.create');
-        Route::post('/', [StoreController::class, 'store'])->name('stores.store');
-        Route::get('/{id}', [StoreController::class, 'get'])->name('stores.get');
-        Route::put('/{id}', [StoreController::class, 'update'])->name('stores.update');
 
-        Route::delete('/{id}', [StoreController::class, 'archive'])->name('stores.archive');
-
-        // 特定の店舗に属する各種情報についてAPI
-        Route::prefix('/{storeId}')->group(function () {
-            // サブスクリプション
-            Route::prefix('/subscriptions')->group(function () {
-                Route::get('/', [SubscriptionController::class, 'getSubscriptionStatus']);
-            });
-        });
-    });
 
     // メニューカテゴリー
-    Route::prefix('/menuCategories')->group(function () {
-        Route::get('/', [MenuCategoryController::class, 'getAll']);
-        Route::post('/', [MenuCategoryController::class, 'store']);
-        Route::get('/{id}', [MenuCategoryController::class, 'get']);
-        Route::put('/{id}', [MenuCategoryController::class, 'update']);
-        Route::delete('/{id}', [MenuCategoryController::class, 'archive']);
-    });
+    // Route::prefix('/menuCategories')->group(function () {
+    //     Route::get('/', [MenuCategoryController::class, 'getAll']);
+    //     Route::post('/', [MenuCategoryController::class, 'store']);
+    //     Route::get('/{id}', [MenuCategoryController::class, 'get']);
+    //     Route::put('/{id}', [MenuCategoryController::class, 'update']);
+    //     Route::delete('/{id}', [MenuCategoryController::class, 'archive']);
+    // });
 
     // メニュー
     Route::prefix('/menus')->group(function () {

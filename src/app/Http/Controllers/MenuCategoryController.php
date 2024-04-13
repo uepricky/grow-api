@@ -83,10 +83,10 @@ class MenuCategoryController extends Controller
         ], 200);
     }
 
-    public function get(int $id)
+    public function get(int $storeId, int $menuCategoriyId)
     {
         // メニューカテゴリの取得
-        $menuCategory = $this->menuCategoryRepo->find($id);
+        $menuCategory = $this->menuCategoryRepo->find($menuCategoriyId);
         if (is_null($menuCategory)) {
             return response()->json([
                 'status' => 'failure',
@@ -109,10 +109,10 @@ class MenuCategoryController extends Controller
         ], 200);
     }
 
-    public function update(MenuCategoryRequest $request, int $id)
+    public function update(MenuCategoryRequest $request, int $storeId, int $menuCategoriyId)
     {
         // メニューカテゴリの取得
-        $menuCategory = $this->menuCategoryRepo->find($id);
+        $menuCategory = $this->menuCategoryRepo->find($menuCategoriyId);
         if (is_null($menuCategory)) {
             return response()->json([
                 'status' => 'failure',
@@ -159,10 +159,10 @@ class MenuCategoryController extends Controller
         ], 200);
     }
 
-    public function archive(int $id)
+    public function archive(int $storeId, int $menuCategoriyId)
     {
         // メニューカテゴリの取得
-        $menuCategory = $this->menuCategoryRepo->find($id);
+        $menuCategory = $this->menuCategoryRepo->find($menuCategoriyId);
         if (is_null($menuCategory)) {
             return response()->json([
                 'status' => 'failure',
