@@ -53,17 +53,17 @@ class AttendanceController extends Controller
         }
 
         // 権限チェック
-        $hasPermission = $this->userServ->hasStorePermission(
-            $request->user(),
-            $store,
-            Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
-        );
-        if (!$hasPermission) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
-        }
+        // $hasPermission = $this->userServ->hasStorePermission(
+        //     $request->user(),
+        //     $store,
+        //     Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+        // );
+        // if (!$hasPermission) {
+        //     return response()->json([
+        //         'status' => 'failure',
+        //         'errors' => ['この操作を実行する権限がありません']
+        //     ], 403);
+        // }
 
         // 営業日付を取得
         $businessDate = $this->businessDateRepo->getCurrentBusinessDate($store);

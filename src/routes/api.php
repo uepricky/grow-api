@@ -56,24 +56,28 @@ Route::middleware(['auth:sanctum'])->group(function () {
     /**************************
      * ストア
      *************************/
-    Route::prefix('/stores')->group(function () {
-        Route::post('/', [StoreController::class, 'store'])->name('stores.store');
+    Route::middleware(['hasStorePermission'])->group(function () {
+        Route::prefix('/stores')->group(function () {
+            Route::post('/', [StoreController::class, 'store'])->name('stores.store');
 
-        Route::prefix('/{storeId}')->group(function () {
-            Route::get('/', [StoreController::class, 'get'])->name('stores.get');
-            // パス通っていないため、個別確認
-            Route::put('/', [StoreController::class, 'update'])->name('stores.update');
+            Route::prefix('/{storeId}')->group(function () {
+                Route::get('/', [StoreController::class, 'get'])->name('stores.get');
+                // パス通っていないため、個別確認
+                Route::put('/', [StoreController::class, 'update'])->name('stores.update');
 
-            // メニューカテゴリー
-            Route::prefix('/menuCategories')->group(function () {
-                Route::get('/', [MenuCategoryController::class, 'getAll']);
-                Route::post('/', [MenuCategoryController::class, 'store']);
-                Route::get('/{menuCategoriyId}', [MenuCategoryController::class, 'get']);
-                Route::put('/{menuCategoriyId}', [MenuCategoryController::class, 'update']);
-                Route::delete('/{menuCategoriyId}', [MenuCategoryController::class, 'archive']);
+                // メニューカテゴリー
+                Route::prefix('/menuCategories')->group(function () {
+                    Route::get('/', [MenuCategoryController::class, 'getAll']);
+                    Route::post('/', [MenuCategoryController::class, 'store']);
+                    Route::get('/{menuCategoriyId}', [MenuCategoryController::class, 'get']);
+                    Route::put('/{menuCategoriyId}', [MenuCategoryController::class, 'update']);
+                    Route::delete('/{menuCategoriyId}', [MenuCategoryController::class, 'archive']);
+                });
             });
         });
     });
+
+
 
 
 
