@@ -17,14 +17,9 @@ class DatabaseSeeder extends Seeder
             DigitsSeeder::class,
             RoundingMethodsSeeder::class,
             ConsumptionTaxTypeSeeder::class,
-            RouteActionSeeder::class,
-            TargetsTableSeeder::class,
-            RouteActionTargetSeeder::class,
-            RolesTableSeeder::class,
             SysMenuCategorySeeder::class,
             SysPaymentMethodCategorySeeder::class,
-            PermissionV2PermissionSeeder::class,
+            PermissionSeeder::class,
         ]);
-
     }
 }

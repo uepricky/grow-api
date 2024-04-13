@@ -9,7 +9,7 @@ use App\Http\Requests\{
     StoreIdRequest
 };
 use App\Models\{
-    PermissionV2Permission,
+    Permission,
     Table
 };
 use App\Repositories\{
@@ -27,7 +27,8 @@ class TableController extends Controller
         public readonly StoreRepositoryInterface $storeRepo,
 
         public readonly UserServiceInterface $userServ,
-    ) {}
+    ) {
+    }
 
     public function getAll(StoreIdRequest $request)
     {
@@ -45,7 +46,7 @@ class TableController extends Controller
         $hasPermission = $this->userServ->hasStorePermission(
             $request->user(),
             $store,
-            PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+            Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
         );
         if (!$hasPermission) {
             return response()->json([
@@ -72,16 +73,6 @@ class TableController extends Controller
                 'status' => 'failure',
                 'errors' => ['ストア情報の読み込みができませんでした']
             ], 404);
-        }
-
-        // Policy確認
-        try {
-            $this->authorize('create', [Table::class, $store, $request->table['store_id']]);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
         }
 
         // 新規登録
@@ -112,16 +103,6 @@ class TableController extends Controller
             ], 404);
         }
 
-        // Policy確認
-        try {
-            $this->authorize('viewAny', [Table::class, $store]);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
-        }
-
         return response()->json([
             'status' => 'success',
             'data' => $table
@@ -146,16 +127,6 @@ class TableController extends Controller
                 'status' => 'failure',
                 'errors' => ['ストア情報の読み込みができませんでした']
             ], 404);
-        }
-
-        // Policy確認
-        try {
-            $this->authorize('update', [Table::class, $store, $table, $request->table['store_id']]);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
         }
 
         // トランザクションを開始する
@@ -206,17 +177,6 @@ class TableController extends Controller
                 'errors' => ['ストア情報の読み込みができませんでした']
             ], 404);
         }
-
-        // Policy確認
-        try {
-            $this->authorize('delete', [Table::class, $store, $table]);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
-        }
-
 
         $this->tableRepo->softDeleteTable($table);
 

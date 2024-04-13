@@ -20,10 +20,6 @@ use App\Repositories\StoreDetailRepository\{
     StoreDetailRepositoryInterface,
     StoreDetailRepository
 };
-use App\Repositories\RoleRepository\{
-    RoleRepositoryInterface,
-    RoleRepository
-};
 use App\Repositories\TableRepository\{
     TableRepositoryInterface,
     TableRepository
@@ -178,11 +174,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             StoreDetailRepositoryInterface::class,
             StoreDetailRepository::class
-        );
-
-        $this->app->bind(
-            RoleRepositoryInterface::class,
-            RoleRepository::class
         );
 
         $this->app->bind(

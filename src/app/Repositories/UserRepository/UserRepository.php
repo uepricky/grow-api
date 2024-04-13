@@ -215,7 +215,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function attachStoreRolesToUser(User $user, array $storeRoleIds)
     {
-        $user->permissionV2StoreRoles()->attach($storeRoleIds);
+        $user->storeRoles()->attach($storeRoleIds);
     }
 
     /**
@@ -227,7 +227,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function syncStoreRolesToUser(User $user, array $storeRoleIds)
     {
-        $user->permissionV2StoreRoles()->sync($storeRoleIds);
+        $user->storeRoles()->sync($storeRoleIds);
     }
 
     /**
@@ -239,7 +239,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function syncGroupRolesToUser(User $user, array $groupRoleIds)
     {
-        $user->permissionV2GroupRoles()->sync($groupRoleIds);
+        $user->groupRoles()->sync($groupRoleIds);
     }
 
     /**
@@ -251,6 +251,6 @@ class UserRepository implements UserRepositoryInterface
      */
     public function attachGroupRolesToUser(User $user, array $groupRoleIds)
     {
-        $user->permissionV2GroupRoles()->attach($groupRoleIds);
+        $user->groupRoles()->attach($groupRoleIds);
     }
 }

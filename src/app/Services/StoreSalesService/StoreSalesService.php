@@ -13,10 +13,10 @@ use App\Repositories\{
     BillPaymentRepository\BillPaymentRepositoryInterface,
     PaymentMethodRepository\PaymentMethodRepositoryInterface,
     NumberOfCustomerRepository\NumberOfCustomerRepositoryInterface,
-    RoleRepository\RoleRepositoryInterface,
     AttendanceRepository\AttendanceRepositoryInterface,
     UserRepository\UserRepositoryInterface,
-    CashRegisterRepository\CashRegisterRepositoryInterface
+    CashRegisterRepository\CashRegisterRepositoryInterface,
+    StoreRoleRepository\StoreRoleRepositoryInterface,
 };
 use Illuminate\Support\Collection;
 
@@ -27,10 +27,10 @@ class StoreSalesService implements StoreSalesServiceInterface
         public readonly BillPaymentRepositoryInterface $billPaymentRepo,
         public readonly PaymentMethodRepositoryInterface $paymentMethodRepo,
         public readonly NumberOfCustomerRepositoryInterface $numberOfCustomerRepo,
-        public readonly RoleRepositoryInterface $roleRepo,
         public readonly UserRepositoryInterface $userRepo,
         public readonly AttendanceRepositoryInterface $attendanceRepo,
         public readonly CashRegisterRepositoryInterface $cashRegisterRepo,
+        public readonly StoreRoleRepositoryInterface $storeRoleRepo,
     ) {
     }
 
@@ -125,8 +125,10 @@ class StoreSalesService implements StoreSalesServiceInterface
 
     private function getUserAttendanceNumberByRole(Store $store, BusinessDate $businessDate)
     {
+        // TODO: getStoreRoles, businessDate, getAttendanceUsersByStoreRoleの組み合わせをserviceに移動3箇所あるよ
         // 店舗に属するストアロール一覧を取得
-        $storeRoles = $this->roleRepo->getStoreRolesByStore($store);
+        // $storeRoles = $this->roleRepo->getStoreRolesByStore($store);
+        $storeRoles = $this->storeRoleRepo->getStoreRoles($store->id);
 
         // ロール別出勤者数を取得
         $userAttendanceNumberByRole = [];
@@ -136,7 +138,7 @@ class StoreSalesService implements StoreSalesServiceInterface
 
             $userAttendanceNumberByRole[$storeRole->role_id] = [
                 'attendanceNumber' => $users->count(),
-                'roleName' => $storeRole->role->name,
+                'roleName' => $storeRole->name,
             ];
         }
 

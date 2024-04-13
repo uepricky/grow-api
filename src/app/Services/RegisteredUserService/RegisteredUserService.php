@@ -7,20 +7,16 @@ use App\Services\{
     StoreService\StoreServiceInterface,
 };
 use App\Models\{
-    DefaultGroupRole,
     Group,
     User,
-    RouteActionTarget,
     SysMenuCategory,
-    DefaultStoreRole,
-    PermissionV2GroupRole,
-    PermissionV2Permission,
-    PermissionV2StoreRole,
+    GroupRole,
+    Permission,
+    StoreRole,
 };
 use App\Repositories\{
     UserRepository\UserRepositoryInterface,
     GroupRepository\GroupRepositoryInterface,
-    RoleRepository\RoleRepositoryInterface,
     MenuCategoryRepository\MenuCategoryRepositoryInterface,
     MenuRepository\MenuRepositoryInterface,
     SetMenuRepository\SetMenuRepositoryInterface,
@@ -214,7 +210,7 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         "ADMIN" => [
             'name' => '管理者',
             'permissionIds' => [
-                PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_GROUP_DASHBOARD']['id']
+                Permission::PERMISSIONS['OPERATION_UNDER_GROUP_DASHBOARD']['id']
             ]
         ]
     ];
@@ -222,7 +218,6 @@ class RegisteredUserService implements RegisteredUserServiceInterface
     public function __construct(
         public readonly UserRepositoryInterface $userRepo,
         public readonly GroupRepositoryInterface $groupRepo,
-        public readonly RoleRepositoryInterface $roleRepo,
         public readonly MenuCategoryRepositoryInterface $menuCategoryRepo,
         public readonly MenuRepositoryInterface $menuRepo,
         public readonly SetMenuRepositoryInterface $setMenuRepo,
@@ -445,20 +440,5 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         ]);
 
         return $group;
-    }
-
-    /**
-     * ユーザーに管理者権限を付与する
-     * @param Group $group
-     * @param User $user
-     * @param int $groupId
-     * @return void
-     */
-    private function attachDefaultAdminRoleToUser(User $user, int $groupId)
-    {
-        $adminRole = $this->roleRepo->getDefaultAdminGroupRole($groupId);
-
-        // ユーザーに管理者権限を付与
-        $this->roleRepo->attachGroupRolesToUser($user, [$adminRole->id]);
     }
 }

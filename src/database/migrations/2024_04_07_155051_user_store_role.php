@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('route_actions', function (Blueprint $table) {
-            // テーブル論理名
-            $table->comment('ルートアクションマスタ');
-
-            $table->unsignedBigInteger('id')->unique();
-            $table->string('name')->unique()->comment('Controller@method');
+        Schema::create('user_store_role', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->comment('ユーザーID');
+            $table->foreignId('store_role_id')->constrained('store_roles')->cascadeOnDelete()->comment('ストアロールID');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('route_actions');
+        Schema::dropIfExists('user_store_role');
     }
 };

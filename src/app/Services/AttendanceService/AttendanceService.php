@@ -7,7 +7,6 @@ use App\Services\AttendanceService\AttendanceServiceInterface;
 
 use App\Repositories\{
     AttendanceRepository\AttendanceRepositoryInterface,
-    RoleRepository\RoleRepositoryInterface,
     BusinessDateRepository\BusinessDateRepositoryInterface,
 };
 use App\Utils\TimeUtility;
@@ -32,7 +31,6 @@ class AttendanceService implements AttendanceServiceInterface
 
     public function __construct(
         public readonly AttendanceRepositoryInterface $attendanceRepo,
-        public readonly RoleRepositoryInterface $roleRepo,
         public readonly BusinessDateRepositoryInterface $businessDateRepo,
     ) {
     }
@@ -140,18 +138,12 @@ class AttendanceService implements AttendanceServiceInterface
      */
     public function getFormattedAttendanceInfo(Collection $users, BusinessDate $businessDate, Store $store): Collection
     {
+        // TODO: bladeに渡す用の加工だったため、見直し
         $formattedUsers = collect();
         foreach ($users as $key => $user) {
             $formattedUser = [];
             $formattedUser['id'] = $user->id;
             $formattedUser['display_name'] = $user->display_name;
-
-            // ユーザーの属するロール取得
-            $storeRoles = $this->roleRepo->getUserStoreRoles($user, $store->id);
-            foreach ($storeRoles as $roleKey => $storeRole) {
-                $formattedUser['roles'][$roleKey]['id'] = $storeRole->role->id;
-                $formattedUser['roles'][$roleKey]['name'] = $storeRole->role->name;
-            }
 
             // 勤退情報取得
             $attendance = $this->attendanceRepo->getStoreUserAttendance(

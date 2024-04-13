@@ -4,7 +4,7 @@ namespace App\Services\StoreService;
 
 use App\Services\StoreService\StoreServiceInterface;
 use App\Models\{
-    PermissionV2Permission,
+    Permission,
     Store,
     RouteActionTarget,
     Table,
@@ -12,7 +12,6 @@ use App\Models\{
 use App\Repositories\{
     StoreRepository\StoreRepositoryInterface,
     StoreDetailRepository\StoreDetailRepositoryInterface,
-    RoleRepository\RoleRepositoryInterface,
     TableRepository\TableRepositoryInterface,
 };
 use App\Repositories\StoreRoleRepository\StoreRoleRepositoryInterface;
@@ -35,7 +34,7 @@ class StoreService implements StoreServiceInterface
     //     'MANAGER' => [
     //         'name' => 'マネージャー',
     //         'permissionIds' => [
-    //             PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+    //             Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
     //         ]
     //     ],
     //     'STAFF' => [
@@ -51,7 +50,6 @@ class StoreService implements StoreServiceInterface
     public function __construct(
         public readonly StoreRepositoryInterface $storeRepo,
         public readonly StoreDetailRepositoryInterface $storeDetailRepo,
-        public readonly RoleRepositoryInterface $roleRepo,
         public readonly TableRepositoryInterface $tableRepo,
 
         public readonly StoreRoleRepositoryInterface $storeRoleRepo,

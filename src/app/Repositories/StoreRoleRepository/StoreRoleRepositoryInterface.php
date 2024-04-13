@@ -5,7 +5,7 @@ namespace App\Repositories\StoreRoleRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\{
-    PermissionV2StoreRole,
+    StoreRole,
     User,
     Store
 };
@@ -18,9 +18,9 @@ interface StoreRoleRepositoryInterface
     /**
      * @param array $data
      *
-     * @return PermissionV2StoreRole
+     * @return StoreRole
      */
-    public function createStoreRole(array $data): PermissionV2StoreRole;
+    public function createStoreRole(array $data): StoreRole;
 
     /***********************************************************
      * Read系
@@ -28,9 +28,9 @@ interface StoreRoleRepositoryInterface
     /**
      * @param int $storeId
      * @param string $storeRoleName
-     * @return PermissionV2StoreRole
+     * @return StoreRole
      */
-    public function getStoreRoleByName(int $storeId, string $storeRoleName): PermissionV2StoreRole;
+    public function getStoreRoleByName(int $storeId, string $storeRoleName): StoreRole;
 
     /**
      * ストアロール一覧を取得する
@@ -74,8 +74,8 @@ interface StoreRoleRepositoryInterface
      ***********************************************************/
     /**
      *　権限をグループロールにアタッチする
-     *  @param PermissionV2StoreRole $StoreRole
+     *  @param StoreRole $StoreRole
      *  @param array $permissionIds
      */
-    public function attachPermissionsToStoreRole(PermissionV2StoreRole $StoreRole, array $permissionIds): void;
+    public function attachPermissionsToStoreRole(StoreRole $StoreRole, array $permissionIds): void;
 }

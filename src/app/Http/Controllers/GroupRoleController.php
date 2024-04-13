@@ -8,7 +8,6 @@ use App\Repositories\{
     StoreRepository\StoreRepositoryInterface,
     BusinessDateRepository\BusinessDateRepositoryInterface,
     UserRepository\UserRepositoryInterface,
-    RoleRepository\RoleRepositoryInterface,
 };
 use App\Repositories\GroupRoleRepository\GroupRoleRepositoryInterface;
 
@@ -18,8 +17,6 @@ class GroupRoleController extends Controller
         public readonly StoreRepositoryInterface $storeRepo,
         public readonly BusinessDateRepositoryInterface $businessDateRepo,
         public readonly UserRepositoryInterface $userRepo,
-        public readonly RoleRepositoryInterface $roleRepo,
-
         public readonly GroupRoleRepositoryInterface $groupRoleRepo,
     ) {
     }

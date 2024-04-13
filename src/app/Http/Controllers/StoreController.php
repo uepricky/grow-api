@@ -29,8 +29,6 @@ class StoreController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', Store::class);
-
         $group_id = auth()->user()->groups->first()->id;
 
         return view('store.create', compact('group_id'));
@@ -106,8 +104,6 @@ class StoreController extends Controller
     public function update(StoreRequest $request, int $id)
     {
         $store = $this->storeRepo->findStore($id);
-
-        $this->authorize('update', $store);
 
         // グループIDを付与
         $group_id = auth()->user()->groups->first()->id;

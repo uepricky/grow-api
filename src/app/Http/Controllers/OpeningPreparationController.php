@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Log\CustomLog;
 use App\Models\{
     Store,
-    PermissionV2Permission
+    Permission
 };
 use App\Repositories\{
     UserRepository\UserRepositoryInterface,
@@ -46,7 +46,7 @@ class OpeningPreparationController extends Controller
         $hasPermission = $this->userServ->hasStorePermission(
             $request->user(),
             $store,
-            PermissionV2Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+            Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
         );
 
         if (!$hasPermission) {
