@@ -10,7 +10,6 @@ use App\Http\Requests\User\UserRequest;
 use Illuminate\Http\Request;
 use App\Repositories\{
     UserRepository\UserRepositoryInterface,
-    RoleRepository\RoleRepositoryInterface,
     GroupRepository\GroupRepositoryInterface,
     GroupRoleRepository\GroupRoleRepositoryInterface,
 };
@@ -24,7 +23,6 @@ class UserController extends Controller
 {
     public function __construct(
         public readonly UserRepositoryInterface $userRepo,
-        public readonly RoleRepositoryInterface $roleRepo,
         public readonly GroupRepositoryInterface $groupRepo,
         public readonly RoleServiceInterface $roleServ,
         public readonly GroupRoleRepositoryInterface $groupRoleRepo,

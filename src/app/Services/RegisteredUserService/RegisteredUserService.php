@@ -7,12 +7,9 @@ use App\Services\{
     StoreService\StoreServiceInterface,
 };
 use App\Models\{
-    DefaultGroupRole,
     Group,
     User,
-    RouteActionTarget,
     SysMenuCategory,
-    DefaultStoreRole,
     PermissionV2GroupRole,
     PermissionV2Permission,
     PermissionV2StoreRole,
@@ -20,7 +17,6 @@ use App\Models\{
 use App\Repositories\{
     UserRepository\UserRepositoryInterface,
     GroupRepository\GroupRepositoryInterface,
-    RoleRepository\RoleRepositoryInterface,
     MenuCategoryRepository\MenuCategoryRepositoryInterface,
     MenuRepository\MenuRepositoryInterface,
     SetMenuRepository\SetMenuRepositoryInterface,
@@ -222,7 +218,6 @@ class RegisteredUserService implements RegisteredUserServiceInterface
     public function __construct(
         public readonly UserRepositoryInterface $userRepo,
         public readonly GroupRepositoryInterface $groupRepo,
-        public readonly RoleRepositoryInterface $roleRepo,
         public readonly MenuCategoryRepositoryInterface $menuCategoryRepo,
         public readonly MenuRepositoryInterface $menuRepo,
         public readonly SetMenuRepositoryInterface $setMenuRepo,

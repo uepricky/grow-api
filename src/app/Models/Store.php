@@ -28,11 +28,6 @@ class Store extends Model
         return $this->hasMany(StoreDetail::class);
     }
 
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class, 'store_role')->withTimestamps();
-    }
-
     public function groups()
     {
         return $this->belongsTo(Group::class);

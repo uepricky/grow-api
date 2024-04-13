@@ -12,7 +12,6 @@ use App\Models\{
 use App\Repositories\{
     StoreRepository\StoreRepositoryInterface,
     StoreDetailRepository\StoreDetailRepositoryInterface,
-    RoleRepository\RoleRepositoryInterface,
     TableRepository\TableRepositoryInterface,
 };
 use App\Repositories\StoreRoleRepository\StoreRoleRepositoryInterface;
@@ -51,7 +50,6 @@ class StoreService implements StoreServiceInterface
     public function __construct(
         public readonly StoreRepositoryInterface $storeRepo,
         public readonly StoreDetailRepositoryInterface $storeDetailRepo,
-        public readonly RoleRepositoryInterface $roleRepo,
         public readonly TableRepositoryInterface $tableRepo,
 
         public readonly StoreRoleRepositoryInterface $storeRoleRepo,

@@ -86,16 +86,6 @@ class User extends Authenticatable
         return $this->belongsToMany(Store::class, 'store_user')->withTimestamps();
     }
 
-    public function groupRoles()
-    {
-        return $this->belongsToMany(GroupRole::class, 'group_role_user');
-    }
-
-    public function storeRoles()
-    {
-        return $this->belongsToMany(StoreRole::class, 'store_role_user');
-    }
-
     public function permissionV2StoreRoles()
     {
         return $this->belongsToMany(PermissionV2StoreRole::class, 'permission_v2_user_store_role');

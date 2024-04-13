@@ -7,7 +7,6 @@ use App\Services\AttendanceService\AttendanceServiceInterface;
 
 use App\Repositories\{
     AttendanceRepository\AttendanceRepositoryInterface,
-    RoleRepository\RoleRepositoryInterface,
     BusinessDateRepository\BusinessDateRepositoryInterface,
 };
 use App\Utils\TimeUtility;
@@ -32,7 +31,6 @@ class AttendanceService implements AttendanceServiceInterface
 
     public function __construct(
         public readonly AttendanceRepositoryInterface $attendanceRepo,
-        public readonly RoleRepositoryInterface $roleRepo,
         public readonly BusinessDateRepositoryInterface $businessDateRepo,
     ) {
     }

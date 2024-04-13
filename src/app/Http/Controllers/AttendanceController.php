@@ -19,7 +19,6 @@ use App\Repositories\{
     UserRepository\UserRepositoryInterface,
     BusinessDateRepository\BusinessDateRepositoryInterface,
     AttendanceRepository\AttendanceRepositoryInterface,
-    RoleRepository\RoleRepositoryInterface,
     StoreRepository\StoreRepositoryInterface,
 };
 use App\Services\{
@@ -35,7 +34,6 @@ class AttendanceController extends Controller
         public readonly UserRepositoryInterface $userRepo,
         public readonly BusinessDateRepositoryInterface $businessDateRepo,
         public readonly AttendanceRepositoryInterface $attendanceRepo,
-        public readonly RoleRepositoryInterface $roleRepo,
         public readonly StoreRepositoryInterface $storeRepo,
 
         public readonly AttendanceServiceInterface $attendanceServ,

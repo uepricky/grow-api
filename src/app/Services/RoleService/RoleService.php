@@ -8,7 +8,6 @@ use App\Models\{
     Group,
 };
 use App\Repositories\{
-    RoleRepository\RoleRepositoryInterface,
     StoreRepository\StoreRepositoryInterface,
     StoreRoleRepository\StoreRoleRepositoryInterface
 };
@@ -17,11 +16,11 @@ use App\Repositories\{
 class RoleService implements RoleServiceInterface
 {
     public function __construct(
-        public readonly RoleRepositoryInterface $roleRepo,
         public readonly StoreRepositoryInterface $storeRepo,
 
         public readonly StoreRoleRepositoryInterface $storeRoleRepo,
-    ) {}
+    ) {
+    }
 
     /**
      * グループに属するストア一覧のストアロール一覧を取得

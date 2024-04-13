@@ -21,7 +21,6 @@ use App\Repositories\{
 
     MenuCategoryRepository\MenuCategoryRepositoryInterface,
     MenuRepository\MenuRepositoryInterface,
-    RoleRepository\RoleRepositoryInterface,
     UserRepository\UserRepositoryInterface,
     BusinessDateRepository\BusinessDateRepositoryInterface,
     TableRepository\TableRepositoryInterface,
@@ -47,7 +46,6 @@ class OrderController extends Controller
 
         public readonly MenuCategoryRepositoryInterface $menuCategoryRepo,
         public readonly MenuRepositoryInterface $menuRepo,
-        public readonly RoleRepositoryInterface $roleRepo,
         public readonly UserRepositoryInterface $userRepo,
         public readonly BusinessDateRepositoryInterface $businessDateRepo,
         public readonly TableRepositoryInterface $tableRepo,
