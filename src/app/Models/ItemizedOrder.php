@@ -22,4 +22,9 @@ class ItemizedOrder extends Model
     {
         return $this->hasOne(ItemizedSetOrder::class);
     }
+
+    public function bill()
+    {
+        return $this->belongsTo(Bill::class);
+    }
 }

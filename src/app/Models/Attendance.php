@@ -38,6 +38,11 @@ class Attendance extends Model
         return $this->belongsTo(BusinessDate::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function deductions()
     {
         return $this->hasMany(Deduction::class);

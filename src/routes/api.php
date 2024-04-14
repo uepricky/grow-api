@@ -26,6 +26,9 @@ use App\Http\Controllers\{
     ClosingStoreController,
     DeductionController,
     BusinessDateController,
+    StoreReportController,
+    StoreRoleController,
+    UserIncentiveController,
     SubscriptionController,
 };
 
@@ -120,6 +123,31 @@ Route::middleware(['auth:sanctum'])->group(function () {
                     Route::get('/{paymentMethodId}', [PaymentMethodController::class, 'get']);
                     Route::put('/{paymentMethodId}', [PaymentMethodController::class, 'update']);
                     Route::delete('/{paymentMethodId}', [PaymentMethodController::class, 'archive']);
+                });
+
+                // ストアロール
+                Route::prefix('/storeRoles')->group(function () {
+                    Route::get('/', [StoreRoleController::class, 'getAll']);
+                });
+
+                // 店舗レポート
+                Route::prefix('/storeReports')->group(function () {
+                    Route::get('/{yearMonth}', [StoreReportController::class, 'get']);
+                });
+
+                // 店舗に属するユーザー一覧
+                Route::prefix('/storeUsers')->group(function () {
+                    Route::get('/{storeRoleId}', [UserController::class, 'getStoreRoleUsers']);
+                });
+
+                // ユーザーインセンティブ
+                Route::prefix('/userIncentives')->group(function () {
+                    Route::get('/{yearMonth}', [UserIncentiveController::class, 'get']);
+                });
+
+                // 勤怠情報
+                Route::prefix('/attendances')->group(function () {
+                    Route::get('/{yearMonth}/{storeRoleId}', [AttendanceController::class, 'getSpecifiedPeriodAttendances']);
                 });
 
                 /****************************

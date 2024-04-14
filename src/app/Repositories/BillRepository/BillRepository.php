@@ -8,6 +8,7 @@ use App\Models\{
     BusinessDate,
     Store
 };
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 class BillRepository implements BillRepositoryInterface
@@ -130,6 +131,37 @@ class BillRepository implements BillRepositoryInterface
                 'billPayments'
             ])
             ->get();
+    }
+
+    /**
+     *
+     */
+    public function getYearMonthStoreBills(int $storeId, string $yearMonth): Collection
+    {
+        $carbonYearMonth = Carbon::createFromFormat('Y-m', $yearMonth);
+
+        return $this->model
+                    ->where('store_id', $storeId)
+                    ->whereNotNull('departure_time')
+                    ->whereHas('businessDate', function ($query) use ($carbonYearMonth) {
+                        $query->whereBetween('business_date', [
+                            $carbonYearMonth->startOfMonth()->toDateString(),
+                            $carbonYearMonth->endOfMonth()->toDateString()
+                        ]);
+                        $query->whereNotNull('closing_time');
+                    })
+                    ->with([
+                        'numberOfCustomer',
+                        'businessDate.attendances',
+                        'itemizedOrders.orders.menu.setMenu',
+                        'itemizedOrders.orders.menu.menuCategory',
+                        'itemizedOrders.orders.userIncentive.user',
+                        'itemizedOrders.orders.modifiedOrders' => function($query) {
+                            $query->latest()->limit(1);
+                        },
+                    ])
+                    ->get()
+                    ->groupBy('businessDate.business_date');
     }
 
     /***********************************************************

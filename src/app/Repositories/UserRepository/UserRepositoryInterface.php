@@ -76,6 +76,17 @@ interface UserRepositoryInterface
     public function getStoreUsers(Store $store, $columns = array('*'), string $orderBy = 'display_name', string $sortBy = 'desc'): Collection;
 
     /**
+     * ストアロールに属するユーザー一覧を取得
+     * @param Store $store
+     * @param int $storeRoleId
+     * @param array $columns
+     * @param string $orderBy
+     * @param string $sortBy
+     * @return Collection
+     */
+    public function getStoreUsersByStoreRole(Store $store, int $storeRoleId, $columns = array('*'), string $orderBy = 'display_name', string $sortBy = 'desc'): Collection;
+
+    /**
      * ストアロールに属する出勤ユーザー一覧を取得
      * @param StoreRole $storeRole
      * @param BusinessDate $businessDate
