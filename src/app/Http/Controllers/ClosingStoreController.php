@@ -11,7 +11,6 @@ use App\Repositories\{
     BusinessDateRepository\BusinessDateRepositoryInterface,
     CashRegisterRepository\CashRegisterRepositoryInterface,
     StoreRepository\StoreRepositoryInterface,
-
 };
 use App\Services\StoreSalesService\StoreSalesServiceInterface;
 use Illuminate\Support\Facades\DB;
@@ -28,10 +27,10 @@ class ClosingStoreController extends Controller
     ) {
     }
 
-    public function preparation(StoreIdRequest $request)
+    public function preparation(int $storeId)
     {
         // ストアの取得
-        $store = $this->storeRepo->findStore($request->storeId);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
@@ -62,10 +61,10 @@ class ClosingStoreController extends Controller
         ], 200);
     }
 
-    public function register(Request $request)
+    public function register(Request $request, int $storeId)
     {
         // ストアの取得
-        $store = $this->storeRepo->findStore($request->store_id);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',

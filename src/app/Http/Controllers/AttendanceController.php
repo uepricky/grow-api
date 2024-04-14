@@ -41,10 +41,10 @@ class AttendanceController extends Controller
     ) {
     }
 
-    public function get(StoreIdRequest $request)
+    public function get(int $storeId, string $businessDate)
     {
         // ストアの取得
-        $store = $this->storeRepo->findStore($request->storeId);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
@@ -52,20 +52,8 @@ class AttendanceController extends Controller
             ], 404);
         }
 
-        // 権限チェック
-        $hasPermission = $this->userServ->hasStorePermission(
-            $request->user(),
-            $store,
-            Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
-        );
-        if (!$hasPermission) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
-        }
-
         // 営業日付を取得
+        // TODO: 引数の$businessDateを元にモデル取得へ修正
         $businessDate = $this->businessDateRepo->getCurrentBusinessDate($store);
         if (!$businessDate) {
             return response()->json([
@@ -89,28 +77,15 @@ class AttendanceController extends Controller
         ], 200);
     }
 
-    public function bulkUpdate(AttendanceRequest $request)
+    public function bulkUpdate(AttendanceRequest $request, int $storeId, string $businessDate)
     {
         // ストアの取得
-        $store = $this->storeRepo->findStore($request->store_id);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['ストア情報の読み込みができませんでした']
             ], 404);
-        }
-
-        // 権限チェック
-        $hasPermission = $this->userServ->hasStorePermission(
-            $request->user(),
-            $store,
-            Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
-        );
-        if (!$hasPermission) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
         }
 
         // トランザクションを開始する
@@ -138,28 +113,15 @@ class AttendanceController extends Controller
         ], 200);
     }
 
-    public function updateTardyAbsence(TardyAbsenceRequest $request)
+    public function updateTardyAbsence(TardyAbsenceRequest $request, int $storeId, string $businessDate)
     {
         // ストアの取得
-        $store = $this->storeRepo->findStore($request->store_id);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['ストア情報の読み込みができませんでした']
             ], 404);
-        }
-
-        // 権限チェック
-        $hasPermission = $this->userServ->hasStorePermission(
-            $request->user(),
-            $store,
-            Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
-        );
-        if (!$hasPermission) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
         }
 
         // トランザクションを開始する
