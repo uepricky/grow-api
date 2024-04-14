@@ -8,7 +8,7 @@ use App\Repositories\{
     StoreRepository\StoreRepositoryInterface,
     BusinessDateRepository\BusinessDateRepositoryInterface,
     UserRepository\UserRepositoryInterface,
-    RoleRepository\RoleRepositoryInterface,
+    StoreRoleRepository\StoreRoleRepositoryInterface,
 };
 
 class RollController extends Controller
@@ -17,8 +17,9 @@ class RollController extends Controller
         public readonly StoreRepositoryInterface $storeRepo,
         public readonly BusinessDateRepositoryInterface $businessDateRepo,
         public readonly UserRepositoryInterface $userRepo,
-        public readonly RoleRepositoryInterface $roleRepo,
-    ) {}
+        public readonly StoreRoleRepositoryInterface $storeRoleRepo,
+    ) {
+    }
 
     public function getStoreRoles(StoreIdRequest $request)
     {
@@ -28,7 +29,7 @@ class RollController extends Controller
         // 営業日付を取得
         $businessDate = $this->businessDateRepo->getCurrentBusinessDate($store);
 
-        $storeRoles = $this->roleRepo->getStoreRolesByStore($store);
+        $storeRoles = $this->storeRoleRepo->getStoreRoles($store->id);
 
         foreach ($storeRoles as $key => $storeRole) {
             $storeRoles[$key]['users'] = $this->userRepo->getAttendanceUsersByStoreRole($storeRole, $businessDate);

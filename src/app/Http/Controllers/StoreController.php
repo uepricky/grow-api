@@ -25,18 +25,6 @@ class StoreController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        $this->authorize('create', Store::class);
-
-        $group_id = auth()->user()->groups->first()->id;
-
-        return view('store.create', compact('group_id'));
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreRequest $request)
@@ -107,8 +95,6 @@ class StoreController extends Controller
     {
         $store = $this->storeRepo->findStore($id);
 
-        $this->authorize('update', $store);
-
         // グループIDを付与
         $group_id = auth()->user()->groups->first()->id;
 
@@ -143,14 +129,5 @@ class StoreController extends Controller
             'data' => [],
             'messages' => ['店舗の編集が完了しました。']
         ], 200);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function archive(string $id)
-    {
-        // もろもろ未実装
-        // 店舗の追加、削除は、契約変更を伴うため、stripe実装後に実装する
     }
 }

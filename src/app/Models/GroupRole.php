@@ -9,15 +9,17 @@ class GroupRole extends Model
 {
     use HasFactory;
 
-    protected $table = 'group_role';
+    protected $fillable = [
+        'group_id',
+        'name',
+    ];
 
-    public function users()
-    {
-        return $this->belongsToMany(User::class);
-    }
+    const DEFAULT_GROUP_ROLES = [
+        "ADMIN" => ['name' => '管理者']
+    ];
 
-    public function role()
+    public function permissions()
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsToMany(Permission::class, 'group_role_permission')->withTimestamps();
     }
 }

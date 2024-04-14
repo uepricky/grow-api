@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('default_store_roles', function (Blueprint $table) {
-            // テーブル論理名
-            $table->comment('デフォルトストアロール');
-
+        Schema::create('store_role_permission', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('role_id')->constrained('roles')->cascadeOnDelete()->comment('ロールID');
+            $table->foreignId('permission_id')->constrained('permissions')->cascadeOnDelete()->comment('パーミッションID');
+            $table->foreignId('store_role_id')->constrained('store_roles')->cascadeOnDelete()->comment('ストアロールID');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('default_store_roles');
+        Schema::dropIfExists('store_role_permission');
     }
 };

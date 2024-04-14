@@ -20,10 +20,6 @@ use App\Repositories\StoreDetailRepository\{
     StoreDetailRepositoryInterface,
     StoreDetailRepository
 };
-use App\Repositories\RoleRepository\{
-    RoleRepositoryInterface,
-    RoleRepository
-};
 use App\Repositories\TableRepository\{
     TableRepositoryInterface,
     TableRepository
@@ -101,10 +97,30 @@ use App\Repositories\DeductionRepository\{
     DeductionRepository
 };
 
+use App\Repositories\GroupRoleRepository\{
+    GroupRoleRepository,
+    GroupRoleRepositoryInterface
+};
+
+use App\Repositories\StoreRoleRepository\{
+    StoreRoleRepository,
+    StoreRoleRepositoryInterface
+};
+
 class RepositoryServiceProvider extends ServiceProvider
 {
     public function register()
     {
+        $this->app->bind(
+            StoreRoleRepositoryInterface::class,
+            StoreRoleRepository::class
+        );
+
+        $this->app->bind(
+            GroupRoleRepositoryInterface::class,
+            GroupRoleRepository::class
+        );
+
         $this->app->bind(
             DeductionRepositoryInterface::class,
             DeductionRepository::class
@@ -158,11 +174,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             StoreDetailRepositoryInterface::class,
             StoreDetailRepository::class
-        );
-
-        $this->app->bind(
-            RoleRepositoryInterface::class,
-            RoleRepository::class
         );
 
         $this->app->bind(

@@ -26,7 +26,47 @@ class DeductionController extends Controller
     ) {
     }
 
-    public function updateOrInsert(DeductionRequest $request)
+    public function get($storeId, $businessDate, $userId)
+    {
+        // BusinessDateを取得
+        $businessDate = $this->businessDateRepo->getBusinessDateByStoreIdAndDate(
+            $storeId,
+            $businessDate
+        );
+
+        if (is_null($businessDate)) {
+            // 開店画面へ遷移
+        }
+
+        // Userを取得
+        $targetUser = $this->userRepo->find($userId);
+
+        // Attendanceを取得
+        $attendance = $this->attendanceRepo->getStoreUserAttendance(
+            $targetUser,
+            $businessDate
+        );
+
+        if (is_null($attendance)) {
+            return response([
+                'status' => 'success',
+                'message' => '取得しました。',
+                'data' => []
+            ], 200);
+        }
+
+        // 控除一覧を取得
+        $deductions = $this->deductionRepo->getAttendanceDeductions($attendance);
+
+
+        return response([
+            'status' => 'success',
+            'message' => '取得しました。',
+            'data' => $deductions
+        ], 200);
+    }
+
+    public function updateOrInsert(DeductionRequest $request, $storeId, $businessDate)
     {
         // 更新または保存
         $store = $this->storeRepo->findStore($request->attendanceIdentifier['store_id']);
@@ -85,48 +125,6 @@ class DeductionController extends Controller
             'status' => 'success',
             'message' => '保存しました。',
             'data' => $deductionData
-        ], 200);
-    }
-
-    public function get($business_date, $store_id, $user_id)
-    {
-        // BusinessDateを取得
-        $businessDate = $this->businessDateRepo->getBusinessDateByStoreIdAndDate(
-            $store_id,
-            $business_date
-        );
-
-        if (is_null($businessDate)) {
-            // 開店画面へ遷移
-        }
-
-        // Userを取得
-        $targetUser = $this->userRepo->find($user_id);
-
-        // Attendanceを取得
-        $attendance = $this->attendanceRepo->getStoreUserAttendance(
-            $targetUser,
-            $businessDate
-        );
-
-        if (is_null($attendance)) {
-            return response([
-                'status' => 'success',
-                'message' => '取得しました。',
-                'data' => []
-            ], 200);
-        }
-
-        // 控除一覧を取得
-        $deductions = $this->deductionRepo->getAttendanceDeductions($attendance);
-
-
-        return response([
-            'status' => 'success',
-            'message' => '取得しました。',
-            'data' => [
-                $deductions
-            ]
         ], 200);
     }
 }

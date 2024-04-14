@@ -15,6 +15,7 @@ class GroupController extends Controller
     public function __construct(
         public readonly StoreRepositoryInterface $storeRepo,
         public readonly RoleServiceInterface $roleServ,
+
     ) {
     }
 

@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
-            // テーブル論理名
-            $table->comment('ロール');
-
+        Schema::create('group_role_permission', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->comment('ロール名');
+            $table->foreignId('permission_id')->constrained('permissions')->cascadeOnDelete()->comment('パーミッションID');
+            $table->foreignId('group_role_id')->constrained('group_roles')->cascadeOnDelete()->comment('グループロールID');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('group_role_permission');
     }
 };

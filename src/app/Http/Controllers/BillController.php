@@ -39,12 +39,13 @@ class BillController extends Controller
         public readonly StoreRepositoryInterface $storeRepo,
 
         public readonly OrderServiceInterface $orderServ,
-    ) {}
+    ) {
+    }
 
-    public function getAll(StoreIdRequest $request)
+    public function getAll(int $storeId, string $businessDate)
     {
         // ストアの取得
-        $store = $this->storeRepo->findStore($request->storeId);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
@@ -52,17 +53,8 @@ class BillController extends Controller
             ], 404);
         }
 
-        // Policy確認
-        // try {
-        //     $this->authorize('viewAny', [Attendance::class, $store]);
-        // } catch (AuthorizationException $e) {
-        //     return response()->json([
-        //         'status' => 'failure',
-        //         'errors' => ['この操作を実行する権限がありません']
-        //     ], 403);
-        // }
-
         // 開始日時を取得
+        // TODO: businessDateの取得は、引数の$businessDateを利用する
         $businessDate = $this->businessDateRepo->getCurrentBusinessDate($store);
 
         // 伝票情報を取得
@@ -77,9 +69,9 @@ class BillController extends Controller
         ], 200);
     }
 
-    public function get(int $id)
+    public function get(int $storeId, string $businessDate, int $billId)
     {
-        $bill = $this->billRepo->find($id);
+        $bill = $this->billRepo->find($billId);
         if (is_null($bill)) {
             return response()->json([
                 'status' => 'failure',
@@ -93,10 +85,10 @@ class BillController extends Controller
         ], 200);
     }
 
-    public function store(BillRequest $request)
+    public function store(BillRequest $request, int $storeId, string $businessDate)
     {
         // ストアの取得
-        $store = $this->storeRepo->findStore($request->bill['store_id']);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
@@ -104,17 +96,8 @@ class BillController extends Controller
             ], 404);
         }
 
-        // Policy確認
-        // try {
-        //     $this->authorize('viewAny', [Attendance::class, $store]);
-        // } catch (AuthorizationException $e) {
-        //     return response()->json([
-        //         'status' => 'failure',
-        //         'errors' => ['この操作を実行する権限がありません']
-        //     ], 403);
-        // }
-
         // 開始日時を取得
+        // TODO: businessDateの取得は、引数の$businessDateを利用する
         $businessDate = $this->businessDateRepo->getCurrentBusinessDate($store);
         list($hh, $mm) = explode(':', $request->start_at);
         $startAt = TimeUtility::caluculateDateTime($businessDate, $hh, $mm);

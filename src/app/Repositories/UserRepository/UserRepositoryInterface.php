@@ -15,10 +15,10 @@ use App\Models\{
 
 interface UserRepositoryInterface
 {
-     /***********************************************************
+    /***********************************************************
      * Create系
      ***********************************************************/
-     /**
+    /**
      * ユーザーを作成する
      *
      * @param array $data ユーザー作成に必要なデータ
@@ -117,7 +117,7 @@ interface UserRepositoryInterface
      */
     public function updateGeneralUser(User $user, array $userData, array $generalUserData): bool;
 
-     /***********************************************************
+    /***********************************************************
      * Delete系
      ***********************************************************/
     /**
@@ -127,7 +127,7 @@ interface UserRepositoryInterface
      */
     public function softDeleteUser(User $user): void;
 
-     /***********************************************************
+    /***********************************************************
      * その他
      ***********************************************************/
     /**
@@ -145,4 +145,40 @@ interface UserRepositoryInterface
      * @return void
      */
     public function attachToStores(User $user, array $storeIds): void;
+
+    /**
+     * ユーザーにストアロールを所属させる
+     * @param User $user
+     * @param array $storeRoleIds
+     *
+     * @return void
+     */
+    public function attachStoreRolesToUser(User $user, array $storeRoleIds);
+
+    /**
+     * ユーザーとストアロールを同期する
+     * @param User $user
+     * @param array $storeRoleIds
+     *
+     * @return void
+     */
+    public function syncStoreRolesToUser(User $user, array $storeRoleIds);
+
+    /**
+     * ユーザーとグループロールを同期する
+     * @param User $user
+     * @param array $groupRoleIds
+     *
+     * @return void
+     */
+    public function syncGroupRolesToUser(User $user, array $groupRoleIds);
+
+    /**
+     * グループロールを所属させる
+     * @param User $user
+     * @param array $groupRoleIds
+     *
+     * @return void
+     */
+    public function attachGroupRolesToUser(User $user, array $groupRoleIds);
 }

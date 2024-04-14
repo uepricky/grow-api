@@ -10,18 +10,21 @@ use App\Http\Requests\Attendance\{
 use App\Http\Requests\StoreIdRequest;
 use Illuminate\Support\Facades\DB;
 use App\Log\CustomLog;
-use App\Models\Attendance;
+use App\Models\{
+    Attendance,
+    Permission
+};
 use Illuminate\Http\Request;
 use App\Repositories\{
     UserRepository\UserRepositoryInterface,
     BusinessDateRepository\BusinessDateRepositoryInterface,
     AttendanceRepository\AttendanceRepositoryInterface,
-    RoleRepository\RoleRepositoryInterface,
     StoreRepository\StoreRepositoryInterface,
 };
 use App\Services\{
     AttendanceService\AttendanceServiceInterface,
 };
+use App\Services\UserService\UserServiceInterface;
 use Illuminate\Auth\Access\AuthorizationException;
 
 
@@ -31,17 +34,17 @@ class AttendanceController extends Controller
         public readonly UserRepositoryInterface $userRepo,
         public readonly BusinessDateRepositoryInterface $businessDateRepo,
         public readonly AttendanceRepositoryInterface $attendanceRepo,
-        public readonly RoleRepositoryInterface $roleRepo,
         public readonly StoreRepositoryInterface $storeRepo,
 
         public readonly AttendanceServiceInterface $attendanceServ,
+        public readonly UserServiceInterface $userServ,
     ) {
     }
 
-    public function get(StoreIdRequest $request)
+    public function get(int $storeId, string $businessDate)
     {
         // ストアの取得
-        $store = $this->storeRepo->findStore($request->storeId);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
@@ -49,17 +52,8 @@ class AttendanceController extends Controller
             ], 404);
         }
 
-        // Policy確認
-        try {
-            $this->authorize('viewAny', [Attendance::class, $store]);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
-        }
-
         // 営業日付を取得
+        // TODO: 引数の$businessDateを元にモデル取得へ修正
         $businessDate = $this->businessDateRepo->getCurrentBusinessDate($store);
         if (!$businessDate) {
             return response()->json([
@@ -83,25 +77,15 @@ class AttendanceController extends Controller
         ], 200);
     }
 
-    public function bulkUpdate(AttendanceRequest $request)
+    public function bulkUpdate(AttendanceRequest $request, int $storeId, string $businessDate)
     {
         // ストアの取得
-        $store = $this->storeRepo->findStore($request->store_id);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['ストア情報の読み込みができませんでした']
             ], 404);
-        }
-
-        // Policy確認
-        try {
-            $this->authorize('update', [Attendance::class, $store, $request->store_id]);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
         }
 
         // トランザクションを開始する
@@ -129,25 +113,15 @@ class AttendanceController extends Controller
         ], 200);
     }
 
-    public function updateTardyAbsence(TardyAbsenceRequest $request)
+    public function updateTardyAbsence(TardyAbsenceRequest $request, int $storeId, string $businessDate)
     {
         // ストアの取得
-        $store = $this->storeRepo->findStore($request->store_id);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['ストア情報の読み込みができませんでした']
             ], 404);
-        }
-
-        // Policy確認
-        try {
-            $this->authorize('update', [Attendance::class, $store, $request->store_id]);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
         }
 
         // トランザクションを開始する
@@ -186,10 +160,13 @@ class AttendanceController extends Controller
             ], 404);
         }
 
-        // Policy確認
-        try {
-            $this->authorize('update', [Attendance::class, $store, $request->store_id]);
-        } catch (AuthorizationException $e) {
+        // 権限チェック
+        $hasPermission = $this->userServ->hasStorePermission(
+            $request->user(),
+            $store,
+            Permission::PERMISSIONS['OPERATION_UNDER_STORE_DASHBOARD']['id']
+        );
+        if (!$hasPermission) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['この操作を実行する権限がありません']

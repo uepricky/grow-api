@@ -27,7 +27,7 @@ class PayrollPaymentRequest extends BaseFormRequest
             'store_id' => 'required|numeric',
             'business_date_id' => 'required|numeric',
             'attendances.user_id' => 'required|numeric',
-            'attendances.payment_type' => 'required|numeric',
+            'attendances.payment_type' => 'required|string',
             'attendances.payment_amount' => 'required|numeric',
             'attendances.payment_source' => 'nullable|bool',
         ];

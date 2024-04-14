@@ -9,15 +9,18 @@ class StoreRole extends Model
 {
     use HasFactory;
 
-    protected $table = 'store_role';
+    protected $fillable = [
+        'store_id',
+        'name',
+    ];
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'store_role_permission')->withTimestamps();
+    }
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'store_role_user', 'store_role_id', 'user_id');
-    }
-
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
+        return $this->belongsToMany(User::class, 'user_store_role')->withTimestamps();
     }
 }

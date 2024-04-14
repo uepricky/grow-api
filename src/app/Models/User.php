@@ -9,10 +9,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Cashier\Billable;
+use function Illuminate\Events\queueable;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -52,6 +54,18 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    /**
+     * モデルの「起動(booted)」メソッド
+     */
+    protected static function booted(): void
+    {
+        static::updated(queueable(function (User $customer) {
+            if ($customer->hasStripeId()) {
+                $customer->syncStripeCustomerDetails();
+            }
+        }));
+    }
+
     public function contractUser()
     {
         return $this->hasOne(ContractUser::class);
@@ -72,14 +86,14 @@ class User extends Authenticatable
         return $this->belongsToMany(Store::class, 'store_user')->withTimestamps();
     }
 
-    public function groupRoles()
-    {
-        return $this->belongsToMany(GroupRole::class, 'group_role_user');
-    }
-
     public function storeRoles()
     {
-        return $this->belongsToMany(StoreRole::class, 'store_role_user');
+        return $this->belongsToMany(StoreRole::class, 'user_store_role');
+    }
+
+    public function groupRoles()
+    {
+        return $this->belongsToMany(GroupRole::class, 'user_group_role');
     }
 
     public function attendances()

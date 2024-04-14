@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('store_role', function (Blueprint $table) {
-            $table->comment('ストアロール');
-
+        Schema::create('group_roles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('store_id')->constrained('stores')->cascadeOnDelete()->comment('ストアID');
-            $table->foreignId('role_id')->constrained('roles')->cascadeOnDelete()->comment('ロールID');
+            $table->foreignId('group_id')->constrained('groups')->cascadeOnDelete()->comment('グループID');
+            $table->string('name')->comment('ロール名');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('store_role');
+        Schema::dropIfExists('group_roles');
     }
 };

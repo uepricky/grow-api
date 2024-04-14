@@ -10,7 +10,8 @@ use App\Http\Requests\{
 };
 use App\Models\{
     Store,
-    PaymentMethod
+    PaymentMethod,
+    Permission
 };
 use App\Repositories\{
     PaymentMethodRepository\PaymentMethodRepositoryInterface,
@@ -18,6 +19,7 @@ use App\Repositories\{
     StoreRepository\StoreRepositoryInterface
 };
 use Illuminate\Auth\Access\AuthorizationException;
+use App\Services\UserService\UserServiceInterface;
 
 class PaymentMethodController extends Controller
 {
@@ -25,28 +27,20 @@ class PaymentMethodController extends Controller
         public readonly PaymentMethodRepositoryInterface $paymentMethodRepo,
         public readonly SysPaymentMethodCategoryRepositoryInterface $sysPaymentMethodCategoryRepo,
         public readonly StoreRepositoryInterface $storeRepo,
-    ) {}
+        public readonly UserServiceInterface $userServ,
+    ) {
+    }
 
-    public function getAll(StoreIdRequest $request)
+    public function getAll(int $storeId)
     {
         // ストアの取得
-        $store = $this->storeRepo->findStore($request->storeId);
+        $store = $this->storeRepo->findStore($storeId);
 
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['ストア情報の読み込みができませんでした']
             ], 404);
-        }
-
-        // Policy確認
-        try {
-            $this->authorize('viewAny', [PaymentMethod::class, $store]);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
         }
 
         // 支払い方法を取得
@@ -58,25 +52,15 @@ class PaymentMethodController extends Controller
         ], 200);
     }
 
-    public function store(PaymentMethodRequest $request)
+    public function store(int $storeId, PaymentMethodRequest $request)
     {
         // ストアの取得
-        $store = $this->storeRepo->findStore($request->payment_method['store_id']);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['ストア情報の読み込みができませんでした']
             ], 404);
-        }
-
-        // Policy確認
-        try {
-            $this->authorize('create', [PaymentMethod::class, $store, $request->payment_method['store_id']]);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
         }
 
         // 新規登録
@@ -87,10 +71,10 @@ class PaymentMethodController extends Controller
         ], 200);
     }
 
-    public function get(int $id)
+    public function get(int $storeId, int $paymentMethodId)
     {
         // 支払い方法の取得
-        $paymentMethod = $this->paymentMethodRepo->find($id);
+        $paymentMethod = $this->paymentMethodRepo->find($paymentMethodId);
         if (is_null($paymentMethod)) {
             return response()->json([
                 'status' => 'failure',
@@ -99,22 +83,12 @@ class PaymentMethodController extends Controller
         }
 
         // ストアの取得
-        $store = $this->storeRepo->findStore($paymentMethod->store_id);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['ストア情報の読み込みができませんでした']
             ], 404);
-        }
-
-        // Policy確認
-        try {
-            $this->authorize('viewAny', [PaymentMethod::class, $store]);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
         }
 
         return response()->json([
@@ -123,10 +97,10 @@ class PaymentMethodController extends Controller
         ], 200);
     }
 
-    public function update(PaymentMethodRequest $request, int $id)
+    public function update(PaymentMethodRequest $request, int $storeId, int $paymentMethodId)
     {
         // 支払い方法の取得
-        $paymentMethod = $this->paymentMethodRepo->find($id);
+        $paymentMethod = $this->paymentMethodRepo->find($paymentMethodId);
         if (is_null($paymentMethod)) {
             return response()->json([
                 'status' => 'failure',
@@ -135,22 +109,12 @@ class PaymentMethodController extends Controller
         }
 
         // ストアの取得
-        $store = $this->storeRepo->findStore($paymentMethod->store_id);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['ストア情報の読み込みができませんでした']
             ], 404);
-        }
-
-        // Policy確認
-        try {
-            $this->authorize('update', [PaymentMethod::class, $store, $paymentMethod, $request->payment_method['store_id']]);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
         }
 
         // トランザクションを開始する
@@ -183,10 +147,10 @@ class PaymentMethodController extends Controller
         ], 200);
     }
 
-    public function archive(int $id)
+    public function archive(int $storeId, int $paymentMethodId)
     {
         // 支払い方法の取得
-        $paymentMethod = $this->paymentMethodRepo->find($id);
+        $paymentMethod = $this->paymentMethodRepo->find($paymentMethodId);
         if (is_null($paymentMethod)) {
             return response()->json([
                 'status' => 'failure',
@@ -195,22 +159,12 @@ class PaymentMethodController extends Controller
         }
 
         // ストアの取得
-        $store = $this->storeRepo->findStore($paymentMethod->store_id);
+        $store = $this->storeRepo->findStore($storeId);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
                 'errors' => ['ストア情報の読み込みができませんでした']
             ], 404);
-        }
-
-        // Policy確認
-        try {
-            $this->authorize('delete', [PaymentMethod::class, $store, $paymentMethod]);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
         }
 
         // 現在のレコードを論理削除する
@@ -222,26 +176,11 @@ class PaymentMethodController extends Controller
         ], 200);
     }
 
-
-
-
-
-
-
-
-
-
-
     /**
      * Display a listing of the resource.
      */
     public function index(Store $store)
     {
-        // Policy確認
-        $this->authorize('viewAny', [PaymentMethod::class, $store]);
-
-
-
         return view('payment_method.index', compact('paymentMethods', 'store'));
     }
 
@@ -250,9 +189,6 @@ class PaymentMethodController extends Controller
      */
     public function create(Store $store)
     {
-        // Policy確認
-        $this->authorize('create', [PaymentMethod::class, $store, $store->id]);
-
         // システム支払い方法一覧を取得
         $sysPaymentMethodCategories = $this->sysPaymentMethodCategoryRepo->getSysPaymentMethodCategories();
 
@@ -269,9 +205,6 @@ class PaymentMethodController extends Controller
      */
     public function edit(Store $store, PaymentMethod $paymentMethod)
     {
-        // Policy確認
-        $this->authorize('update', [PaymentMethod::class, $store, $paymentMethod, $store->id]);
-
         // システム支払い方法一覧を取得
         $sysPaymentMethodCategories = $this->sysPaymentMethodCategoryRepo->getSysPaymentMethodCategories();
 
@@ -281,7 +214,4 @@ class PaymentMethodController extends Controller
     /**
      * Update the specified resource in storage.
      */
-
-
-
 }

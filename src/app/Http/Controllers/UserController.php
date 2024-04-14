@@ -10,23 +10,27 @@ use App\Http\Requests\User\UserRequest;
 use Illuminate\Http\Request;
 use App\Repositories\{
     UserRepository\UserRepositoryInterface,
-    RoleRepository\RoleRepositoryInterface,
     GroupRepository\GroupRepositoryInterface,
-    StoreRepository\StoreRepositoryInterface
+    StoreRepository\StoreRepositoryInterface,
+    GroupRoleRepository\GroupRoleRepositoryInterface,
 };
 use App\Services\{
     RoleService\RoleServiceInterface
 };
+use App\Http\Requests\StoreIdRequest;
+use App\Repositories\StoreRoleRepository\StoreRoleRepositoryInterface;
 
 class UserController extends Controller
 {
     public function __construct(
         public readonly UserRepositoryInterface $userRepo,
-        public readonly RoleRepositoryInterface $roleRepo,
         public readonly GroupRepositoryInterface $groupRepo,
         public readonly StoreRepositoryInterface $storeRepo,
 
         public readonly RoleServiceInterface $roleServ,
+        public readonly GroupRoleRepositoryInterface $groupRoleRepo,
+
+        public readonly StoreRoleRepositoryInterface $storeRoleRepo,
     ) {
     }
 
@@ -47,19 +51,19 @@ class UserController extends Controller
         $generalUser = $this->userRepo->getGeneralUserData($user);
 
         // ユーザーのデフォルトグループロール一覧取得
-        $groupRole = $this->roleRepo->getUserGroupRole($user);
-        $filteredGroupRole = $groupRole->pivot->group_role_id;
+        $groupRoles = $this->groupRoleRepo->getUserGroupRoles($user);
+        $filteredGroupRole = $groupRoles->pluck('id');
 
         // ユーザーのデフォルトストアロール一覧取得
-        $userStoreRoles = $this->roleRepo->getUserStoresRoles($user);
-        $filteredStoreRoleIds = $userStoreRoles->pluck('pivot.store_role_id');
+        $userStoreRoles = $this->storeRoleRepo->getUserStoreRoles($user);
+        $filteredStoreRoleIds = $userStoreRoles->pluck('id');
 
         return response()->json([
             'status' => 'success.',
             'data' => [
                 'user' => $user,
                 'generalUser' => $generalUser,
-                'groupRole' => $filteredGroupRole,
+                'groupRoles' => $filteredGroupRole,
                 'storesRoles' => $filteredStoreRoleIds
             ]
         ], 200);
@@ -90,11 +94,13 @@ class UserController extends Controller
         // ユーザー一覧取得
         $group = auth()->user()->groups->first();
         $usersWithoutGroupRole = $this->userRepo->listGroupUsers($group);
+        // $users = $this->userRepo->listGroupUsers($group);
 
         // グループロール取得しuserに付与
+        // TODO: リファクタ
         $users = [];
         foreach ($usersWithoutGroupRole as $userWithoutGroupRole) {
-            $userWithoutGroupRole['group_role'] = $this->roleRepo->getUserGroupRole($userWithoutGroupRole);
+            $userWithoutGroupRole['group_role'] = $this->groupRoleRepo->getUserGroupRoles($userWithoutGroupRole);
             $users[] = $userWithoutGroupRole;
         }
 
@@ -125,22 +131,18 @@ class UserController extends Controller
             $this->userRepo->attachToGroup($user, $group);
 
             // ユーザーとグループロールの紐付け
-            $this->roleRepo->attachGroupRolesToUser($user, [$request->group_role]);
+            $this->userRepo->attachGroupRolesToUser($user, $request->group_roles);
 
-            if (isset($request->store_role)) {
-                // ユーザーを店舗に所属させる
-                $storeIds = array_keys($request->input('store_role'));
-                $this->userRepo->attachToStores($user, $storeIds);
-
+            if (isset($request->stores_roles)) {
                 // ユーザーとストアロールの紐付け
                 $storeRoleIds = [];
-                if ($request->has('store_role')) {
-                    $storeRoleIds = collect($request->input('store_role'))
+                if ($request->has('stores_roles')) {
+                    $storeRoleIds = collect($request->input('stores_roles'))
                         ->flatten()
                         ->all();
                 }
 
-                $this->roleRepo->attachStoreRolesToUser($user, $storeRoleIds);
+                $this->userRepo->attachStoreRolesToUser($user, $storeRoleIds);
             }
 
 
@@ -180,17 +182,25 @@ class UserController extends Controller
 
             // ユーザーとストアロールの紐付け
             $storeRoleIds = [];
-            if ($request->has('store_role')) {
-                $storeRoleIds = collect($request->input('store_role'))
+            if ($request->has('stores_roles')) {
+                $storeRoleIds = collect($request->input('stores_roles'))
+                    ->flatten()
+                    ->all();
+            }
+
+            // ストアロールをユーザーに同期する
+            $this->userRepo->syncStoreRolesToUser($user, $storeRoleIds);
+
+            // ユーザーとグループロールの紐付け
+            $groupRoleIds = [];
+            if ($request->has('group_roles')) {
+                $groupRoleIds = collect($request->input('group_roles'))
                     ->flatten()
                     ->all();
             }
 
             // グループロールをユーザーに同期する
-            $this->roleRepo->syncGroupRoleUser($user, [$request->group_role]);
-
-            // ストアロールをユーザーに同期する
-            $this->roleRepo->syncStoreRoleUser($user, $storeRoleIds);
+            $this->userRepo->syncGroupRolesToUser($user, $groupRoleIds);
 
             DB::commit();
         } catch (\Throwable $e) {
@@ -213,5 +223,21 @@ class UserController extends Controller
             'status' => 'success',
             'message' => $user->display_name . 'の削除が完了しました。'
         ], 200);
+    }
+
+    public function getUserPermissions(int $userId, StoreIdRequest $storeIdRequest)
+    {
+        // 契約者
+        $user = $this->userRepo->find($userId);
+        if (!is_null($user->contractUser)) {
+            // getAllPermissionsのようなメソッドで全権限をreturnする
+        }
+
+        // グループでの権限
+
+
+        // ストアでの権限
+        if (!is_null($storeIdRequest->storeId)) {
+        }
     }
 }

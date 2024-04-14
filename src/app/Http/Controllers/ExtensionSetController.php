@@ -36,7 +36,8 @@ class ExtensionSetController extends Controller
         public readonly StoreRepositoryInterface $storeRepo,
 
         public readonly OrderServiceInterface $orderServ,
-    ) {}
+    ) {
+    }
 
     public function store(ExtensionSetRequest $request)
     {
@@ -57,16 +58,6 @@ class ExtensionSetController extends Controller
             ], 404);
         }
 
-         // Policy確認
-        try {
-            $this->authorize('create', [ItemizedOrder::class, $store, $bill, $request->bill_id]);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
-            ], 403);
-        }
-
         // トランザクションを開始する
         DB::beginTransaction();
 
@@ -82,7 +73,7 @@ class ExtensionSetController extends Controller
             );
 
             DB::commit();
-        }catch (\Throwable $e) {
+        } catch (\Throwable $e) {
             // 例外が発生した場合はロールバックする
             DB::rollback();
 

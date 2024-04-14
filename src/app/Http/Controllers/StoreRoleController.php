@@ -5,14 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Repositories\{
     StoreRepository\StoreRepositoryInterface,
-    RoleRepository\RoleRepositoryInterface
+    StoreRoleRepository\StoreRoleRepositoryInterface
 };
 
 class StoreRoleController extends Controller
 {
     public function __construct(
         public readonly StoreRepositoryInterface $storeRepo,
-        public readonly RoleRepositoryInterface $roleRepo,
+        public readonly StoreRoleRepositoryInterface $storeRoleRepo,
     ) {}
 
     public function getAll(int $storeId)
@@ -26,7 +26,7 @@ class StoreRoleController extends Controller
             ], 404);
         }
 
-        $storeRoles = $this->roleRepo->getStoreRolesByStore($store);
+        $storeRoles = $this->storeRoleRepo->getStoreRoles($storeId);
 
         return response()->json([
             'status' => 'success',

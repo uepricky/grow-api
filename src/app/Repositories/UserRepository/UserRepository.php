@@ -129,7 +129,7 @@ class UserRepository implements UserRepositoryInterface
     public function getStoreUsersByStoreRole(Store $store, int $storeRoleId, $columns = array('*'), string $orderBy = 'display_name', string $sortBy = 'desc'): Collection
     {
         return $this->model->whereHas('storeRoles', function ($query) use ($storeRoleId) {
-            $query->where('store_role.id', $storeRoleId);
+            $query->where('store_roles.id', $storeRoleId);
         })
         ->get();
     }
@@ -221,5 +221,53 @@ class UserRepository implements UserRepositoryInterface
     public function attachToStores(User $user, array $storeIds): void
     {
         $user->stores()->attach($storeIds);
+    }
+
+    /**
+     * ユーザーにストアロールを所属させる
+     * @param User $user
+     * @param array $storeRoleIds
+     *
+     * @return void
+     */
+    public function attachStoreRolesToUser(User $user, array $storeRoleIds)
+    {
+        $user->storeRoles()->attach($storeRoleIds);
+    }
+
+    /**
+     * ユーザーとストアロールを同期する
+     * @param User $user
+     * @param array $storeRoleIds
+     *
+     * @return void
+     */
+    public function syncStoreRolesToUser(User $user, array $storeRoleIds)
+    {
+        $user->storeRoles()->sync($storeRoleIds);
+    }
+
+    /**
+     * ユーザーとグループロールを同期する
+     * @param User $user
+     * @param array $groupRoleIds
+     *
+     * @return void
+     */
+    public function syncGroupRolesToUser(User $user, array $groupRoleIds)
+    {
+        $user->groupRoles()->sync($groupRoleIds);
+    }
+
+    /**
+     * グループロールを所属させる
+     * @param User $user
+     * @param array $groupRoleIds
+     *
+     * @return void
+     */
+    public function attachGroupRolesToUser(User $user, array $groupRoleIds)
+    {
+        $user->groupRoles()->attach($groupRoleIds);
     }
 }
