@@ -86,7 +86,7 @@ class BillPaymentController extends Controller
         ], 200);
     }
 
-    public function cancel(int $billId)
+    public function cancel(int $store, string $businessDate, int $billId)
     {
         $bill = $this->billRepo->find($billId);
         if (is_null($bill)) {
@@ -97,7 +97,7 @@ class BillPaymentController extends Controller
         }
 
         // ストアの取得
-        $store = $this->storeRepo->findStore($bill->store_id);
+        $store = $this->storeRepo->findStore($store);
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',

@@ -152,6 +152,42 @@ Route::middleware(['auth:sanctum'])->group(function () {
                             Route::get('/users/{user_id}', [DeductionController::class, 'get']);
                             Route::post('/', [DeductionController::class, 'updateOrInsert']);
                         });
+
+                        // 伝票
+                        Route::prefix('/bills')->group(function () {
+                            Route::get('/', [BillController::class, 'getAll']);
+                            Route::get('/{billId}', [BillController::class, 'get']);
+                            Route::post('/', [BillController::class, 'store'])->name('bills.store');
+                        });
+
+                        // 延長セット
+                        Route::prefix('/extension-sets')->group(function () {
+                            Route::post('/', [ExtensionSetController::class, 'store'])->name('extension-sets.store');
+                        });
+
+                        // オーダー
+                        Route::prefix('/orders')->group(function () {
+                            Route::post('/', [OrderController::class, 'store']);
+                            Route::put('/', [OrderController::class, 'update']);
+                            Route::delete('/', [OrderController::class, 'archive']);
+                        });
+
+                        // 会計
+                        Route::prefix('/payments')->group(function () {
+                            Route::post('/', [BillPaymentController::class, 'store'])->name('bill-payments.store');
+                            Route::delete('/{billId}', [BillPaymentController::class, 'cancel'])->name('bill-payments.cancel');
+                        });
+
+                        // 退店
+                        Route::put('/departure/{billId}', [BillController::class, 'departure'])->name('bills.departure');
+
+                        // billIdに関するAPIはprefix{billId}にまとめるを考える
+
+                        // 閉店準備
+                        Route::prefix('/closing')->group(function () {
+                            Route::get('/preparation', [ClosingStoreController::class, 'preparation'])->name('closing.preparation');
+                            Route::post('/register', [ClosingStoreController::class, 'register'])->name('closing.register');
+                        });
                     });
                 });
             });
@@ -215,46 +251,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // システム支払いカテゴリ
     Route::get('/sysPaymentMethods', [SysPaymentMethodController::class, 'getAll']);
 
-
-
-    // 伝票
-    Route::prefix('/bills')->group(function () {
-        Route::get('/{id}', [BillController::class, 'get']);
-        Route::get('/', [BillController::class, 'getAll']);
-        Route::post('/', [BillController::class, 'store'])->name('bills.store');
-    });
-
     // Roll
     Route::prefix('/rolls')->group(function () {
         Route::get('/groupRoles', [RollController::class, 'getGroupRoles']);
         Route::get('/storeRoles', [RollController::class, 'getStoreRoles']);
-    });
-
-    // オーダー
-    Route::prefix('/orders')->group(function () {
-        Route::post('/', [OrderController::class, 'store']);
-        Route::put('/', [OrderController::class, 'update']);
-        Route::delete('/', [OrderController::class, 'archive']);
-    });
-
-    // 延長セット
-    Route::prefix('/extension-sets')->group(function () {
-        Route::post('/', [ExtensionSetController::class, 'store'])->name('extension-sets.store');
-    });
-
-    // 会計
-    Route::prefix('/payments')->group(function () {
-        Route::post('/', [BillPaymentController::class, 'store'])->name('bill-payments.store');
-        Route::delete('/{billId}', [BillPaymentController::class, 'cancel'])->name('bill-payments.cancel');
-    });
-
-    // 退店
-    Route::put('/departure/{billId}', [BillController::class, 'departure'])->name('bills.departure');
-
-    // 閉店準備
-    Route::prefix('/closing')->group(function () {
-        Route::get('/preparation', [ClosingStoreController::class, 'preparation'])->name('closing.preparation');
-        Route::post('/register', [ClosingStoreController::class, 'register'])->name('closing.register');
     });
 
     // TODO: 以下いらないかも
