@@ -230,6 +230,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/setupIntent', [SubscriptionController::class, 'getSetupIntent']);
         Route::get('/paymentMethod', [SubscriptionController::class, 'getPaymentMethod']);
         Route::post('/', [SubscriptionController::class, 'create']);
+        Route::delete('/', [SubscriptionController::class, 'cancel']);
     });
 
     // グループ

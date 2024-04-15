@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Stripe\Subscription;
+use Illuminate\Support\Facades\DB;
 use App\Repositories\{
     StoreRepository\StoreRepositoryInterface
 };
@@ -86,6 +88,51 @@ class SubscriptionController extends Controller
 
     function getPaymentMethod()
     {
+        return response()->json([
+            'status' => 'success',
+            'data' => auth()->user()
+        ], 200);
+    }
+
+    function cancel(Request $request, int $storeId)
+    {
+        $user = Auth::user();
+        $pass = $user->password;
+        if (!Hash::check($request->password, $pass)) {
+            return response()->json([
+                'status' => 'failure',
+                'errors' => ['パスワードが異なります']
+            ], 400);
+        }
+
+        // 対象のサブスクリプションを取得
+        $store = $this->storeRepo->findStore($storeId);
+        $subscription = $store->subscription;
+
+        DB::beginTransaction();
+        try {
+            // $subscription->cancel();
+            // テストでは即時キャンセル
+            $resultSubscription = $subscription->cancelNow();
+
+            if ($resultSubscription->stripe_status !== Subscription::STATUS_CANCELED) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => 'failure',
+                    'errors' => ['キャンセルに失敗しました。管理者にお問い合わせください。']
+                ], 400);
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'status' => 'failure',
+                'errors' => ['エラーが発生しました。もう一度お試しください。']
+            ], 400);
+        }
+
         return response()->json([
             'status' => 'success',
             'data' => auth()->user()
