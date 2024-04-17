@@ -87,6 +87,15 @@ class StoreRepository implements StoreRepositoryInterface
     /***********************************************************
      * Delete系
      ***********************************************************/
+    /**
+     * 店舗をソフトデリートする
+     * @param Store $store
+     * @return void
+     */
+    public function softDeleteStore(Store $store): void
+    {
+        $store->delete();
+    }
 
     /***********************************************************
      * その他

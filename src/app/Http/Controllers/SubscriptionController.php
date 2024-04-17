@@ -94,7 +94,7 @@ class SubscriptionController extends Controller
         ], 200);
     }
 
-    function cancel(Request $request, int $storeId)
+    function cancel(Request $request)
     {
         $user = Auth::user();
         $pass = $user->password;
@@ -106,13 +106,13 @@ class SubscriptionController extends Controller
         }
 
         // 対象のサブスクリプションを取得
-        $store = $this->storeRepo->findStore($storeId);
+        $store = $this->storeRepo->findStore($request->storeId);
         $subscription = $store->subscription;
 
         DB::beginTransaction();
         try {
             // $subscription->cancel();
-            // テストでは即時キャンセル
+            // TODO: 本番では即時キャンセルしない
             $resultSubscription = $subscription->cancelNow();
 
             if ($resultSubscription->stripe_status !== Subscription::STATUS_CANCELED) {
@@ -122,6 +122,9 @@ class SubscriptionController extends Controller
                     'errors' => ['キャンセルに失敗しました。管理者にお問い合わせください。']
                 ], 400);
             }
+
+            // 店舗を削除
+            $store->delete();
 
             DB::commit();
         } catch (\Exception $e) {

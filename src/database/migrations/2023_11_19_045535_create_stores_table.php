@@ -29,6 +29,8 @@ return new class extends Migration
             $table->foreignId('subscription_id')->nullable()->constrained('subscriptions')->comment('サブスクリプションID');
 
             $table->timestamps();
+
+            $table->softDeletes();
         });
     }
 
