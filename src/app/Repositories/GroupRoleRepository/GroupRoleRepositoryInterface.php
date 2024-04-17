@@ -45,6 +45,13 @@ interface GroupRoleRepositoryInterface
      */
     public function getGroupRoleByName(int $groupId, string $groupRoleName): GroupRole;
 
+    /**
+     * グループロールIDの保有するパーミッション一覧を取得する
+     * @param int $id
+     * @return Collection
+     */
+    public function getGroupRolePermissions(int $id): Collection;
+
     /***********************************************************
      * Update系
      ***********************************************************/
