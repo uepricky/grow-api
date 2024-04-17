@@ -44,7 +44,7 @@ class UserRequest extends BaseFormRequest
             'user.address' => 'nullable|string|max:255',
             'user.note' => 'nullable|string|max:512',
 
-            'group_roles.*.*' => 'nullable|integer',
+            'group_roles.*.*' => 'integer',
             'stores_roles.*.*' => 'nullable|integer',
         ];
     }

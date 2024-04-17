@@ -206,13 +206,17 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         'display_name' => 'キャスト5',
     ];
 
-    const DEFAULT_GROUP_ROLE = [
+    const DEFAULT_GROUP_ROLES = [
         "ADMIN" => [
             'name' => '管理者',
             'permissionIds' => [
                 Permission::PERMISSIONS['OPERATION_UNDER_GROUP_DASHBOARD']['id']
             ]
-        ]
+        ],
+        "GENERAL" => [
+            'name' => '一般',
+            'permissionIds' => []
+        ],
     ];
 
     public function __construct(
@@ -246,15 +250,22 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         $this->userRepo->attachToGroup($user, $group);
 
         // 管理者のグループロールを作成
-        $adminGroupRole = self::DEFAULT_GROUP_ROLE['ADMIN'];
-        $adminGroupRole['group_id'] = $group->id;
-        $groupRole = $this->groupRoleRepo->createGroupRole($adminGroupRole);
+        // $adminGroupRole = self::DEFAULT_GROUP_ROLES['ADMIN'];
+        // $adminGroupRole['group_id'] = $group->id;
+        // $groupRole = $this->groupRoleRepo->createGroupRole($adminGroupRole);
 
-        // グループロールに権限を付与
-        $this->groupRoleRepo->attachPermissionsToGroupRole($groupRole, self::DEFAULT_GROUP_ROLE['ADMIN']['permissionIds']);
+        // デフォルトのグループロールを作成
+        foreach (self::DEFAULT_GROUP_ROLES as $defaultGroupRole) {
+            $defaultGroupRole['group_id'] = $group->id;
+            $groupRole = $this->groupRoleRepo->createGroupRole($defaultGroupRole);
+            if ($groupRole->name === self::DEFAULT_GROUP_ROLES['ADMIN']['name']) {
+                // 契約者に管理者権限を付与
+                $this->userRepo->attachGroupRolesToUser($user, [$groupRole->id]);
+            }
+            // グループロールに権限を付与
+            $this->groupRoleRepo->attachPermissionsToGroupRole($groupRole, $defaultGroupRole['permissionIds']);
+        }
 
-        // 契約者に管理者権限を付与
-        $this->userRepo->attachGroupRolesToUser($user, [$groupRole->id]);
 
         /** ダミーデータ登録 */
 
@@ -324,11 +335,20 @@ class RegisteredUserService implements RegisteredUserServiceInterface
 
         /** ダミーユーザー作成 */
         // TODO: リファクタ
+
+        // グループロール一般を取得
+        $generalGroupRole = $this->groupRoleRepo->getGroupRoleByName(
+            $group->id,
+            self::DEFAULT_GROUP_ROLES['GENERAL']['name']
+        );
+
         // マネージャ
         // ユーザー作成
         $managerUser = $this->userRepo->createGeneralUser(self::DUMMY_MANAGER_USER, ['can_login' => false]);
-        // ユーザーをグループに所属させる
+        // ユーザーをグループに所属させる※削除予定
         $this->userRepo->attachToGroup($managerUser, $group);
+        // ユーザーにグループロール"一般"を付与する
+        $this->userRepo->attachGroupRolesToUser($managerUser, [$generalGroupRole->id]);
         // ユーザーを店舗に所属させる
         $this->userRepo->attachToStores($managerUser, [$store->id]);
         // ストアロール取得
@@ -338,10 +358,10 @@ class RegisteredUserService implements RegisteredUserServiceInterface
 
         // スタッフ1
         $staff1User = $this->userRepo->createGeneralUser(self::DUMMY_STAFF1_USER, ['can_login' => false]);
-        // ユーザーをグループに所属させる
+        // ユーザーをグループに所属させる※削除予定
         $this->userRepo->attachToGroup($staff1User, $group);
-        // ユーザーとグループロールの紐付け
-        // $this->roleRepo->attachGroupRolesToUser($staff1User, [$generalGroupRole->id]);
+        // ユーザーにグループロール"一般"を付与する
+        $this->userRepo->attachGroupRolesToUser($staff1User, [$generalGroupRole->id]);
         // ユーザーを店舗に所属させる
         $this->userRepo->attachToStores($staff1User, [$store->id]);
         // ストアロール取得

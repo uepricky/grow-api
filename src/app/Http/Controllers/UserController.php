@@ -125,9 +125,10 @@ class UserController extends Controller
 
             $user = $this->userRepo->createGeneralUser($data, $request->general_user);
 
-            // ユーザーをグループに所属させる
+
             $operateUser = $request->user();
             $group = $this->groupRepo->getBelongingGroups($operateUser);
+            // ユーザーをグループに所属させる※削除予定
             $this->userRepo->attachToGroup($user, $group);
 
             // ユーザーとグループロールの紐付け
