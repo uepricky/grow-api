@@ -15,7 +15,8 @@ use App\Repositories\{
     GroupRoleRepository\GroupRoleRepositoryInterface,
 };
 use App\Services\{
-    RoleService\RoleServiceInterface
+    RoleService\RoleServiceInterface,
+    UserService\UserServiceInterface,
 };
 use App\Http\Requests\StoreIdRequest;
 use App\Repositories\StoreRoleRepository\StoreRoleRepositoryInterface;
@@ -26,11 +27,11 @@ class UserController extends Controller
         public readonly UserRepositoryInterface $userRepo,
         public readonly GroupRepositoryInterface $groupRepo,
         public readonly StoreRepositoryInterface $storeRepo,
+        public readonly GroupRoleRepositoryInterface $groupRoleRepo,
+        public readonly StoreRoleRepositoryInterface $storeRoleRepo,
 
         public readonly RoleServiceInterface $roleServ,
-        public readonly GroupRoleRepositoryInterface $groupRoleRepo,
-
-        public readonly StoreRoleRepositoryInterface $storeRoleRepo,
+        public readonly UserServiceInterface $userServ,
     ) {
     }
 
@@ -38,6 +39,10 @@ class UserController extends Controller
     {
         $user = $request->user();
         $user['group_id'] =  auth()->user()->groups->first()->id;
+
+        // userの保有しているpermissionsを取得する
+        $user['permissions'] = $this->userServ->getUserPermissions($user);
+
         return $user;
     }
 

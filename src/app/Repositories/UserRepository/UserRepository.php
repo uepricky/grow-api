@@ -131,7 +131,17 @@ class UserRepository implements UserRepositoryInterface
         return $this->model->whereHas('storeRoles', function ($query) use ($storeRoleId) {
             $query->where('store_roles.id', $storeRoleId);
         })
-        ->get();
+            ->get();
+    }
+
+    /**
+     * ユーザーの所属グループを取得する
+     * @param User $user
+     * @return Group
+     */
+    public function getUserGroup(User $user): Group
+    {
+        return $user->groups()->first();
     }
 
     /**

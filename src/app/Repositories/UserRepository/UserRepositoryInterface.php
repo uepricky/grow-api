@@ -97,6 +97,13 @@ interface UserRepositoryInterface
      */
     public function getAttendanceUsersByStoreRole(StoreRole $storeRole, BusinessDate $businessDate, $columns = array('*'), string $orderBy = 'display_name', string $sortBy = 'asc'): Collection;
 
+    /**
+     * ユーザーの所属グループを取得する
+     * @param User $user
+     * @return Group
+     */
+    public function getUserGroup(User $user): Group;
+
     /***********************************************************
      * Update系
      ***********************************************************/

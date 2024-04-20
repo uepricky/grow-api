@@ -26,4 +26,11 @@ interface UserServiceInterface
      * @return bool
      */
     public function hasGroupPermission(User $user, int $targetPermissionId): bool;
+
+    /**
+     * ユーザーの保有するパーミッション一覧を取得する
+     * @param User $user
+     * @return array
+     */
+    public function getUserPermissions(User $user): array;
 }
