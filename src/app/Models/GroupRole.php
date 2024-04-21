@@ -14,10 +14,6 @@ class GroupRole extends Model
         'name',
     ];
 
-    const DEFAULT_GROUP_ROLES = [
-        "ADMIN" => ['name' => '管理者']
-    ];
-
     public function permissions()
     {
         return $this->belongsToMany(Permission::class, 'group_role_permission')->withTimestamps();

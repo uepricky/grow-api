@@ -15,7 +15,8 @@ use App\Repositories\{
     GroupRoleRepository\GroupRoleRepositoryInterface,
 };
 use App\Services\{
-    RoleService\RoleServiceInterface
+    RoleService\RoleServiceInterface,
+    UserService\UserServiceInterface,
 };
 use App\Http\Requests\StoreIdRequest;
 use App\Repositories\StoreRoleRepository\StoreRoleRepositoryInterface;
@@ -26,11 +27,11 @@ class UserController extends Controller
         public readonly UserRepositoryInterface $userRepo,
         public readonly GroupRepositoryInterface $groupRepo,
         public readonly StoreRepositoryInterface $storeRepo,
+        public readonly GroupRoleRepositoryInterface $groupRoleRepo,
+        public readonly StoreRoleRepositoryInterface $storeRoleRepo,
 
         public readonly RoleServiceInterface $roleServ,
-        public readonly GroupRoleRepositoryInterface $groupRoleRepo,
-
-        public readonly StoreRoleRepositoryInterface $storeRoleRepo,
+        public readonly UserServiceInterface $userServ,
     ) {
     }
 
@@ -38,10 +39,14 @@ class UserController extends Controller
     {
         $user = $request->user();
         $user['group_id'] =  auth()->user()->groups->first()->id;
+
+        // userの保有しているpermissionsを取得する
+        $user['permissions'] = $this->userServ->getUserPermissions($user);
+
         return $user;
     }
 
-    public function get(int $userId)
+    public function get(int $groupId, int $userId)
     {
         $user = $this->userRepo->find($userId);
         $group = auth()->user()->groups->first();
@@ -89,7 +94,7 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function index()
+    public function index(int $groupId)
     {
         // ユーザー一覧取得
         $group = auth()->user()->groups->first();
@@ -112,7 +117,7 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function store(UserRequest $request)
+    public function store(UserRequest $request, int $groupId)
     {
         // トランザクションを開始する
         DB::beginTransaction();
@@ -125,9 +130,10 @@ class UserController extends Controller
 
             $user = $this->userRepo->createGeneralUser($data, $request->general_user);
 
-            // ユーザーをグループに所属させる
+
             $operateUser = $request->user();
             $group = $this->groupRepo->getBelongingGroups($operateUser);
+            // ユーザーをグループに所属させる※削除予定
             $this->userRepo->attachToGroup($user, $group);
 
             // ユーザーとグループロールの紐付け
@@ -165,7 +171,7 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function update(UserRequest $request, int $userId)
+    public function update(UserRequest $request, int $groupId, int $userId)
     {
         // トランザクションを開始する
         DB::beginTransaction();
@@ -214,7 +220,7 @@ class UserController extends Controller
         }
     }
 
-    public function archive(int $userId)
+    public function archive(int $groupId, int $userId)
     {
         $user = $this->userRepo->find($userId);
         $this->userRepo->softDeleteUser($user);
@@ -225,7 +231,7 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function getUserPermissions(int $userId, StoreIdRequest $storeIdRequest)
+    public function getUserPermissions(StoreIdRequest $storeIdRequest, int $groupId, int $userId)
     {
         // 契約者
         $user = $this->userRepo->find($userId);

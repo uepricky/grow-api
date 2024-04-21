@@ -91,9 +91,9 @@ class StoreController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreRequest $request, int $id)
+    public function update(StoreRequest $request, int $storeId)
     {
-        $store = $this->storeRepo->findStore($id);
+        $store = $this->storeRepo->findStore($storeId);
 
         // グループIDを付与
         $group_id = auth()->user()->groups->first()->id;
@@ -121,7 +121,10 @@ class StoreController extends Controller
             // ログの出力
             CustomLog::error($e);
 
-            abort(500);
+            return response()->json([
+                'status' => 'failure',
+                'errors' => ['店舗の編集に失敗しました。']
+            ], 500);
         }
 
         return response()->json([

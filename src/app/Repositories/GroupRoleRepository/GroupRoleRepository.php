@@ -52,6 +52,27 @@ class GroupRoleRepository implements GroupRoleRepositoryInterface
         return $this->model->where('group_id', $groupId)->get();
     }
 
+    /**
+     * 指定されたnameのグループロールを取得する
+     * @param int $groupId
+     * @param string $groupRoleName
+     * @return GroupRole
+     */
+    public function getGroupRoleByName(int $groupId, string $groupRoleName): GroupRole
+    {
+        return $this->model->where('group_id', $groupId)->where('name', $groupRoleName)->first();
+    }
+
+    /**
+     * グループロールIDの保有するパーミッション一覧を取得する
+     * @param int $id
+     * @return Collection
+     */
+    public function getGroupRolePermissions(int $id): Collection
+    {
+        return $this->model->findOrFail($id)->permissions;
+    }
+
     /***********************************************************
      * Update系
      ***********************************************************/
