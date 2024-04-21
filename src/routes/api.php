@@ -230,12 +230,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
      *************************/
     Route::middleware(['hasGroupPermission'])->group(function () {
         Route::prefix('/group')->group(function () {
-            Route::prefix('/users')->group(function () {
-                Route::get('/', [UserController::class, 'index'])->name('users.index');
-                Route::post('/', [UserController::class, 'store'])->name('users.store');
-                Route::get('/{id}', [UserController::class, 'get'])->name('users.get');
-                Route::put('/{id}', [UserController::class, 'update'])->name('users.update');
-                Route::delete('/{id}', [UserController::class, 'archive'])->name('users.archive');
+            Route::prefix('/{groupId}')->group(function () {
+                // 全部ここ
+                Route::prefix('/users')->group(function () {
+                    Route::get('/', [UserController::class, 'index'])->name('users.index');
+                    Route::post('/', [UserController::class, 'store'])->name('users.store');
+                    Route::get('/{userId}', [UserController::class, 'get'])->name('users.get');
+                    Route::put('/{userId}', [UserController::class, 'update'])->name('users.update');
+                    Route::delete('/{userId}', [UserController::class, 'archive'])->name('users.archive');
+                });
             });
         });
 
@@ -248,24 +251,41 @@ Route::middleware(['auth:sanctum'])->group(function () {
         });
     });
 
+    /**********************
+     * 契約者権限あり
+     *********************/
+    Route::middleware(['isContractor'])->group(function () {
+        // サブスクリプション
+        Route::prefix('/subscriptions')->group(function () {
+            Route::get('/setupIntent', [SubscriptionController::class, 'getSetupIntent']);
+            Route::get('/paymentMethod', [SubscriptionController::class, 'getPaymentMethod']);
+            Route::post('/', [SubscriptionController::class, 'create']);
+        });
+
+        // 店舗
+        Route::prefix('/stores')->group(function () {
+            Route::prefix('/{storeId}')->group(function () {
+                // サブスクリプション
+                Route::prefix('/subscriptions')->group(function () {
+                    Route::get('/', [SubscriptionController::class, 'getSubscriptionStatus']);
+                });
+            });
+        });
+    });
+
+    /**********************
+     * グループに所属している
+     *********************/
+    Route::prefix('/group')->group(function () {
+        Route::prefix('/{groupId}')->group(function () {
+            // 全部ここ
+        });
+    });
 
 
     /**
      * 以下既存ソースすべてここより上に引っ越し
      */
-
-    // 店舗
-    Route::prefix('/stores')->group(function () {
-
-        // 特定の店舗に属する各種情報についてAPI
-        Route::prefix('/{storeId}')->group(function () {
-            // サブスクリプション
-            Route::prefix('/subscriptions')->group(function () {
-                Route::get('/', [SubscriptionController::class, 'getSubscriptionStatus']);
-            });
-        });
-    });
-
     // ユーザー
     Route::prefix('/users')->group(function () {
         // Route::get('/', [UserController::class, 'index'])->name('users.index');
@@ -277,12 +297,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/report/from/{businessDateFrom}/to/{businessDateTo}', [UserController::class, 'reportIndex'])->name('usersReport.index');
     });
 
-    // サブスクリプション
-    Route::prefix('/subscriptions')->group(function () {
-        Route::get('/setupIntent', [SubscriptionController::class, 'getSetupIntent']);
-        Route::get('/paymentMethod', [SubscriptionController::class, 'getPaymentMethod']);
-        Route::post('/', [SubscriptionController::class, 'create']);
-    });
 
     // グループ
     Route::prefix('/groups')->group(function () {

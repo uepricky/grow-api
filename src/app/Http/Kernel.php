@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'hasStorePermission' => \App\Http\Middleware\HasStorePermission::class,
         'hasGroupPermission' => \App\Http\Middleware\HasGroupPermission::class,
         'hasGroupOrStorePermission' => \App\Http\Middleware\HasGroupOrStorePermission::class,
+        'isContractor' => \App\Http\Middleware\isContractor::class,
     ];
 }

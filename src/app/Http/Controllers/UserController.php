@@ -46,7 +46,7 @@ class UserController extends Controller
         return $user;
     }
 
-    public function get(int $userId)
+    public function get(int $groupId, int $userId)
     {
         $user = $this->userRepo->find($userId);
         $group = auth()->user()->groups->first();
@@ -94,7 +94,7 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function index()
+    public function index(int $groupId)
     {
         // ユーザー一覧取得
         $group = auth()->user()->groups->first();
@@ -117,7 +117,7 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function store(UserRequest $request)
+    public function store(UserRequest $request, int $groupId)
     {
         // トランザクションを開始する
         DB::beginTransaction();
@@ -171,7 +171,7 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function update(UserRequest $request, int $userId)
+    public function update(UserRequest $request, int $groupId, int $userId)
     {
         // トランザクションを開始する
         DB::beginTransaction();
@@ -220,7 +220,7 @@ class UserController extends Controller
         }
     }
 
-    public function archive(int $userId)
+    public function archive(int $groupId, int $userId)
     {
         $user = $this->userRepo->find($userId);
         $this->userRepo->softDeleteUser($user);
@@ -231,7 +231,7 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function getUserPermissions(int $userId, StoreIdRequest $storeIdRequest)
+    public function getUserPermissions(StoreIdRequest $storeIdRequest, int $groupId, int $userId)
     {
         // 契約者
         $user = $this->userRepo->find($userId);
