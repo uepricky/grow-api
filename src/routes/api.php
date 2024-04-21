@@ -277,9 +277,27 @@ Route::middleware(['auth:sanctum'])->group(function () {
     /**********************
      * グループに所属している
      *********************/
-    Route::prefix('/group')->group(function () {
-        Route::prefix('/{groupId}')->group(function () {
-            // 全部ここ
+    Route::middleware(['hasGroupPermission'])->group(function () {
+        Route::prefix('/groups')->group(function () {
+            Route::prefix('/{groupId}')->group(function () {
+                // ユーザー
+                Route::prefix('/users')->group(function () {
+                    Route::get('/', [UserController::class, 'index'])->name('users.index');
+                    Route::post('/', [UserController::class, 'store'])->name('users.store');
+                    Route::get('/{userId}', [UserController::class, 'get'])->name('users.get');
+                    Route::put('/{userId}', [UserController::class, 'update'])->name('users.update');
+                    Route::delete('/{userId}', [UserController::class, 'archive'])->name('users.archive');
+                });
+
+                // 店舗
+                Route::prefix('/stores')->group(function () {
+                    Route::post('/', [StoreController::class, 'store'])->name('stores.store');
+
+                    Route::prefix('/{storeId}')->group(function () {
+                        Route::put('/', [StoreController::class, 'update'])->name('stores.update');
+                    });
+                });
+            });
         });
     });
 
@@ -287,18 +305,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     /**
      * 以下既存ソースすべてここより上に引っ越し
      */
-    // ユーザー
-    Route::prefix('/users')->group(function () {
-        // Route::get('/', [UserController::class, 'index'])->name('users.index');
-        // Route::post('/', [UserController::class, 'store'])->name('users.store');
-        Route::get('/{id}', [UserController::class, 'get'])->name('users.get');
-        Route::put('/{id}', [UserController::class, 'update'])->name('users.update');
-        // Route::delete('/{id}', [UserController::class, 'archive'])->name('users.archive');
-        Route::get('/{id}/permissions', [UserController::class, 'getUserPermissions'])->name('users.getUserPermissions');
-        Route::get('/report/from/{businessDateFrom}/to/{businessDateTo}', [UserController::class, 'reportIndex'])->name('usersReport.index');
-    });
-
-
     // グループ
     Route::prefix('/groups')->group(function () {
         Route::get('/{group_id}/roles', [GroupRoleController::class, 'index']);
