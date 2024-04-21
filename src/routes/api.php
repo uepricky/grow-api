@@ -229,9 +229,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
      * グループ権限あり
      *************************/
     Route::middleware(['hasGroupPermission'])->group(function () {
-        Route::prefix('/group')->group(function () {
+        Route::prefix('/groups')->group(function () {
             Route::prefix('/{groupId}')->group(function () {
-                // 全部ここ
+                // ユーザー
                 Route::prefix('/users')->group(function () {
                     Route::get('/', [UserController::class, 'index'])->name('users.index');
                     Route::post('/', [UserController::class, 'store'])->name('users.store');
@@ -239,14 +239,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
                     Route::put('/{userId}', [UserController::class, 'update'])->name('users.update');
                     Route::delete('/{userId}', [UserController::class, 'archive'])->name('users.archive');
                 });
-            });
-        });
 
-        Route::prefix('/stores')->group(function () {
-            Route::post('/', [StoreController::class, 'store'])->name('stores.store');
+                // 店舗
+                Route::prefix('/stores')->group(function () {
+                    Route::post('/', [StoreController::class, 'store'])->name('stores.store');
 
-            Route::prefix('/{storeId}')->group(function () {
-                Route::put('/', [StoreController::class, 'update'])->name('stores.update');
+                    Route::prefix('/{storeId}')->group(function () {
+                        Route::put('/', [StoreController::class, 'update'])->name('stores.update');
+                    });
+                });
             });
         });
     });
