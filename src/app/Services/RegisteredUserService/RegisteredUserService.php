@@ -35,7 +35,7 @@ class RegisteredUserService implements RegisteredUserServiceInterface
         'postal_code' => '1234567',
         'tel_number' => '123-456-789',
         'opening_time' => '19:00',
-        'closing_time' => '24:00',
+        'closing_time' => '00:00',
         'working_time_unit_id' => 4,
         'subscription_id' => null
     ];

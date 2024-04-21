@@ -50,23 +50,26 @@ use App\Http\Controllers\{
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [UserController::class, 'getLoggedInUser'])->name('user.getLoggedInUser');
 
-    /**************************
-     * グループ
-     *************************/
-    // Route::prefix('/groups')->group(function () {
-    // });
+    /********************************
+     * グループもしくはストア権限あり
+     * ※ストア権限チェックのため、パラメタstoreId必須
+     ********************************/
+    Route::middleware(['hasGroupOrStorePermission'])->group(function () {
+        Route::prefix('/stores')->group(function () {
+            Route::prefix('/{storeId}')->group(function () {
+                // ここに記載
+                Route::get('/', [StoreController::class, 'get'])->name('stores.get');
+            });
+        });
+    });
 
-    /**************************
-     * ストア
+    /*************************
+     * ストア権限あり
      *************************/
     Route::middleware(['hasStorePermission'])->group(function () {
         Route::prefix('/stores')->group(function () {
-            Route::post('/', [StoreController::class, 'store'])->name('stores.store');
 
             Route::prefix('/{storeId}')->group(function () {
-                Route::get('/', [StoreController::class, 'get'])->name('stores.get');
-                // パス通っていないため、個別確認
-                Route::put('/', [StoreController::class, 'update'])->name('stores.update');
 
                 /****************************
                  * ストアマスタ関連ここから
@@ -223,7 +226,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     /**************************
-     * グループ
+     * グループ権限あり
      *************************/
     Route::middleware(['hasGroupPermission'])->group(function () {
         Route::prefix('/group')->group(function () {
@@ -233,6 +236,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 Route::get('/{id}', [UserController::class, 'get'])->name('users.get');
                 Route::put('/{id}', [UserController::class, 'update'])->name('users.update');
                 Route::delete('/{id}', [UserController::class, 'archive'])->name('users.archive');
+            });
+        });
+
+        Route::prefix('/stores')->group(function () {
+            Route::post('/', [StoreController::class, 'store'])->name('stores.store');
+
+            Route::prefix('/{storeId}')->group(function () {
+                Route::put('/', [StoreController::class, 'update'])->name('stores.update');
             });
         });
     });

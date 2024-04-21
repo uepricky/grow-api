@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
         'hasStorePermission' => \App\Http\Middleware\HasStorePermission::class,
         'hasGroupPermission' => \App\Http\Middleware\HasGroupPermission::class,
+        'hasGroupOrStorePermission' => \App\Http\Middleware\HasGroupOrStorePermission::class,
     ];
 }
