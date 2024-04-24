@@ -35,6 +35,15 @@ class GroupRepository implements GroupRepositoryInterface
      * Read系
      ***********************************************************/
     /**
+     * @param int $groupId
+     * @return Group
+     */
+    public function findGroup(int $groupId): Group
+    {
+        return $this->model->find($groupId);
+    }
+
+    /**
      * ユーザーの所属グループを取得
      * @param User $user
      * @return Group
