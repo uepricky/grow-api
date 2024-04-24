@@ -17,7 +17,6 @@ use App\Http\Controllers\{
     SysPaymentMethodController,
     OpeningPreparationController,
     AttendanceController,
-    HallController,
     BillController,
     RollController,
     OrderController,
@@ -51,7 +50,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [UserController::class, 'getLoggedInUser'])->name('user.getLoggedInUser');
 
     /********************************
-     * グループもしくはストア権限あり
+     * グループもしくはストア権限あり※ストア権限とグループ権限に2つのAPIを定義して削除
      * ※ストア権限チェックのため、パラメタstoreId必須
      ********************************/
     Route::middleware(['hasGroupOrStorePermission'])->group(function () {
@@ -70,6 +69,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::prefix('/stores')->group(function () {
 
             Route::prefix('/{storeId}')->group(function () {
+
+                /****************************
+                 * システムマスタ関連ここから
+                 ***************************/
+                // システムメニューカテゴリ一覧を取得
+                Route::get('/sysMenuCategories', [SysMenuCategoryController::class, 'getAll']);
+
+                // システム支払いカテゴリ
+                Route::get('/sysPaymentMethods', [SysPaymentMethodController::class, 'getAll']);
+
 
                 /****************************
                  * ストアマスタ関連ここから
@@ -129,8 +138,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 });
 
                 // ストアロール
+                // TODO: 重複しているため、マージ
                 Route::prefix('/storeRoles')->group(function () {
                     Route::get('/', [StoreRoleController::class, 'getAll']);
+                });
+
+                // TODO: 重複しているため、マージ
+                // apiはこちら、コントローラは、StoreRoleControllerが適切かな
+                Route::prefix('/rolls')->group(function () {
+                    Route::get('/', [RollController::class, 'getStoreRoles']);
                 });
 
                 // 店舗レポート
@@ -162,13 +178,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
                     Route::post('/', [OpeningPreparationController::class, 'store']);
                 });
 
-                // 営業日
+                /****************************
+                 * 個別営業日関連
+                 ***************************/
                 Route::prefix('/businessDate')->group(function () {
+                    // 営業日
                     Route::get('/', [BusinessDateController::class, 'getCurrentBusinessDate']);
 
-                    /****************************
-                     * 個別営業日関連
-                     ***************************/
                     Route::prefix('/{businessDate}')->group(function () {
                         // 勤怠
                         Route::prefix('/attendances')->group(function () {
@@ -240,8 +256,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
                     Route::delete('/{userId}', [UserController::class, 'archive'])->name('users.archive');
                 });
 
+                // ロール
+                Route::prefix('/roles')->group(function () {
+                    Route::get('/', [GroupRoleController::class, 'index'])->name('groupRoles.index');
+                });
+
+                Route::get('/stores-with-roles', [GroupController::class, 'getStoresWithRoles']);
+
                 // 店舗
                 Route::prefix('/stores')->group(function () {
+                    Route::get('/', [StoreController::class, 'index'])->name('stores.index');
                     Route::post('/', [StoreController::class, 'store'])->name('stores.store');
 
                     Route::prefix('/{storeId}')->group(function () {
@@ -272,68 +296,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 });
             });
         });
-    });
-
-    /**********************
-     * グループに所属している
-     *********************/
-    Route::middleware(['hasGroupPermission'])->group(function () {
-        Route::prefix('/groups')->group(function () {
-            Route::prefix('/{groupId}')->group(function () {
-                // ユーザー
-                Route::prefix('/users')->group(function () {
-                    Route::get('/', [UserController::class, 'index'])->name('users.index');
-                    Route::post('/', [UserController::class, 'store'])->name('users.store');
-                    Route::get('/{userId}', [UserController::class, 'get'])->name('users.get');
-                    Route::put('/{userId}', [UserController::class, 'update'])->name('users.update');
-                    Route::delete('/{userId}', [UserController::class, 'archive'])->name('users.archive');
-                });
-
-                // 店舗
-                Route::prefix('/stores')->group(function () {
-                    Route::post('/', [StoreController::class, 'store'])->name('stores.store');
-
-                    Route::prefix('/{storeId}')->group(function () {
-                        Route::put('/', [StoreController::class, 'update'])->name('stores.update');
-                    });
-                });
-            });
-        });
-    });
-
-
-    /**
-     * 以下既存ソースすべてここより上に引っ越し
-     */
-    // グループ
-    Route::prefix('/groups')->group(function () {
-        Route::get('/{group_id}/roles', [GroupRoleController::class, 'index']);
-        Route::get('/{group_id}/stores-with-roles', [GroupController::class, 'getStoresWithRoles']);
-    });
-
-    // グループロール
-    Route::prefix('/groupRoles')->group(function () {
-        Route::get('/', [GroupRoleController::class, 'index'])->name('groupRoles.index');
-    });
-
-    Route::get('/group/stores', [GroupController::class, 'getStores']);
-
-    // システムメニューカテゴリ一覧を取得
-    Route::get('/sysMenuCategories', [SysMenuCategoryController::class, 'getAll']);
-
-    // システム支払いカテゴリ
-    Route::get('/sysPaymentMethods', [SysPaymentMethodController::class, 'getAll']);
-
-    // Roll
-    Route::prefix('/rolls')->group(function () {
-        Route::get('/groupRoles', [RollController::class, 'getGroupRoles']);
-        Route::get('/storeRoles', [RollController::class, 'getStoreRoles']);
-    });
-
-    // TODO: 以下いらないかも
-
-    // ホール一覧
-    Route::prefix('/halls')->group(function () {
-        Route::get('/', [HallController::class, 'get']);
     });
 });

@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\Store\StoreRequest;
 use App\Repositories\{
     StoreRepository\StoreRepositoryInterface,
-    StoreDetailRepository\StoreDetailRepositoryInterface
+    StoreDetailRepository\StoreDetailRepositoryInterface,
+    GroupRepository\GroupRepositoryInterface,
 };
 use App\Services\{
     StoreService\StoreServiceInterface,
@@ -19,9 +20,24 @@ class StoreController extends Controller
 {
     public function __construct(
         public readonly StoreRepositoryInterface $storeRepo,
+        public readonly GroupRepositoryInterface $groupRepo,
         public readonly StoreDetailRepositoryInterface $storeDetailRepo,
         public readonly StoreServiceInterface $storeServ,
     ) {
+    }
+
+    public function index(int $groupId)
+    {
+        // グループの取得
+        $group = $this->groupRepo->findGroup($groupId);
+
+        // グループに属する店舗一覧を取得
+        $stores = $this->storeRepo->getStoreListByGroup($group);
+
+        return response([
+            'status' => 'success',
+            'data' => $stores
+        ], 200);
     }
 
     /**
