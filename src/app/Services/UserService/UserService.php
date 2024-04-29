@@ -91,8 +91,9 @@ class UserService implements UserServiceInterface
 
         // 各所属店舗のストア権限を取得
         $storesPermissions = [];
-        // ユーザーの所属店舗一覧を取得する
-        $stores = $this->storeRepo->getUserStores($user);
+
+        // グループに属する店舗一覧を取得する
+        $stores = $this->storeRepo->getStoreListByGroup($user->groups->first());
 
         foreach ($stores as $store) {
             // ユーザーの店舗ロールを取得する
