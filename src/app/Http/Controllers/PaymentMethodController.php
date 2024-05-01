@@ -39,7 +39,9 @@ class PaymentMethodController extends Controller
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['ストア情報の読み込みができませんでした']
+                'errors' => [
+                    ['ストア情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -59,7 +61,9 @@ class PaymentMethodController extends Controller
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['ストア情報の読み込みができませんでした']
+                'errors' => [
+                    ['ストア情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -67,7 +71,8 @@ class PaymentMethodController extends Controller
         $this->paymentMethodRepo->createPaymentMethod($request->payment_method);
 
         return response()->json([
-            'status' => 'success'
+            'status' => 'success',
+            'messages' => ['新規支払い方法を作成しました'],
         ], 200);
     }
 
@@ -78,7 +83,9 @@ class PaymentMethodController extends Controller
         if (is_null($paymentMethod)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['支払い方法情報の読み込みができませんでした']
+                'errors' => [
+                    ['支払い方法情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -87,7 +94,9 @@ class PaymentMethodController extends Controller
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['ストア情報の読み込みができませんでした']
+                'errors' => [
+                    ['ストア情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -104,7 +113,9 @@ class PaymentMethodController extends Controller
         if (is_null($paymentMethod)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['支払い方法情報の読み込みができませんでした']
+                'errors' => [
+                    ['支払い方法情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -113,7 +124,9 @@ class PaymentMethodController extends Controller
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['ストア情報の読み込みができませんでした']
+                'errors' => [
+                    ['ストア情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -137,12 +150,15 @@ class PaymentMethodController extends Controller
 
             return response()->json([
                 'status' => 'failure',
-                'errors' => [$e->getMessage()]
+                'errors' => [
+                    [$e->getMessage()]
+                ]
             ], 500);
         }
 
         return response()->json([
             'status' => 'success',
+            'messages' => [$paymentMethod->name . 'を更新しました。'],
             'data' => []
         ], 200);
     }
@@ -154,7 +170,9 @@ class PaymentMethodController extends Controller
         if (is_null($paymentMethod)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['支払い方法情報の読み込みができませんでした']
+                'errors' => [
+                    ['支払い方法情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -163,7 +181,9 @@ class PaymentMethodController extends Controller
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['ストア情報の読み込みができませんでした']
+                'errors' => [
+                    ['ストア情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -172,46 +192,8 @@ class PaymentMethodController extends Controller
 
         return response()->json([
             'status' => 'success',
+            'messages' => [$paymentMethod->name . 'を削除しました。'],
             'data' => []
         ], 200);
     }
-
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Store $store)
-    {
-        return view('payment_method.index', compact('paymentMethods', 'store'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Store $store)
-    {
-        // システム支払い方法一覧を取得
-        $sysPaymentMethodCategories = $this->sysPaymentMethodCategoryRepo->getSysPaymentMethodCategories();
-
-        return view('payment_method.create', compact('sysPaymentMethodCategories', 'store'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Store $store, PaymentMethod $paymentMethod)
-    {
-        // システム支払い方法一覧を取得
-        $sysPaymentMethodCategories = $this->sysPaymentMethodCategoryRepo->getSysPaymentMethodCategories();
-
-        return view('payment_method.edit', compact('sysPaymentMethodCategories', 'paymentMethod', 'store'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
 }

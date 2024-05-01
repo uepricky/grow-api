@@ -38,7 +38,9 @@ class TableController extends Controller
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['ストア情報の読み込みができませんでした']
+                'errors' => [
+                    ['ストア情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -58,7 +60,9 @@ class TableController extends Controller
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['ストア情報の読み込みができませんでした']
+                'errors' => [
+                    ['ストア情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -66,7 +70,8 @@ class TableController extends Controller
         $table = $this->tableRepo->createTable($request->table);
 
         return response()->json([
-            'status' => 'success'
+            'status' => 'success',
+            'messages' => ['新規卓を作成しました'],
         ], 200);
     }
 
@@ -77,7 +82,9 @@ class TableController extends Controller
         if (is_null($table)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['卓情報情報の読み込みができませんでした']
+                'errors' => [
+                    ['卓情報情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -86,7 +93,9 @@ class TableController extends Controller
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['ストア情報の読み込みができませんでした']
+                'errors' => [
+                    ['ストア情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -103,7 +112,9 @@ class TableController extends Controller
         if (is_null($table)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['卓情報情報の読み込みができませんでした']
+                'errors' => [
+                    ['卓情報情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -112,7 +123,9 @@ class TableController extends Controller
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['ストア情報の読み込みができませんでした']
+                'errors' => [
+                    ['ストア情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -135,12 +148,15 @@ class TableController extends Controller
 
             return response()->json([
                 'status' => 'failure',
-                'errors' => [$e->getMessage()]
+                'errors' => [
+                    [$e->getMessage()]
+                ]
             ], 500);
         }
 
         return response()->json([
             'status' => 'success',
+            'messages' => [$table->name . 'を更新しました。'],
             'data' => []
         ], 200);
     }
@@ -152,7 +168,9 @@ class TableController extends Controller
         if (is_null($table)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['卓情報情報の読み込みができませんでした']
+                'errors' => [
+                    ['卓情報情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -161,7 +179,9 @@ class TableController extends Controller
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['ストア情報の読み込みができませんでした']
+                'errors' => [
+                    ['ストア情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -169,6 +189,7 @@ class TableController extends Controller
 
         return response()->json([
             'status' => 'success',
+            'messages' => [$table->name . 'を削除しました。'],
             'data' => []
         ], 200);
     }
