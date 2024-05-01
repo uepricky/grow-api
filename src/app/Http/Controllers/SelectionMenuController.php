@@ -38,7 +38,9 @@ class SelectionMenuController extends Controller
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['ストア情報の読み込みができませんでした']
+                'errors' => [
+                    ['ストア情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -57,7 +59,9 @@ class SelectionMenuController extends Controller
         if (is_null($menuCategory)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['メニューカテゴリー情報の読み込みができませんでした']
+                'errors' => [
+                    ['メニューカテゴリー情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -66,7 +70,9 @@ class SelectionMenuController extends Controller
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['ストア情報の読み込みができませんでした']
+                'errors' => [
+                    ['ストア情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -74,6 +80,7 @@ class SelectionMenuController extends Controller
 
         return response()->json([
             'status' => 'success',
+            'messages' => ['新規指名メニューを作成しました'],
             'data' => []
         ], 200);
     }
@@ -85,7 +92,9 @@ class SelectionMenuController extends Controller
         if (is_null($menu)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['メニュー情報の読み込みができませんでした']
+                'errors' => [
+                    ['メニュー情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -94,7 +103,9 @@ class SelectionMenuController extends Controller
         if (is_null($menuCategory)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['メニューカテゴリー情報の読み込みができませんでした']
+                'errors' => [
+                    ['メニューカテゴリー情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -103,7 +114,9 @@ class SelectionMenuController extends Controller
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['ストア情報の読み込みができませんでした']
+                'errors' => [
+                    ['ストア情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -122,7 +135,9 @@ class SelectionMenuController extends Controller
         if (is_null($menu)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['メニュー情報の読み込みができませんでした']
+                'errors' => [
+                    ['メニュー情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -131,7 +146,9 @@ class SelectionMenuController extends Controller
         if (is_null($menuCategory)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['メニューカテゴリー情報の読み込みができませんでした']
+                'errors' => [
+                    ['メニューカテゴリー情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -140,7 +157,9 @@ class SelectionMenuController extends Controller
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['ストア情報の読み込みができませんでした']
+                'errors' => [
+                    ['ストア情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -164,12 +183,15 @@ class SelectionMenuController extends Controller
 
             return response()->json([
                 'status' => 'failure',
-                'errors' => [$e->getMessage()]
+                'errors' => [
+                    [$e->getMessage()]
+                ]
             ], 500);
         }
 
         return response()->json([
             'status' => 'success',
+            'messages' => [$menu->name . 'を更新しました。'],
             'data' => []
         ], 200);
     }
@@ -181,7 +203,9 @@ class SelectionMenuController extends Controller
         if (is_null($menu)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['メニュー情報の読み込みができませんでした']
+                'errors' => [
+                    ['メニュー情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -190,7 +214,9 @@ class SelectionMenuController extends Controller
         if (is_null($menuCategory)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['メニューカテゴリー情報の読み込みができませんでした']
+                'errors' => [
+                    ['メニューカテゴリー情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -199,7 +225,9 @@ class SelectionMenuController extends Controller
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['ストア情報の読み込みができませんでした']
+                'errors' => [
+                    ['ストア情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -208,6 +236,7 @@ class SelectionMenuController extends Controller
 
         return response()->json([
             'status' => 'success',
+            'messages' => [$menu->name . 'を削除しました。'],
             'data' => []
         ], 200);
     }

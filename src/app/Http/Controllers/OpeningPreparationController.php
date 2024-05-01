@@ -39,7 +39,9 @@ class OpeningPreparationController extends Controller
         if (is_null($store)) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['ストア情報の読み込みができませんでした']
+                'errors' => [
+                    ['ストア情報の読み込みができませんでした']
+                ]
             ], 404);
         }
 
@@ -52,7 +54,9 @@ class OpeningPreparationController extends Controller
         if (!$hasPermission) {
             return response()->json([
                 'status' => 'failure',
-                'errors' => ['この操作を実行する権限がありません']
+                'errors' => [
+                    ['この操作を実行する権限がありません']
+                ]
             ], 403);
         }
 
@@ -75,12 +79,15 @@ class OpeningPreparationController extends Controller
 
             return response()->json([
                 'status' => 'failure',
-                'errors' => [$e->getMessage()]
+                'errors' => [
+                    [$e->getMessage()]
+                ]
             ], 500);
         }
 
         return response()->json([
             'status' => 'success',
+            'messages' => ['営業を開始しました。'],
             'data' => [
                 'businessDate' => $businessDate->business_date
             ]
