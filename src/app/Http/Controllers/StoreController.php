@@ -15,6 +15,7 @@ use App\Services\{
 };
 use App\Models\Store;
 use App\Log\CustomLog;
+use App\Repositories\PrinterSetupRepository\PrinterSetupRepositoryInterface;
 
 class StoreController extends Controller
 {
@@ -22,6 +23,8 @@ class StoreController extends Controller
         public readonly StoreRepositoryInterface $storeRepo,
         public readonly GroupRepositoryInterface $groupRepo,
         public readonly StoreDetailRepositoryInterface $storeDetailRepo,
+        public readonly PrinterSetupRepositoryInterface $printerSetupRepo,
+
         public readonly StoreServiceInterface $storeServ,
     ) {
     }
@@ -59,10 +62,17 @@ class StoreController extends Controller
             $storeData['group_id'] = $group_id;
 
             // 店舗作成
-            $this->storeServ->createStore(
+            $createdStore = $this->storeServ->createStore(
                 $storeData,
                 $request->store_detail,
             );
+
+            // プリンタ設定の作成
+            foreach ($request->printer_setups as $printerSetup) {
+                $createData = $printerSetup;
+                $createData['store_id'] = $createdStore->id;
+                $this->printerSetupRepo->createPrinterSetUp($createData);
+            }
 
             DB::commit();
         } catch (\Throwable $e) {
@@ -88,6 +98,7 @@ class StoreController extends Controller
     {
         $store = $this->storeRepo->findStore($id);
         $storeDetail = $this->storeDetailRepo->getLatestStoreDetail($store);
+        $printerSetups = $this->printerSetupRepo->getStorePrinterSetups($store);
 
         // 以下用途不明
         // $nonEffectiveStoreDetails = $this->storeDetailRepo->getNonEffectiveStoreDetails($store);
@@ -96,7 +107,8 @@ class StoreController extends Controller
             'status' => 'success',
             'data' => [
                 'store' => $store,
-                'storeDetail' => $storeDetail
+                'storeDetail' => $storeDetail,
+                'printerSetups' => $printerSetups
             ],
             'messages' => ['店舗情報を取得しました。']
         ], 200);
@@ -128,6 +140,16 @@ class StoreController extends Controller
 
             // 店舗詳細の作成
             $this->storeDetailRepo->createStoreDetail($store, $request->store_detail);
+
+            // プリンタ設定の削除
+            $this->printerSetupRepo->deleteStorePrinterSetUps($store);
+
+            // プリンタ設定の作成
+            foreach ($request->printer_setups as $printerSetup) {
+                $createData = $printerSetup;
+                $createData['store_id'] = $store->id;
+                $this->printerSetupRepo->createPrinterSetUp($createData);
+            }
 
             DB::commit();
         } catch (\Throwable $e) {
