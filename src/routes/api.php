@@ -49,6 +49,12 @@ use App\Http\Controllers\{
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [UserController::class, 'getLoggedInUser'])->name('user.getLoggedInUser');
 
+    /*************************
+     * スタッフダッシュボード用
+     * ユーザーの所属している店舗一覧を返す
+     *************************/
+    Route::get('/userStores', [StoreController::class, 'getUserStores'])->name('stores.userStores');
+
     /********************************
      * グループもしくはストア権限あり※ストア権限とグループ権限に2つのAPIを定義して削除
      * ※ストア権限チェックのため、パラメタstoreId必須

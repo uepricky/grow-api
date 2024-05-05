@@ -13,7 +13,6 @@ use App\Repositories\{
 use App\Services\{
     StoreService\StoreServiceInterface,
 };
-use App\Models\Store;
 use App\Log\CustomLog;
 
 class StoreController extends Controller
@@ -37,6 +36,14 @@ class StoreController extends Controller
         return response([
             'status' => 'success',
             'data' => $stores
+        ], 200);
+    }
+
+    public function getUserStores()
+    {
+        return response([
+            'status' => 'success',
+            'data' => auth()->user()->stores
         ], 200);
     }
 
@@ -101,8 +108,6 @@ class StoreController extends Controller
             'messages' => ['店舗情報を取得しました。']
         ], 200);
     }
-
-
 
     /**
      * Update the specified resource in storage.
