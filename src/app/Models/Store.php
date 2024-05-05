@@ -56,4 +56,9 @@ class Store extends Model
     {
         return $this->hasMany(PaymentMethod::class);
     }
+
+    public function printerSetups()
+    {
+        return $this->hasMany(PrinterSetup::class);
+    }
 }

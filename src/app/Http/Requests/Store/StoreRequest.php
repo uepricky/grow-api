@@ -25,6 +25,11 @@ class StoreRequest extends BaseFormRequest
             'store.opening_time' => 'nullable|date_format:H:i',
             'store.closing_time' => 'nullable|date_format:H:i',
             'store.working_time_unit_id' => 'required|integer',
+
+            'store.printer_setups' => 'nullable|array',
+            'store.printer_setups.*.name' => 'nullable|string|max:255',
+            'store.printer_setups.*.port' => 'nullable|string|max:255',
+            'store.printer_setups.*.ip_address' => 'nullable|string|max:255',
         ];
 
         $storeDetailRequest = new StoreDetailRequest();

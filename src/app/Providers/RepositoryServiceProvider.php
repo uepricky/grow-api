@@ -107,10 +107,20 @@ use App\Repositories\StoreRoleRepository\{
     StoreRoleRepositoryInterface
 };
 
+use App\Repositories\PrinterSetupRepository\{
+    PrinterSetupRepository,
+    PrinterSetupRepositoryInterface
+};
+
 class RepositoryServiceProvider extends ServiceProvider
 {
     public function register()
     {
+        $this->app->bind(
+            PrinterSetupRepositoryInterface::class,
+            PrinterSetupRepository::class
+        );
+
         $this->app->bind(
             StoreRoleRepositoryInterface::class,
             StoreRoleRepository::class
