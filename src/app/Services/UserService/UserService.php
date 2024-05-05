@@ -2,6 +2,7 @@
 
 namespace App\Services\UserService;
 
+use Illuminate\Support\Collection;
 use App\Services\UserService\UserServiceInterface;
 use App\Models\{
     Store,
@@ -111,5 +112,25 @@ class UserService implements UserServiceInterface
                 'group' => $groupPermissions,
                 'stores' => $storesPermissions
             ];
+    }
+
+    /**
+     * 指定された店舗のロールを保有するユーザー一覧を取得する
+     * @param Store $store
+     * @return Collection
+     */
+    public function getUsersBelongsToStore(Store $store): Collection
+    {
+        // 店舗に属するロール一覧を取得する
+        $storeRoles = $this->storeRoleRepo->getStoreRoles($store->id);
+
+        // 各ロールを保有するユーザー一覧を取得する
+        $users = collect();
+        foreach ($storeRoles as $storeRole) {
+            $roleUsers = $this->userRepo->getStoreUsersByStoreRole($store, $storeRole->id);
+            $users->push(...$roleUsers);
+        }
+
+        return $users->unique();
     }
 }
