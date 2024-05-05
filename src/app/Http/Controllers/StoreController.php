@@ -124,7 +124,7 @@ class StoreController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreRequest $request, int $storeId)
+    public function update(StoreRequest $request, int $groupId, int $storeId)
     {
         $store = $this->storeRepo->findStore($storeId);
 
