@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\BusinessDate;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreIdRequest;
@@ -65,7 +66,19 @@ class OpeningPreparationController extends Controller
 
         try {
             // 営業日付の登録
-            $businessDate = $this->businessDateRepo->createBusinessDate($request->business_date);
+            // 年、月、日を取得
+            $year = intval($request->input('business_date.business_date_year'));
+            $month = intval($request->input('business_date.business_date_month'));
+            $day = intval($request->input('business_date.business_date_day'));
+
+            // Dateオブジェクトを作成
+            $requestBusinessDate = Carbon::createFromDate($year, $month, $day);
+
+            $businessDateArray = [
+                ...$request->business_date,
+                'business_date' => $requestBusinessDate
+            ];
+            $businessDate = $this->businessDateRepo->createBusinessDate($businessDateArray);
 
             // 釣銭準備金の登録
             $this->cashRegisterRepo->createCashRegister($businessDate, $request->cash_register);

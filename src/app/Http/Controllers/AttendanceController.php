@@ -62,8 +62,8 @@ class AttendanceController extends Controller
             ], 404);
         }
 
-        // ストアに紐づくユーザー一覧を取得
-        $users = $this->userRepo->getStoreUsers($store);
+        // ストアに属するユーザー一覧を取得
+        $users = $this->userServ->getUsersBelongsToStore($store);
 
         // ユーザーに紐づく勤怠情報を取得
         $usersWithAttendance = $this->attendanceServ->getFormattedAttendanceInfo($users, $businessDate, $store);
