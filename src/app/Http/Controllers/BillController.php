@@ -163,6 +163,7 @@ class BillController extends Controller
 
         return response()->json([
             'status' => 'success',
+            'messages' => ['来店登録が完了しました。'],
             'data' => [
                 'bill' => $createdBill
             ]
