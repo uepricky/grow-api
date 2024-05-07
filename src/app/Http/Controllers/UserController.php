@@ -164,7 +164,7 @@ class UserController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => '登録が完了しました。',
+            'messages' => [$user->display_name . 'さんの登録が完了しました。'],
             'data' => [
                 'user' => $user
             ]
@@ -218,6 +218,11 @@ class UserController extends Controller
 
             abort(500);
         }
+
+        return response()->json([
+            'status' => 'success',
+            'messages' => [$user->display_name . 'さんの編集が完了しました。']
+        ], 200);
     }
 
     public function archive(int $groupId, int $userId)
@@ -227,7 +232,7 @@ class UserController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => $user->display_name . 'の削除が完了しました。'
+            'messages' => [$user->display_name . 'さんの削除が完了しました。']
         ], 200);
     }
 
