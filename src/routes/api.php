@@ -299,6 +299,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 // サブスクリプション
                 Route::prefix('/subscriptions')->group(function () {
                     Route::get('/', [SubscriptionController::class, 'getSubscriptionStatus']);
+                    Route::delete('/', [SubscriptionController::class, 'cancelSubscription']);
                 });
             });
         });
