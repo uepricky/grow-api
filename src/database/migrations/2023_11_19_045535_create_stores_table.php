@@ -25,10 +25,10 @@ return new class extends Migration
             $table->time('opening_time')->nullable()->comment('営業開始時間');
             $table->time('closing_time')->nullable()->comment('営業終了時間');
             $table->foreignId('working_time_unit_id')->constrained('working_time_units')->comment('勤務時間単位ID');
-
             $table->foreignId('subscription_id')->nullable()->constrained('subscriptions')->comment('サブスクリプションID');
-
             $table->timestamps();
+
+            $table->softDeletes();
         });
     }
 
