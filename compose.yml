@@ -42,6 +42,7 @@ services:
     build:
       context: .
       dockerfile: ./infra/docker/nginx/Dockerfile
+      target: ${APP_BUILD_TARGET:-development}
     ports:
       - target: 443
         published: ${WEB_PUBLISHED_PORT:-443}
@@ -81,6 +82,7 @@ services:
     build:
       context: .
       dockerfile: ./infra/docker/postgre/Dockerfile
+      target: ${APP_BUILD_TARGET:-development}
     restart: unless-stopped
     ports:
       - target: 5432
