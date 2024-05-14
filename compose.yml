@@ -37,6 +37,7 @@ services:
       - DB_DATABASE=${DB_DATABASE:-grow}
       - DB_USERNAME=${DB_USERNAME:-root}
       - DB_PASSWORD=${DB_PASSWORD:-root}
+    restart: unless-stopped
 
   web:
     build:
@@ -52,6 +53,7 @@ services:
       - type: bind
         source: ./src
         target: /workspace
+    restart: unless-stopped
 
   # db:
   #   build:
@@ -82,8 +84,6 @@ services:
     build:
       context: .
       dockerfile: ./infra/docker/postgre/Dockerfile
-      target: ${APP_BUILD_TARGET:-development}
-    restart: unless-stopped
     ports:
       - target: 5432
         published: ${DB_PUBLISHED_PORT:-5432}
@@ -97,6 +97,7 @@ services:
       - POSTGRES_DB=${DB_DATABASE:-grow}
       - POSTGRES_USER=${DB_USERNAME:-root}
       - POSTGRES_PASSWORD=${DB_PASSWORD:-root}
+    restart: unless-stopped
 
   mailpit:
     image: axllent/mailpit
