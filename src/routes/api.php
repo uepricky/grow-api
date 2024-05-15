@@ -46,6 +46,10 @@ use App\Http\Controllers\{
 //     return $request->user();
 // });
 
+Route::get('/healthCheck', function () {
+    return response()->json(['status' => 'OK'], 200);
+});
+
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', [UserController::class, 'getLoggedInUser'])->name('user.getLoggedInUser');
 
