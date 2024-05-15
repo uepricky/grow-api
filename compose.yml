@@ -54,8 +54,8 @@ services:
         source: ./src
         target: /workspace
       - type: bind
-        source: /etc/letsencrypt/live/tk2-409-45999.vs.sakura.ne.jp
-        target: /etc/ssl/certs
+        source: ${SSL_CERTIFICATE_FILE_PATH:-./infra/docker/nginx/ssl/certs}
+        target: /etc/letsencrypt/live/domain
     restart: unless-stopped
 
   # db:
