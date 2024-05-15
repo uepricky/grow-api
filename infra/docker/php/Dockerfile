@@ -100,6 +100,8 @@ FROM base AS production2
 COPY ./infra/docker/php/php.deploy.ini /usr/local/etc/php/php.ini
 COPY ./src /workspace
 
+RUN composer dump-autoload
+
 RUN composer install -q -n --no-ansi --no-dev --no-scripts --no-progress --prefer-dist \
   && chmod -R 777 storage bootstrap/cache \
   && php artisan optimize:clear \
