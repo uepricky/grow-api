@@ -53,6 +53,9 @@ services:
       - type: bind
         source: ./src
         target: /workspace
+      - type: bind
+        source: /etc/letsencrypt/live/tk2-409-45999.vs.sakura.ne.jp
+        target: /etc/ssl/certs
     restart: unless-stopped
 
   # db:
