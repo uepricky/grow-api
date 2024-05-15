@@ -12,7 +12,7 @@ COPY ./infra/docker/nginx/ssl/certs/* /etc/ssl/certs/
 # 本番1号機
 FROM base AS production1
 COPY ./infra/docker/nginx/production.conf /etc/nginx/conf.d/
-COPY /etc/letsencrypt/live/*/* /etc/ssl/certs/
+COPY /etc/letsencrypt/live/domain/* /etc/ssl/certs/
 
 # 本番2号機
 FROM base AS production2
