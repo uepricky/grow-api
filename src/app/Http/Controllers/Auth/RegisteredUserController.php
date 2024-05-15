@@ -59,16 +59,16 @@ class RegisteredUserController extends Controller
 
             $this->registeredUserServ->registerContractUser($user, $request->group_name);
 
+            $user->sendEmailVerificationNotification();
+
+            Auth::logout();
+
             DB::commit();
         } catch (\Throwable $e) {
             // 例外が発生した場合はロールバックする
             DB::rollback();
             throw $e;
         }
-
-        event(new Registered($user));
-
-        Auth::login($user);
 
         return response([
             'status' => 'success',

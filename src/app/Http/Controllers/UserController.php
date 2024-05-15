@@ -130,7 +130,6 @@ class UserController extends Controller
 
             $user = $this->userRepo->createGeneralUser($data, $request->general_user);
 
-
             $operateUser = $request->user();
             $group = $this->groupRepo->getBelongingGroups($operateUser);
             // ユーザーをグループに所属させる※削除予定
@@ -151,6 +150,10 @@ class UserController extends Controller
                 $this->userRepo->attachStoreRolesToUser($user, $storeRoleIds);
             }
 
+            // 認証メール送信
+            if (!$user->hasVerifiedEmail() && $request->general_user['can_login']) {
+                $user->sendEmailVerificationNotification();
+            }
 
             DB::commit();
         } catch (\Throwable $e) {
@@ -207,6 +210,15 @@ class UserController extends Controller
 
             // グループロールをユーザーに同期する
             $this->userRepo->syncGroupRolesToUser($user, $groupRoleIds);
+
+            // 認証メール送信
+            // 認証メールを再送する
+            if (
+                !$user->hasVerifiedEmail() &&
+                $request->general_user['can_login']
+            ) {
+                $user->sendEmailVerificationNotification();
+            }
 
             DB::commit();
         } catch (\Throwable $e) {
