@@ -57,6 +57,7 @@ services:
         source: ${SSL_CERTIFICATE_FILE_PATH:-./infra/docker/nginx/ssl/certs}
         target: /etc/letsencrypt/live/domain
     restart: unless-stopped
+    tty: true
 
   # db:
   #   build:
