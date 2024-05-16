@@ -56,37 +56,7 @@ services:
       - type: bind
         source: ${SSL_CERTIFICATE_FILE_PATH:-./infra/docker/nginx/ssl/certs}
         target: /etc/letsencrypt
-      # - type: bind
-      #   source: ${SSL_CERTIFICATE_FILE_PATH:-./infra/docker/nginx/ssl/certs}
-      #   target: /etc/ssl/certs
-      # - type: bind
-      #   source: ${SSL_CERTIFICATE_CONCRITE_FILE:-./infra/docker/nginx/ssl/certs}
-      #   target: /etc/archive
     restart: unless-stopped
-
-  # db:
-  #   build:
-  #     context: .
-  #     dockerfile: ./infra/docker/mysql/Dockerfile
-  #   ports:
-  #     - target: 3306
-  #       published: ${DB_PUBLISHED_PORT:-3306}
-  #       protocol: tcp
-  #       mode: host
-  #   configs:
-  #     - source: db-config
-  #       target: /etc/my.cnf
-  #   volumes:
-  #     - type: volume
-  #       source: db-store
-  #       target: /var/lib/mysql
-  #       volume:
-  #         nocopy: true
-  #   environment:
-  #     - MYSQL_DATABASE=${DB_DATABASE:-laravel}
-  #     - MYSQL_USER=${DB_USERNAME:-phper}
-  #     - MYSQL_PASSWORD=${DB_PASSWORD:-secret}
-  #     - MYSQL_ROOT_PASSWORD=${DB_PASSWORD:-secret}
 
   db:
     container_name: grow-postgres
