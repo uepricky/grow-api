@@ -55,10 +55,13 @@ services:
         target: /workspace
       - type: bind
         source: ${SSL_CERTIFICATE_FILE_PATH:-./infra/docker/nginx/ssl/certs}
-        target: /etc/ssl/certs
-      - type: bind
-        source: ${SSL_CERTIFICATE_CONCRITE_FILE:-./infra/docker/nginx/ssl/certs}
-        target: /etc/archive
+        target: /etc/letsencrypt
+      # - type: bind
+      #   source: ${SSL_CERTIFICATE_FILE_PATH:-./infra/docker/nginx/ssl/certs}
+      #   target: /etc/ssl/certs
+      # - type: bind
+      #   source: ${SSL_CERTIFICATE_CONCRITE_FILE:-./infra/docker/nginx/ssl/certs}
+      #   target: /etc/archive
     restart: unless-stopped
 
   # db:
